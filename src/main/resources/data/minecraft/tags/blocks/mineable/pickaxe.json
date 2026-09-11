@@ -1,0 +1,10 @@
+{
+  "replace": false,
+  "values": [
+    "locksanddams:lock_controller",
+    "locksanddams:gate_panel",
+    "locksanddams:gate_drive",
+    "locksanddams:fill_valve",
+    "locksanddams:drain_valve"
+  ]
+}

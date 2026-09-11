@@ -2,6 +2,8 @@
 build/
 run/
 run-server/
+run-checks/
+run-preview/
 runs/
 .idea/
 *.iml

@@ -39,3 +39,27 @@ tasks.named('processResources').configure {
 }
 
 tasks.withType(JavaCompile).configureEach { options.encoding = 'UTF-8' }
+
+// Test fixtures are opt-in and excluded from normal distribution builds.
+if (project.hasProperty('lockChecks')) {
+    sourceSets.main.java.srcDir 'tools/testsrc'
+    legacyForge.runs.server {
+        gameDirectory = project.file('run-checks')
+        systemProperty 'locksanddams.checks', 'true'
+        if (project.hasProperty('lockRestore')) systemProperty 'locksanddams.restore', 'true'
+    }
+}
+if (project.hasProperty('lockPreview')) {
+    sourceSets.main.java.srcDir 'tools/clienttest'
+    legacyForge.runs.client {
+        gameDirectory = project.file('run-preview')
+        systemProperty 'locksanddams.preview', 'true'
+        if (project.hasProperty('lockOverview')) systemProperty 'locksanddams.overview', 'true'
+        programArgument '--quickPlaySingleplayer'
+        programArgument 'Lock Prototype QA'
+        programArgument '--width'
+        programArgument '1280'
+        programArgument '--height'
+        programArgument '800'
+    }
+}

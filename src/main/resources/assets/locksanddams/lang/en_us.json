@@ -1,0 +1,8 @@
+{
+  "block.locksanddams.lock_controller": "Lock Controller",
+  "block.locksanddams.gate_panel": "Lock Gate Panel",
+  "block.locksanddams.gate_drive": "Gate Drive",
+  "block.locksanddams.fill_valve": "Fill Valve",
+  "block.locksanddams.drain_valve": "Drain Valve",
+  "block.locksanddams.chamber_water": "Managed Chamber Water"
+}

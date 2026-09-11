@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "open=false": {
+      "model": "locksanddams:block/fill_valve"
+    },
+    "open=true": {
+      "model": "locksanddams:block/fill_valve_open"
+    }
+  }
+}

@@ -8,8 +8,9 @@ version="${mod_version}"
 displayName="Locks & Dams"
 authors="aschuchter21"
 description='''
-A foundation for player-built, redstone-controlled navigation locks and dams.
-Development build: working lock infrastructure is not implemented yet.
+Prototype redstone-controlled navigation locks with non-flowing chamber water,
+interlocked gates and valves, and a three-block lift. Use /locks demo in a
+creative test world to build a sample lock. Dams and reservoirs are planned.
 '''
 
 [[dependencies.locksanddams]]

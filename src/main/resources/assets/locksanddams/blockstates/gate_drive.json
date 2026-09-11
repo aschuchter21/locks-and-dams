@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "open=false": {
+      "model": "locksanddams:block/gate_drive"
+    },
+    "open=true": {
+      "model": "locksanddams:block/gate_drive_open"
+    }
+  }
+}

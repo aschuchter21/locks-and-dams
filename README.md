@@ -1,39 +1,47 @@
 # Locks & Dams
 
-A standalone Minecraft Java mod for player-built navigation locks, dams, and
-controlled water levels, balancing realistic operation with simple redstone controls.
+A standalone navigation-lock mod for **Minecraft 1.20.1 / Forge 47.4.10**.
 
-## Current status
+## Prototype: 0.1.0-dev.2
 
-Project foundation only. This version has a Forge entry point and build/run
-configuration; it does **not** yet add gates, valves, chambers, or boat support.
-Create and Commercial Systems are not required.
+- A 5 by 9 interior chamber with a three-block lift.
+- Two gate drives, a fill valve, and a drain valve with independent redstone inputs.
+- Non-flowing managed water and boat support across changing water levels.
+- Level and obstruction interlocks, fault pauses, and saved chamber state.
+- Creative tab, survival recipes, and a non-destructive `/locks demo` builder.
 
-## Development setup
+Create and Commercial Systems are not required. Gates currently open and close
+instantly. Dams, finite reservoirs, adjustable sizes, animated machinery, and
+Create integration are later milestones.
 
-- Minecraft: **1.20.1**
-- Forge: **47.4.10**
-- Java development kit: **17**
-- Gradle: **8.8**, provided by the wrapper
+## Try it
 
-Build with `./gradlew build` (Windows: `.\gradlew.bat build`). The mod and source
-JARs are written to `build/libs/`. The build uses Legacy ModDevGradle, matching
-the Commercial Systems development setup; the resulting mod targets Forge.
+Install the normal mod JAR in a Forge 47.4.10 / Minecraft 1.20.1 instance. Both
+client and server need the mod. In a creative test world with commands enabled,
+fly into clear space and run `/locks demo`. It refuses to replace blocks or
+entities and creates two pools, the chamber, and four levers.
 
-Launch an isolated development client with `./gradlew runClient`, or a dedicated
-development server with `./gradlew runServer`. Server startup requires the server
-operator to review and accept Minecraft's EULA. Neither command uses an existing
-CurseForge instance or player world. Install a Java 17 JDK before building; if
-Gradle cannot find it, configure `org.gradle.java.installations.paths` locally.
+From the lower end, the levers are **lower gate, fill, drain, upper gate**.
+Open the lower gate and row in. Turn that gate off, turn fill on, wait for the
+upper level, then open the upper gate and row out. Reverse the sequence to descend.
+Right-click the controller to read the level and any interlock message.
 
-## First playable milestone
+See [the building and operating guide](docs/prototype.md) and
+[validation notes](docs/validation.md).
 
-Build a rectangular lock, enter from the lower canal in a boat, close the gates,
-fill the chamber, and exit into the upper canal. Repeat in reverse without
-breaking the boat or ejecting its passenger.
+## Development
 
-See [the prototype design](docs/prototype.md) for agreed controls, scope, and
-acceptance checks. All features in that document are planned, not implemented.
+Install a Java 17 JDK, then run `./gradlew build` (Windows: `.\gradlew.bat build`).
+The wrapper supplies Gradle 8.8. Legacy ModDevGradle matches the Commercial Systems
+build setup and produces a **Forge** mod. Normal and source JARs are in `build/libs/`.
+If Java 17 is not detected, configure `org.gradle.java.installations.paths` locally.
+
+`./gradlew runClient` and `./gradlew runServer` use isolated development folders.
+The server operator must review and accept Minecraft's EULA. These commands do
+not use an existing CurseForge instance or player world.
+
+Integration fixtures are opt-in; see the validation notes. Always run a normal
+`build` after tests so the distributed JAR excludes those fixtures.
 
 ## License
 
