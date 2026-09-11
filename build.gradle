@@ -1,0 +1,41 @@
+plugins {
+    id 'java'
+    id 'net.neoforged.moddev.legacyforge' version '2.0.140'
+}
+
+group = mod_group
+version = mod_version
+base { archivesName = 'LocksAndDams-Forge-1.20.1' }
+
+java {
+    toolchain.languageVersion = JavaLanguageVersion.of(17)
+    withSourcesJar()
+}
+
+legacyForge {
+    version = "${minecraft_version}-${forge_version}"
+    runs {
+        client {
+            client()
+            gameDirectory = project.file('run')
+        }
+        server {
+            server()
+            gameDirectory = project.file('run-server')
+            programArgument '--nogui'
+        }
+    }
+    mods {
+        locksanddams { sourceSet sourceSets.main }
+    }
+}
+
+repositories { mavenCentral() }
+
+tasks.named('processResources').configure {
+    def replaceProperties = [mod_version: mod_version]
+    inputs.properties replaceProperties
+    filesMatching('META-INF/mods.toml') { expand replaceProperties }
+}
+
+tasks.withType(JavaCompile).configureEach { options.encoding = 'UTF-8' }

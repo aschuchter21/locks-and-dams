@@ -1,0 +1,15 @@
+.gradle/
+build/
+run/
+run-server/
+runs/
+.idea/
+*.iml
+.classpath
+.project
+.settings/
+.vscode/
+logs/
+crash-reports/
+*.hprof
+local.properties
