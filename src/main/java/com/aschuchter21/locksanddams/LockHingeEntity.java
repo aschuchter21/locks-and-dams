@@ -29,6 +29,11 @@ public final class LockHingeEntity extends MechanicalBearingBlockEntity {
         super.addBehaviours(behaviours);movementMode.setValue(RotationMode.ROTATE_NEVER_PLACE.ordinal());
     }
     public boolean belongsTo(BlockPos p) { return owner!=null&&owner.equals(p); }
+    /** An unloaded or still-present controller retains its gates. */
+    public boolean canBindTo(BlockPos controller) {
+        return owner==null||owner.equals(controller)||level!=null&&level.hasChunkAt(owner)
+            &&!level.getBlockState(owner).is(Content.CONTROLLER.get())&&!(level.getBlockEntity(owner) instanceof LockEntity);
+    }
     public boolean closed() { return running&&movedContraption!=null&&Math.abs(angle)<.01&&Math.abs(target)<.01; }
     public boolean open() { return running&&movedContraption!=null&&Math.abs(angle-openAngle())<.01; }
     public float gateAngle() { return angle; }

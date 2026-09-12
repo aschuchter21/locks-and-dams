@@ -40,6 +40,15 @@ public final class CustomLock {
         require(hinges.size()<=64,"Too many nearby hinges; separate the lock builds.");return hinges;
     }
     public static CustomLock discover(Level level,BlockPos owner,Direction f) {
+        int[] progress={0};
+        try {return discover(level,owner,f,progress);}
+        catch(IllegalArgumentException error) {throw new DiscoveryException(error.getMessage(),progress[0]);}
+    }
+    public static final class DiscoveryException extends IllegalArgumentException {
+        final int progress;
+        DiscoveryException(String message,int progress) {super(message);this.progress=progress;}
+    }
+    private static CustomLock discover(Level level,BlockPos owner,Direction f,int[] progress) {
         List<LockHingeEntity> hinges=nearby(level,owner);Direction right=f.getClockWise();List<BlockPos[]> candidates=new ArrayList<>();
         for(var a:hinges)for(var b:hinges) {
             BlockPos p=a.getBlockPos(),q=b.getBlockPos();int w=along(q,right)-along(p,right)+1;
@@ -53,7 +62,8 @@ public final class CustomLock {
                 if(hinges.stream().anyMatch(h->h.getBlockPos().equals(s)))candidates.add(new BlockPos[]{p,q,r,s});
             }
         }
-        require(candidates.size()==1,candidates.isEmpty()?"Place four rectangular corner hinges and a controller on a side wall facing the upper canal. Width 4-16, interior length 3-47, hinge rise 0-16.":"Multiple hinge rectangles match this controller; remove extra hinges or separate the locks.");
+        if(!candidates.isEmpty())progress[0]=1;
+        require(candidates.size()==1,candidates.isEmpty()?"Place four rectangular corner hinges and a controller in a side wall. Width 4-16, interior length 3-47, hinge rise 0-16.":"Multiple hinge rectangles match this controller; remove extra hinges or separate the locks.");
         BlockPos[] corners=candidates.get(0);BlockPos base=corners[0].above();int w=along(corners[1],right)-along(corners[0],right)+1,len=along(corners[2],f)-along(corners[0],f),rise=corners[2].getY()-corners[0].getY();
         BlockPos fill=null,drain=null;
         for(int x:new int[]{-1,w})for(int z=0;z<=len;z++)for(int y=0;y<=32;y++) {
@@ -66,6 +76,7 @@ public final class CustomLock {
         int low=lower.surface()-base.getY()*16,high=upper.surface()-base.getY()*16;
         require(low>0&&high>low&&high<=32*16&&high-low<=16*16,"Ports must set a positive lower depth and a lift up to 16 blocks, within a 32-block chamber depth.");
         require(along(lower.mouth(),f)<along(base,f)&&along(upper.mouth(),f)>along(base,f)+len,"Fill port belongs beyond the upper gate; drain port beyond the lower gate.");
+        progress[0]=2;
         require(rise*16<high,"Upper gate starts above the upper water surface.");
         require((long)w*(len-1)*((high+15)/16)<=16384,"Chamber exceeds 16,384 managed water blocks.");
         for(BlockPos p:new BlockPos[]{owner,fill,drain})require(p.getY()>=base.getY()&&p.getY()<base.getY()+(high+15)/16,"Place the controller and valves in the side walls below the upper water limit.");
@@ -81,6 +92,7 @@ public final class CustomLock {
             leaves[i]=new GateSpec(corners[i].above(),inward,leafWidth,height,(i<2?-90:90)*(i%2==0?1:-1));
         }
         CustomLock result=new CustomLock(owner,base,f,w,len,rise,low,high,fill,drain,upper.port(),lower.port(),leaves,low);
+        progress[0]=3;
         result.validate(level,false);return result;
     }
     boolean solid(Level level,BlockPos p) {
@@ -106,7 +118,10 @@ public final class CustomLock {
         for(int i=0;i<4;i++) {
             LockHingeEntity h=hinge(level,i);require(h!=null,"Restore all four hinges.");
             if(running)require(h.belongsTo(owner)&&h.isRunning()&&h.getMovedContraption()!=null&&leaves[i].equals(h.geometry()),"Waiting for the linked gate contraption; restore/reassemble if its hinge was removed.");
-            else require(!h.isRunning()||h.belongsTo(owner)&&leaves[i].equals(h.geometry()),"A hinge already belongs to another controller or has a different assembled leaf.");
+            else {
+                require(h.canBindTo(owner),"A hinge still belongs to another controller. Remove that controller and repair its wall opening first.");
+                require(!h.isRunning()||h.getMovedContraption()!=null&&leaves[i].equals(h.geometry()),"A hinge has a different assembled leaf or its contraption is still loading.");
+            }
             for(int x=0;x<leaves[i].width();x++)for(int y=0;y<leaves[i].height();y++) {
                 BlockPos p=leaves[i].at(x,y);require(level.hasChunkAt(p),"Load both gate leaves.");var s=level.getBlockState(p);
                 require(s.is(running||h.isRunning()?Content.SEAL.get():Content.PANEL.get()),"Restore gate panels/seals at "+p.toShortString());

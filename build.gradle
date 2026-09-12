@@ -60,6 +60,7 @@ if (project.hasProperty('customChecks')) {
         gameDirectory = project.file('run-custom-checks')
         systemProperty 'locksanddams.customChecks', 'true'
         if (project.hasProperty('controllerRecovery')) systemProperty 'locksanddams.controllerRecovery', 'true'
+        if (project.hasProperty('controllerRelocation')) systemProperty 'locksanddams.controllerRelocation', 'true'
         if (project.hasProperty('customRestore')) systemProperty 'locksanddams.customRestore', 'true'
     }
 }

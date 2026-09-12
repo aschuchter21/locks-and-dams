@@ -1,5 +1,20 @@
 # Validation and development fixtures
 
+## Controller relocation: dev.6
+
+September 12, 2026: 12 controller relocations passed on the dedicated
+Minecraft/Forge/Create server, covering both walls and three heights in four
+orientations. Existing water levels and gate contraption entity IDs were
+preserved, and filling and draining still completed after relocation.
+
+The fixture also verified that another controller cannot take over while the
+original controller exists, and that an unfilled old controller opening reports
+the exact wall position requiring repair.
+
+Run `./gradlew -PcustomChecks -PcontrollerRelocation runServer` in a fresh isolated
+`run-custom-checks` world. Require `PASS:` in `controller-relocation-result.txt`.
+The fixture is excluded from the release JAR.
+
 ## Controller replacement: dev.5
 
 September 12, 2026: 32 actual controller break/place/reassemble cases passed.
@@ -137,5 +152,5 @@ repeating the ride, add `-PlockOverview`.
 ## Packaging
 
 Run `./gradlew clean build` with no fixture properties. Distribute only
-`build/libs/LocksAndDams-Forge-1.20.1-0.1.0-dev.5.jar`. The release must exclude
+`build/libs/LocksAndDams-Forge-1.20.1-0.1.0-dev.6.jar`. The release must exclude
 all `*Checks` fixtures. Tests and run worlds are not shipped.

@@ -2,7 +2,11 @@
 
 A navigation-lock mod for **Minecraft 1.20.1 / Forge 47.4.10 / Create 6.0.8**.
 
-## Prototype: 0.1.0-dev.5
+## Prototype: 0.1.0-dev.6
+
+Custom controllers can now move to another valid side-wall position. Remove the
+old controller and repair its wall opening before assembling the new one. Existing
+gate contraptions and uniform water are reclaimed; live controllers retain ownership.
 
 Controller replacement now detects the lock direction automatically, including
 the older demo. Replacing it while facing the side wall no longer loses the chamber.

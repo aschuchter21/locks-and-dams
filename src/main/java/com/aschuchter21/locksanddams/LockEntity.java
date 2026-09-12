@@ -82,9 +82,13 @@ public final class LockEntity extends BlockEntity {
         // actual build instead of requiring that incidental direction to match.
         java.util.List<CustomLock> matches=new java.util.ArrayList<>();
         String discoveryError=null;
+        int discoveryProgress=-1;
         for(Direction direction:Direction.Plane.HORIZONTAL) {
             try {matches.add(CustomLock.discover(level,worldPosition,direction));}
-            catch(IllegalArgumentException e) {if(direction==getBlockState().getValue(ControllerBlock.FACING))discoveryError=e.getMessage();}
+            catch(IllegalArgumentException e) {
+                int progress=e instanceof CustomLock.DiscoveryException failure?failure.progress:0;
+                if(progress>discoveryProgress||progress==discoveryProgress&&direction==getBlockState().getValue(ControllerBlock.FACING)) {discoveryError=e.getMessage();discoveryProgress=progress;}
+            }
         }
         if(matches.size()>1) {message="Multiple valid chambers match this controller; separate their hinges.";sync();return false;}
         if(matches.size()==1) {

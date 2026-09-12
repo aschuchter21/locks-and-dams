@@ -1,7 +1,7 @@
-# Player-built chambers: dev.5
+# Player-built chambers: dev.6
 
 Minecraft 1.20.1, Forge 47.4.10 and Create 6.0.8. Replace the older Locks & Dams
-JAR with dev.5 on both client and server. Existing fixed-size locks remain supported.
+JAR with dev.6 on both client and server. Existing fixed-size locks remain supported.
 
 ## Try the example
 
@@ -88,7 +88,14 @@ Restore the original structure and connections to resume. Port positions and
 water limits are saved at assembly, so relocating a port does not silently
 change a running chamber's target.
 
-To reconfigure, clear the chamber, remove the controller and all four hinges,
+To move only a custom lock's controller, clear the chamber, remove the old
+controller, and fill its hole with a solid, dry wall block. Replace a wall block
+at the new valid location with the controller and right-click. It reclaims the
+existing gate contraptions and uniform water without resetting their state.
+This is refused if the old controller still exists or its chunk is unloaded.
+Legacy two-hinge locks still require their original controller location.
+
+To reconfigure the chamber itself, clear the chamber, remove the controller and all four hinges,
 then rebuild the shell and panel leaves before replacing them. Removing hinges
 returns their panels to the original opening. A replacement controller in the
 same location can reclaim uniform managed water if it still fits the
