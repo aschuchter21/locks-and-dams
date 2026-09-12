@@ -1,25 +1,29 @@
 # Locks & Dams
 
-A standalone navigation-lock mod for **Minecraft 1.20.1 / Forge 47.4.10**.
+A navigation-lock mod for **Minecraft 1.20.1 / Forge 47.4.10 / Create 6.0.8**.
 
-## Prototype: 0.1.0-dev.2
+## Prototype: 0.1.0-dev.3
 
 - A 5 by 9 interior chamber with a three-block lift.
 - Two gate drives, a fill valve, and a drain valve with independent redstone inputs.
 - Non-flowing managed water and boat support across changing water levels.
 - Level and obstruction interlocks, fault pauses, and saved chamber state.
 - Creative tab, survival recipes, and a non-destructive `/locks demo` builder.
+- Create-powered lock hinges that swing real panel contraptions through 90 degrees.
+- Physical culvert routes from the upper canal to the fill valve and from the drain valve to the lower canal.
 
-Create and Commercial Systems are not required. Gates currently open and close
-instantly. Dams, finite reservoirs, adjustable sizes, animated machinery, and
-Create integration are later milestones.
+Create 6.0.8 is required on client and server. Commercial Systems is not required.
+Canals remain fixed water supplies; finite reservoir simulation, dams and adjustable
+chamber sizes are later milestones.
 
 ## Try it
 
-Install the normal mod JAR in a Forge 47.4.10 / Minecraft 1.20.1 instance. Both
+Install the normal mod JAR and [Create 6.0.8 for 1.20.1](https://github.com/Creators-of-Create/Create/releases/tag/mc1.20.1-6.0.8) in a Forge 47.4.10 / Minecraft 1.20.1 instance. Both
 client and server need the mod. In a creative test world with commands enabled,
 fly into clear space and run `/locks demo`. It refuses to replace blocks or
-entities and creates two pools, the chamber, and four levers.
+entities and creates two pools, the chamber, four levers, culvert plumbing and
+two hinges powered by 8 RPM creative motors. Replace those motors with your own
+Create shaft network for a survival build.
 
 From the lower end, the levers are **lower gate, fill, drain, upper gate**.
 Open the lower gate and row in. Turn that gate off, turn fill on, wait for the

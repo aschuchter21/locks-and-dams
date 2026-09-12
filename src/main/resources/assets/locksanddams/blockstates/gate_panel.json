@@ -1,6 +1,13 @@
 {
   "variants": {
-    "": {
+    "axis=x": {
+      "model": "locksanddams:block/gate_panel",
+      "y": 90
+    },
+    "axis=y": {
+      "model": "locksanddams:block/gate_panel"
+    },
+    "axis=z": {
       "model": "locksanddams:block/gate_panel"
     }
   }

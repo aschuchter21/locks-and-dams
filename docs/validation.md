@@ -1,5 +1,37 @@
 # Validation and development fixtures
 
+## Create integration: dev.3
+
+September 12, 2026: the full dedicated-server cycle and actual server restart /
+terrain-obstruction recovery both passed on the final gate-clearance implementation.
+Client startup loaded the new resources, but the preview windows closed before
+the rider test completed. **The dev.3 visual and actual-rider acceptance check is
+incomplete.** The shutdown-time "Boat broke" assertion from the first interrupted
+preview is not evidence of a failure during normal operation; shutdown began
+before that assertion. Do not substitute dev.2 screenshots or results for dev.3.
+
+The dedicated fixture in `tools/createtest` runs with Create 6.0.8, Forge
+47.4.10 and Minecraft 1.20.1. It verifies four orientations, 30-panel Create
+contraptions, gradual 90-degree gate travel, loss/restoration of shaft power,
+closed-gate water interlocks, the complete fill/drain cycle, canal plumbing,
+broken-pipe pause and repair, and chest boats with passengers and 17 diamonds.
+
+Prepare an isolated `run-create-checks` folder with an accepted EULA and a
+fresh flat test world in `server.properties`, bound to loopback. Run
+`./gradlew -PcreateChecks runServer`. Require `PASS:` in
+`run-create-checks/create-checks-result.txt`; Gradle exit status alone does not
+indicate that game assertions passed. Then run
+`./gradlew -PcreateChecks -PcreateRestore runServer` on the same world to check
+saved hinges, gate operation after reload and terrain-obstruction recovery.
+Read `run-create-checks/create-restart-result.txt` separately.
+
+The actual-rider fixture below now uses the new demo and waits for each moving
+gate to finish opening. The older `LockChecks` fixture and dev.2 observations
+below are retained as history; its instant-gate timings are not the dev.3 suite.
+
+Finite canal volume, remote-client latency, other mods' boats and shaders remain
+outside this prototype's acceptance checks.
+
 ## Checks performed for dev.2
 
 A dedicated Forge 47.4.10 server exercised the actual blocks, fluids, entities,
@@ -29,9 +61,9 @@ boundary. The final implementation adds a collision-aware vertical correction
 once per locally controlled boat tick. A riding client's instance applies its own
 correction; the server does not compete with that client's vehicle movement.
 
-These checks do not establish compatibility with Create contraptions, other mods'
+Those dev.2 checks did not establish compatibility with Create contraptions, other mods'
 boats, shaders, network latency, or a second remote observer. Those remain separate
-compatibility and multiplayer acceptance tests. Gate animation is not implemented.
+compatibility and multiplayer acceptance tests. Gate animation was not implemented in dev.2.
 
 ## Reproduce the dedicated-server checks
 
@@ -56,7 +88,7 @@ passengers against `run-checks/lock-restore-state.txt`. Require `PASS:` in
 ## Reproduce the actual-rider checks
 
 Copy a stopped test world's folder into
-`run-preview/saves/Lock Prototype QA`. There must be clear space around (0,200,0).
+`run-preview/saves/Create Lock QA`. There must be clear space around (0,200,0).
 Run `./gradlew -PlockPreview runClient`. This opt-in client fixture creates a
 sample lock, mounts the local player, drives a complete round trip, records
 `run-preview/client-ride-result.txt`, captures screenshots, and exits.
@@ -67,5 +99,5 @@ repeating the ride, add `-PlockOverview`.
 ## Packaging
 
 Run `./gradlew clean build` with no fixture properties. Distribute only
-`build/libs/LocksAndDams-Forge-1.20.1-0.1.0-dev.2.jar`. The release must exclude
-`LockChecks` and `ClientRideChecks`. Tests and run worlds are not shipped.
+`build/libs/LocksAndDams-Forge-1.20.1-0.1.0-dev.3.jar`. The release must exclude
+`LockChecks`, `CreateChecks` and `ClientRideChecks`. Tests and run worlds are not shipped.

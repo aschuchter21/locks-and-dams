@@ -33,6 +33,7 @@ public final class ClientRideChecks {
     }
     static double progress() { return -(boat.getZ()-.5); }
     static void next(int value) { stage=value;stageAt=ticks; }
+    static boolean open(int z) { return level.getBlockEntity(layout.at(1,-2,z)) instanceof LockHingeEntity h&&h.open(); }
     static void end(boolean ok,Throwable error) {
         row=false;
         try {
@@ -64,7 +65,7 @@ public final class ClientRideChecks {
             if(endTicks==75) mc.stop();
             return;
         }
-        if(dispatched||mc.player==null||mc.getSingleplayerServer()==null) return;
+        if(dispatched||mc.player==null||mc.getSingleplayerServer()==null||mc.screen!=null) return;
         dispatched=true; mc.options.setCameraType(CameraType.THIRD_PERSON_BACK);
         mc.getSingleplayerServer().execute(() -> {
             try {
@@ -80,14 +81,17 @@ public final class ClientRideChecks {
                 lock=(LockEntity)level.getBlockEntity(layout.origin());level.setDayTime(6000);
                 player.setGameMode(GameType.CREATIVE);player.teleportTo(level,3.5,200.55,3.5,180,12);
                 boat=new Boat(level,3.5,200.51,3.5);boat.setYRot(180);level.addFreshEntity(boat);
-                check(player.startRiding(boat,true),"Player could not mount boat");initialized=true;
+                initialized=true;
             } catch(Throwable e) { end(false,e); }
         });
     }
     @SubscribeEvent public static void server(TickEvent.ServerTickEvent event) {
         if(!initialized||finished||event.phase!=TickEvent.Phase.END) return;
+        if(level.getServer().isStopped())return;
         ticks++;
         try {
+            if(ticks<10)return;
+            if(ticks==10)check(player.startRiding(boat,true),"Player could not mount boat");
             check(ticks<2000,"Timed out");check(boat.isAlive(),"Boat broke");check(player.getVehicle()==boat,"Player was ejected");
             if(progress()>1.5&&progress()<9) {
                 double surface=200+lock.waterUnits()/16.0;
@@ -95,13 +99,13 @@ public final class ClientRideChecks {
             }
             switch(stage) {
                 case 0 -> { if(ticks==60) { power(0,true);next(1); } }
-                case 1 -> { if(ticks-stageAt>15) row=true; if(progress()>2.5) { row=false;power(0,false);power(3,true);next(2); } }
+                case 1 -> { if(ticks-stageAt==55) shot="00-gate-swing.png";if(open(0)) row=true; if(progress()>2.5) { row=false;power(0,false);power(3,true);next(2); } }
                 case 2 -> {
                     if(ticks-stageAt==130) shot="01-riding-up.png";
                     if(lock.waterUnits()==LockLayout.HIGH) { power(3,false);power(10,true);next(3); }
                 }
                 case 3 -> {
-                    if(ticks-stageAt>20) row=true;
+                    if(open(10)) row=true;
                     if(progress()>12.5) { row=false;shot="02-upper-pool.png";next(4); }
                 }
                 case 4 -> {
@@ -113,7 +117,7 @@ public final class ClientRideChecks {
                     if(ticks-stageAt==130) shot="03-riding-down.png";
                     if(lock.waterUnits()==LockLayout.LOW) { power(7,false);power(0,true);next(7); }
                 }
-                case 7 -> { if(ticks-stageAt>20) row=true; if(progress()<-2.5) end(true,null); }
+                case 7 -> { if(open(0)) row=true; if(progress()<-2.5) end(true,null); }
                 default -> throw new IllegalStateException("Unknown stage");
             }
         } catch(Throwable e) { end(false,e); }

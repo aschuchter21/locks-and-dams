@@ -20,11 +20,17 @@ public final class Content {
     public static final RegistryObject<Block> WATER_BLOCK = BLOCKS.register("chamber_water", ChamberWaterBlock::new);
     public static final RegistryObject<Block> CONTROLLER = block("lock_controller", ControllerBlock::new);
     public static final RegistryObject<Block> PANEL = block("gate_panel", GatePanelBlock::new);
+    public static final RegistryObject<Block> SEAL = BLOCKS.register("gate_seal", GateSealBlock::new);
+    public static final RegistryObject<Block> HINGE = block("lock_hinge", LockHingeBlock::new);
+    public static final RegistryObject<Block> PIPE = block("culvert_pipe", () -> new Block(metal()));
+    public static final RegistryObject<Block> PORT = block("culvert_port", CulvertPortBlock::new);
     public static final RegistryObject<Block> DRIVE = block("gate_drive", ControlBlock::new);
     public static final RegistryObject<Block> FILL = block("fill_valve", ControlBlock::new);
     public static final RegistryObject<Block> DRAIN = block("drain_valve", ControlBlock::new);
     public static final RegistryObject<BlockEntityType<LockEntity>> LOCK = ENTITIES.register("lock_controller",
         () -> BlockEntityType.Builder.of(LockEntity::new, CONTROLLER.get()).build(null));
+    public static final RegistryObject<BlockEntityType<LockHingeEntity>> HINGE_ENTITY = ENTITIES.register("lock_hinge",
+        () -> BlockEntityType.Builder.of(LockHingeEntity::new, HINGE.get()).build(null));
     static {
         TABS.register("locks_and_dams", () -> CreativeModeTab.builder()
             .title(Component.literal("Locks & Dams"))
@@ -32,6 +38,7 @@ public final class Content {
             .displayItems((parameters, output) -> {
                 output.accept(CONTROLLER.get()); output.accept(PANEL.get()); output.accept(DRIVE.get());
                 output.accept(FILL.get()); output.accept(DRAIN.get());
+                output.accept(HINGE.get()); output.accept(PIPE.get()); output.accept(PORT.get());
             }).build());
     }
     private static RegistryObject<Block> block(String name, java.util.function.Supplier<Block> factory) {

@@ -14,6 +14,13 @@ creative test world to build a sample lock. Dams and reservoirs are planned.
 '''
 
 [[dependencies.locksanddams]]
+modId="create"
+mandatory=true
+versionRange="[6.0.8,6.1.0)"
+ordering="AFTER"
+side="BOTH"
+
+[[dependencies.locksanddams]]
 modId="forge"
 mandatory=true
 versionRange="[47.4.10,48)"

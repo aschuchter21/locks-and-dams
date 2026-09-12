@@ -4,7 +4,7 @@
 
 In a creative test world with commands enabled, fly to an open area and run
 `/locks demo`. It creates an assembled lock and two pools. Its footprint is
-9 blocks wide, 23 long, and 8 high. The controller is six blocks ahead and
+11 blocks wide, 23 long, and 10 high. The controller is six blocks ahead and
 four above your position. The whole footprint must be loaded and empty.
 
 Place a boat or chest boat in either pool. The lock starts at the lower level.
@@ -35,8 +35,47 @@ wait for lower level, then open the lower gate.
 Both gates must be closed for either valve to operate. Gates cannot open at
 unequal levels. Powering both valves closes both and pauses water movement.
 Held gate signals are re-evaluated when levels match. A gate stays open if an
-entity obstructs it. A valve may stay open at its target without moving more
-water. Signal strength does not control speed.
+entity obstructs it. Signal strength does not control speed. With Lock Hinges,
+wait for the actual leaf to finish swinging before entering. At 8 RPM a quarter
+turn takes about 5.6 seconds; maximum gate speed is 2 degrees per tick.
+
+## Create gates and physical valves
+
+The fill and drain valves are real blocks. `/locks demo` only builds the sample;
+no command blocks are used during operation.
+
+Place a **Lock Hinge** at (1, -2, 0) and another at (1, -2, 10), facing upward.
+Supply Create rotation to each hinge from below. The floor remains at y=-1,
+between the hinge and the gate. With both gates closed and clear, the controller
+automatically binds both hinges and assembles the 30 panels of each gate into a
+Create contraption. A regular Mechanical Bearing does not provide the lock's
+level interlocks; use the Lock Hinge block. No glue is required for these fixed leaves.
+
+Redstone still goes to the **Gate Drive** blocks. Power requests open; removing
+power requests closed. Rotation supplies the motion. Removing shaft power or
+overstressing the network stops the leaf. Both gates must finish closing before
+the water changes. Keep the gate sweep clear of blocks, boats and living entities.
+Each leaf swings outward into its approach canal; keep the full gate height clear,
+including below the upper canal surface. The demo has a deep upper pool for this reason.
+
+Place **Culvert Pipe** directly below each valve. Continue an unbroken path to the
+back of one **Culvert Port**; its dispenser-like mouth must face canal source water.
+The fill port belongs beyond the upper gate, with a continuous water column to
+the upper surface. The drain port belongs beyond the lower gate and meets the
+lower surface. The paths may travel below the floor or outside the wall, as in
+the demo. Pipes are sealed full blocks and may replace ordinary floor/wall blocks.
+
+Keep the two routes separate, including face-adjacent pipes. Each route supports
+up to 128 blocks and a 32-block Manhattan reach from its valve. Missing pipes,
+unloaded sections, multiple ports, and wrong canal levels pause the requested
+valve. These culverts use the lock's water control; they are not Create fluid
+pipes and do not require a Mechanical Pump. The chamber retains its smooth
+water-height animation. The canal's finite volume is not depleted or increased.
+
+For a dev.2 build, close both gates, add the two hinges and power, then add both
+culvert routes. The upper gate needs deep water instead of a raised solid floor
+inside its sweep. Existing locks without hinges retain the instant gate mode,
+but their valves now require culvert routes. A fresh `/locks demo` shows the layout.
 
 ## Build a standard chamber
 
@@ -64,7 +103,7 @@ forward toward the upper canal, and y goes up. Ranges below are inclusive.
 Use full, dry blocks for the floor and walls. Stone bricks and full glass blocks
 work; slabs, waterlogged blocks, and inventory blocks do not. Keep the interior
 (x 1-5, z 1-9, y 0-5) clear. Provide canal length and headroom beyond both gates.
-The upper approach floor normally ends at y 2. Leave the space above both canal
+For swinging gates, keep the upper approach floor at y -1 and fill water up to y 3. Leave the space above both canal
 surfaces free of fluid. There is no roof.
 
 The shell needs 60 panels, two drives, one fill valve, one drain valve, one
@@ -73,8 +112,9 @@ the controller to assemble; it reports invalid parts. Keep boats and entities
 out during initial assembly, which sets the water to the lower level.
 
 Panels form a single opening controlled by their drive. They do not operate
-individually from redstone. Open panels remain invisible, non-colliding parts
-of the structure; closing restores the gate.
+individually from redstone. Moving panels leave invisible seal blocks in their
+original cells, maintaining the managed chamber boundary. Do not remove those
+seal blocks while a hinge is assembled.
 
 ## Interruptions and repairs
 
@@ -88,6 +128,10 @@ panels in place. Replacing it at the same location and facing, then right-clicki
 can reclaim complete, uniform managed water without resetting its level. Clear
 both gate openings first. Inconsistent water is refused rather than rewritten.
 
+If a hinge is broken, remove both hinges, restore all gate panels, and replace
+the controller at the same position and facing. Right-click to reclaim the
+water, then reinstall both hinges. Clear both openings before this repair.
+
 Managed water has no bucket, does not spread or create sources, and cannot be
 harvested as ordinary water. When dismantling a prototype, first remove its
 controller and use `/fill x1 y1 z1 x2 y2 z2 air replace locksanddams:chamber_water`
@@ -96,6 +140,5 @@ over its interior. Overlapping assembled locks cannot share gates or water owner
 ## Limits
 
 Canals act as fixed supplies; their volume is not consumed. Dams, reservoirs,
-spillways, hydropower, adjustable dimensions, animations, and Create integration
-are not included. Other mods' boats and shader/fluid-rendering replacements need
+spillways, hydropower and adjustable dimensions are not included. Other mods' boats and shader/fluid-rendering replacements need
 separate compatibility tests.

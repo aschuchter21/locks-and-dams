@@ -4,5 +4,8 @@
   "block.locksanddams.gate_drive": "Gate Drive",
   "block.locksanddams.fill_valve": "Fill Valve",
   "block.locksanddams.drain_valve": "Drain Valve",
-  "block.locksanddams.chamber_water": "Managed Chamber Water"
+  "block.locksanddams.chamber_water": "Managed Chamber Water",
+  "block.locksanddams.lock_hinge": "Lock Hinge",
+  "block.locksanddams.culvert_pipe": "Culvert Pipe",
+  "block.locksanddams.culvert_port": "Culvert Port"
 }

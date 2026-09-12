@@ -12,7 +12,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 
 public final class LockEntity extends BlockEntity {
-    private boolean assembled, lowerOpen, upperOpen;
+    private boolean assembled, lowerOpen, upperOpen, mechanical;
     private int units = LockLayout.LOW;
     private String message = "Unassembled. Build the standard chamber, then right-click to validate.";
     public LockEntity(BlockPos pos, BlockState state) { super(Content.LOCK.get(), pos, state); }
@@ -23,7 +23,7 @@ public final class LockEntity extends BlockEntity {
 
     private boolean loaded(BlockPos pos) { return level != null && level.hasChunkAt(pos); }
     private boolean fullyLoaded() {
-        AABB b = layout().box(-1,-1,-1,7,6,11);
+        AABB b = layout().box(-1,-3,-6,7,6,16);
         for (int x = ((int)b.minX)>>4; x <= (((int)b.maxX-1)>>4); x++)
             for (int z = ((int)b.minZ)>>4; z <= (((int)b.maxZ-1)>>4); z++)
                 if (!level.hasChunk(x,z)) return false;
@@ -52,8 +52,12 @@ public final class LockEntity extends BlockEntity {
             if (p.equals(worldPosition)||p.equals(l.lowerDrive())||p.equals(l.upperDrive())||p.equals(l.fill())||p.equals(l.drain())) continue;
             if(!solid(p)) return "Wall must be solid and dry at " + p.toShortString();
         }
-        for(int z : new int[]{0,10}) for(int x=1;x<=5;x++) for(int y=0;y<6;y++)
-            if(!level.getBlockState(l.at(x,y,z)).is(Content.PANEL.get())) return "Missing gate panel at " + l.at(x,y,z).toShortString();
+        for(int z : new int[]{0,10}) {
+            LockHingeEntity h=hinge(z);
+            if(mechanical&&(h==null||!h.belongsTo(worldPosition)||!h.isRunning()||h.getMovedContraption()==null))return "Restore the bound, assembled lock hinge at "+l.at(1,-2,z).toShortString();
+            for(int x=1;x<=5;x++) for(int y=0;y<6;y++)
+                if(!level.getBlockState(l.at(x,y,z)).is(mechanical?Content.SEAL.get():Content.PANEL.get())) return "Missing gate panel/seal at " + l.at(x,y,z).toShortString();
+        }
         for(int x=1;x<=5;x++) for(int z=1;z<=9;z++) for(int y=0;y<6;y++) {
             BlockPos p=l.at(x,y,z); BlockState s=level.getBlockState(p);
             if(!s.isAir()&&!s.is(Content.WATER_BLOCK.get())&&!s.is(Blocks.WATER)) return "Chamber obstructed at " + p.toShortString();
@@ -71,6 +75,8 @@ public final class LockEntity extends BlockEntity {
     public boolean assemble() {
         if (level==null||level.isClientSide) return false;
         if (assembled) return true;
+        LockHingeEntity low=hinge(0),high=hinge(10);
+        mechanical=low!=null&&high!=null&&low.belongsTo(worldPosition)&&high.belongsTo(worldPosition)&&low.isRunning()&&high.isRunning();
         String error=validate();
         if(error!=null) { message=error; sync(); return false; }
         // A second controller may not own a gate or water cell already used by a loaded lock.
@@ -86,8 +92,8 @@ public final class LockEntity extends BlockEntity {
         if(recovered<0&&!level.getEntities((Entity)null,layout().box(1,0,1,5,5,9),e -> e.isAlive()).isEmpty()) {
             message="Clear the chamber of boats and entities before initial assembly."; sync(); return false;
         }
-        assembled=true; units=recovered<0?LockLayout.LOW:recovered; lowerOpen=false; upperOpen=false;
-        writeWater(); writeGate(0,false); writeGate(10,false);
+        assembled=true; units=recovered<0?LockLayout.LOW:recovered; lowerOpen=mechanical&&low.open(); upperOpen=mechanical&&high.open();
+        writeWater(); writeGate(0,lowerOpen); writeGate(10,upperOpen);
         message=recovered<0?"Ready. Power the lower gate drive to enter.":"Recovered the existing chamber water level."; sync(); return true;
     }
     private int recoverWater() {
@@ -104,7 +110,18 @@ public final class LockEntity extends BlockEntity {
         }
         return found;
     }
-    private boolean obstructed(int z) { return !level.getEntities((Entity)null, layout().gateBox(z).inflate(.25), e -> e.isAlive()&&!e.isSpectator()).isEmpty(); }
+    private boolean obstructed(int z) { return !level.getEntities((Entity)null, layout().gateBox(z).inflate(.25), e -> e.isAlive()&&!e.isSpectator()&&!(e instanceof com.simibubi.create.content.contraptions.AbstractContraptionEntity)).isEmpty(); }
+    private LockHingeEntity hinge(int z) {
+        return level.getBlockEntity(layout().at(1,-2,z)) instanceof LockHingeEntity h?h:null;
+    }
+    private void connectHinges() {
+        if(mechanical||lowerOpen||upperOpen||obstructed(0)||obstructed(10))return;
+        LockHingeEntity a=hinge(0),b=hinge(10);
+        if(a==null||b==null)return;
+        a.bind(layout(),0);b.bind(layout(),10);a.assemble();b.assemble();
+        mechanical=a.isRunning()&&b.isRunning();
+        if(!mechanical) {a.disassemble();b.disassemble();}
+    }
     private boolean signal(BlockPos pos) { return level.hasNeighborSignal(pos); }
     private void control(BlockPos pos, boolean open) {
         if(!loaded(pos)) return;
@@ -115,6 +132,14 @@ public final class LockEntity extends BlockEntity {
         }
     }
     private boolean gate(int z, boolean current, boolean wanted) {
+        if(mechanical) {
+            LockHingeEntity h=hinge(z);
+            // Do not restore the closed seal while a boat occupies the opening.
+            if(!wanted&&current&&obstructed(z))wanted=true;
+            h.request(wanted);
+            boolean open=h.open()&&wanted;
+            writeGate(z,open);return open;
+        }
         if(current==wanted) return current;
         if(!wanted&&obstructed(z)) return true;
         writeGate(z,wanted); return wanted;
@@ -123,8 +148,8 @@ public final class LockEntity extends BlockEntity {
         LockLayout l=layout();
         for(int x=1;x<=5;x++) for(int y=0;y<6;y++) {
             BlockPos p=l.at(x,y,z); BlockState s=level.getBlockState(p);
-            if(!s.is(Content.PANEL.get())) continue;
-            BlockState next=s.setValue(GatePanelBlock.OPEN,open).setValue(GatePanelBlock.DEPTH,open?LockLayout.depth(units,y):0);
+            if(!s.is(Content.PANEL.get())&&!s.is(Content.SEAL.get())) continue;
+            BlockState next=s.setValue(GatePanelBlock.AXIS,l.forward().getAxis()).setValue(GatePanelBlock.OPEN,open).setValue(GatePanelBlock.DEPTH,open?LockLayout.depth(units,y):0);
             if(!s.equals(next)) level.setBlock(p,next,Block.UPDATE_CLIENTS);
         }
     }
@@ -145,19 +170,23 @@ public final class LockEntity extends BlockEntity {
         if(error!=null) {
             message="Paused: "+error; control(l.fill(),false); control(l.drain(),false); sync(); return;
         }
+        connectHinges();
         boolean wantLower=signal(l.lowerDrive()),wantUpper=signal(l.upperDrive());
         boolean fill=signal(l.fill()),drain=signal(l.drain());
         lowerOpen=gate(0,lowerOpen,wantLower&&units==LockLayout.LOW);
         upperOpen=gate(10,upperOpen,wantUpper&&units==LockLayout.HIGH);
-        if(lowerOpen||upperOpen) message="Gate open: close both gates before moving water.";
+        boolean closed=!lowerOpen&&!upperOpen&&(!mechanical||(hinge(0).closed()&&hinge(10).closed()));
+        String route=fill&&!drain?CulvertRoute.validate(level,l,true):drain&&!fill?CulvertRoute.validate(level,l,false):null;
+        if(!closed) message="Gate open or moving: close both gates before moving water.";
         else if(fill&&drain) message="Paused: fill and drain are both powered.";
+        else if(route!=null) message="Paused: "+route;
         else if(fill&&units<LockLayout.HIGH) { units++; message="Filling"; }
         else if(drain&&units>LockLayout.LOW) { units--; message="Draining"; }
         else if((wantLower&&units!=LockLayout.LOW)||(wantUpper&&units!=LockLayout.HIGH)) message="Gate interlock: water levels differ.";
         else message="Ready";
         control(l.lowerDrive(),lowerOpen); control(l.upperDrive(),upperOpen);
-        control(l.fill(),fill&&!drain&&!lowerOpen&&!upperOpen);
-        control(l.drain(),drain&&!fill&&!lowerOpen&&!upperOpen);
+        control(l.fill(),fill&&!drain&&closed&&route==null&&units<LockLayout.HIGH);
+        control(l.drain(),drain&&!fill&&closed&&route==null&&units>LockLayout.LOW);
         // Also repairs isolated vanilla water/air changes after successful structural validation.
         writeWater();
         if(lowerOpen) writeGate(0,true);
@@ -174,11 +203,11 @@ public final class LockEntity extends BlockEntity {
         }
     }
     @Override protected void saveAdditional(CompoundTag tag) {
-        super.saveAdditional(tag); tag.putBoolean("Assembled",assembled); tag.putInt("WaterUnits",units);
+        super.saveAdditional(tag); tag.putBoolean("Assembled",assembled); tag.putBoolean("Mechanical",mechanical); tag.putInt("WaterUnits",units);
         tag.putBoolean("LowerOpen",lowerOpen); tag.putBoolean("UpperOpen",upperOpen); tag.putString("Status",message);
     }
     @Override public void load(CompoundTag tag) {
-        super.load(tag); assembled=tag.getBoolean("Assembled"); units=Math.max(LockLayout.LOW,Math.min(LockLayout.HIGH,tag.getInt("WaterUnits")));
+        super.load(tag); assembled=tag.getBoolean("Assembled"); mechanical=tag.getBoolean("Mechanical"); units=Math.max(LockLayout.LOW,Math.min(LockLayout.HIGH,tag.getInt("WaterUnits")));
         lowerOpen=tag.getBoolean("LowerOpen"); upperOpen=tag.getBoolean("UpperOpen"); message=tag.getString("Status");
     }
     @Override public CompoundTag getUpdateTag() { return saveWithoutMetadata(); }
