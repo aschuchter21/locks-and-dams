@@ -1,5 +1,31 @@
 # Validation and development fixtures
 
+## Custom chambers: dev.4
+
+September 12, 2026: the dedicated Minecraft/Forge/Create fixture passed complete
+fill/drain cycles for 4 x 5, 7 x 11, 10 x 17 and 16 x 23 interiors, with lifts
+of 1, 3, 5 and 8 blocks respectively, across all four horizontal orientations.
+It verified hinge/port discovery, separate upper hinge elevations, opposite
+rotation of paired leaves, waiting for both leaves to close, broken-pipe pauses,
+conflicting valve signals, and chest boats carrying villagers and 17 diamonds.
+The old two-hinge demo still assembled and opened its gate.
+
+An actual stop/start restored all dimensions, water levels, four contraptions,
+boats, riders and cargo. Dry port mouths paused filling; restoring their
+orientation resumed filling. Replacement of an older fixed-size lock controller
+also reclaimed its managed water and existing hinges.
+
+Reproduce with `./gradlew -PcustomChecks runServer`, using a fresh, empty flat
+world and accepted EULA in `run-custom-checks`. Require `PASS:` in
+`custom-checks-result.txt`. Then run `./gradlew -PcustomChecks -PcustomRestore
+runServer` on that same world and require `PASS:` in `custom-restart-result.txt`.
+The restore fixture subsequently fills a few increments to test port repair;
+repeat the full fixture in a fresh world before another restore run.
+
+Custom client rendering, an actual local-player ride, and remote multiplayer
+have not been accepted for dev.4. The test fixtures are excluded from release
+JARs. See [the custom construction guide](custom-chambers.md).
+
 ## Create integration: dev.3
 
 September 12, 2026: the full dedicated-server cycle and actual server restart /
@@ -99,5 +125,5 @@ repeating the ride, add `-PlockOverview`.
 ## Packaging
 
 Run `./gradlew clean build` with no fixture properties. Distribute only
-`build/libs/LocksAndDams-Forge-1.20.1-0.1.0-dev.3.jar`. The release must exclude
-`LockChecks`, `CreateChecks` and `ClientRideChecks`. Tests and run worlds are not shipped.
+`build/libs/LocksAndDams-Forge-1.20.1-0.1.0-dev.4.jar`. The release must exclude
+`LockChecks`, `CreateChecks`, `CustomChecks` and `ClientRideChecks`. Tests and run worlds are not shipped.

@@ -54,6 +54,14 @@ tasks.named('processResources').configure {
 tasks.withType(JavaCompile).configureEach { options.encoding = 'UTF-8' }
 
 // Test fixtures are opt-in and excluded from normal distribution builds.
+if (project.hasProperty('customChecks')) {
+    sourceSets.main.java.srcDir 'tools/customtest'
+    legacyForge.runs.server {
+        gameDirectory = project.file('run-custom-checks')
+        systemProperty 'locksanddams.customChecks', 'true'
+        if (project.hasProperty('customRestore')) systemProperty 'locksanddams.customRestore', 'true'
+    }
+}
 if (project.hasProperty('createChecks')) {
     sourceSets.main.java.srcDir 'tools/createtest'
     legacyForge.runs.server {

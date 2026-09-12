@@ -8,9 +8,10 @@ version="${mod_version}"
 displayName="Locks & Dams"
 authors="aschuchter21"
 description='''
-Prototype redstone-controlled navigation locks with non-flowing chamber water,
-interlocked gates and valves, and a three-block lift. Use /locks demo in a
-creative test world to build a sample lock. Dams and reservoirs are planned.
+Redstone-controlled navigation locks with smooth chamber water, Create-powered
+paired gates, and physical culverts. Four hinges define player-built rectangular
+chambers; canal surface ports set their water limits. Try /locks demo_custom.
+Dams and finite reservoirs are planned.
 '''
 
 [[dependencies.locksanddams]]

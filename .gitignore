@@ -4,6 +4,7 @@ run/
 run-server/
 run-checks/
 run-create-checks/
+run-custom-checks/
 run-preview/
 runs/
 .idea/

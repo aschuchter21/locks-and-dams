@@ -2,9 +2,14 @@
 
 A navigation-lock mod for **Minecraft 1.20.1 / Forge 47.4.10 / Create 6.0.8**.
 
-## Prototype: 0.1.0-dev.3
+## Prototype: 0.1.0-dev.4
 
-- A 5 by 9 interior chamber with a three-block lift.
+New: [player-built rectangular chambers](docs/custom-chambers.md). Four hinges
+define the opening width and chamber length; the raised upper pair has its own
+height. Two canal surface ports establish the water limits automatically.
+Try `/locks demo_custom` or `/locks demo_custom 7 15 5`.
+
+- Automatically detected rectangular chambers, plus the legacy 5 by 9 example.
 - Two gate drives, a fill valve, and a drain valve with independent redstone inputs.
 - Non-flowing managed water and boat support across changing water levels.
 - Level and obstruction interlocks, fault pauses, and saved chamber state.
@@ -13,8 +18,7 @@ A navigation-lock mod for **Minecraft 1.20.1 / Forge 47.4.10 / Create 6.0.8**.
 - Physical culvert routes from the upper canal to the fill valve and from the drain valve to the lower canal.
 
 Create 6.0.8 is required on client and server. Commercial Systems is not required.
-Canals remain fixed water supplies; finite reservoir simulation, dams and adjustable
-chamber sizes are later milestones.
+Canals remain fixed water supplies; finite reservoir simulation and dams are later milestones.
 
 ## Try it
 

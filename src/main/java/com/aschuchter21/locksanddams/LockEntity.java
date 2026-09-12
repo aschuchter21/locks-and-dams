@@ -12,14 +12,16 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 
 public final class LockEntity extends BlockEntity {
+    private CustomLock custom;
+    public AABB ownedBounds() {return custom==null?layout().bounds():custom.bounds();}
     private boolean assembled, lowerOpen, upperOpen, mechanical;
     private int units = LockLayout.LOW;
     private String message = "Unassembled. Build the standard chamber, then right-click to validate.";
     public LockEntity(BlockPos pos, BlockState state) { super(Content.LOCK.get(), pos, state); }
     public LockLayout layout() { return new LockLayout(worldPosition, getBlockState().getValue(ControllerBlock.FACING)); }
     public boolean assembled() { return assembled; }
-    public int waterUnits() { return units; }
-    public String status() { return message + " | Level " + String.format(java.util.Locale.ROOT, "%.2f / 3.00", (units-LockLayout.LOW)/16.0) + " blocks"; }
+    public int waterUnits() { return custom==null?units:custom.units; }
+    public String status() { return custom!=null?custom.message+" | "+custom.width+" x "+(custom.length-1)+" | Level "+(custom.units-custom.low)/16.0+" / "+(custom.high-custom.low)/16.0:message + " | Level " + String.format(java.util.Locale.ROOT, "%.2f / 3.00", (units-LockLayout.LOW)/16.0) + " blocks"; }
 
     private boolean loaded(BlockPos pos) { return level != null && level.hasChunkAt(pos); }
     private boolean fullyLoaded() {
@@ -38,6 +40,7 @@ public final class LockEntity extends BlockEntity {
     }
     /** Read-only validation always precedes any water or panel writes. */
     public String validate() {
+        if(custom!=null) {try {custom.validate(level,true);return null;}catch(IllegalArgumentException e){return e.getMessage();}}
         if (level == null || !fullyLoaded()) return "Paused: the entire lock and both approaches must be loaded.";
         LockLayout l = layout();
         for (int x=0;x<=6;x++) for(int z=0;z<=10;z++)
@@ -77,6 +80,15 @@ public final class LockEntity extends BlockEntity {
         if (assembled) return true;
         LockHingeEntity low=hinge(0),high=hinge(10);
         mechanical=low!=null&&high!=null&&low.belongsTo(worldPosition)&&high.belongsTo(worldPosition)&&low.isRunning()&&high.isRunning();
+        if(custom==null) {
+            try {
+                CustomLock found=CustomLock.discover(level,worldPosition,getBlockState().getValue(ControllerBlock.FACING));
+                found.assemble(level);custom=found;assembled=true;sync();return true;
+            }catch(IllegalArgumentException e) {
+                // Older two-hinge layouts retain their original assembly path.
+                if(validate()!=null) {message=e.getMessage();sync();return false;}
+            }
+        }
         String error=validate();
         if(error!=null) { message=error; sync(); return false; }
         // A second controller may not own a gate or water cell already used by a loaded lock.
@@ -165,6 +177,7 @@ public final class LockEntity extends BlockEntity {
         if(level.getGameTime()%5==0 && lock.assembled) lock.step();
     }
     private void step() {
+        if(custom!=null) {custom.step(level);sync();return;}
         LockLayout l=layout();
         String error=validate();
         if(error!=null) {
@@ -196,7 +209,7 @@ public final class LockEntity extends BlockEntity {
     private String lastSynced="";
     private void sync() {
         setChanged();
-        String current=assembled+":"+units+":"+lowerOpen+":"+upperOpen+":"+message;
+        String current=assembled+":"+waterUnits()+":"+lowerOpen+":"+upperOpen+":"+status();
         if(level!=null&&!current.equals(lastSynced)) {
             lastSynced=current;
             level.sendBlockUpdated(worldPosition,getBlockState(),getBlockState(),Block.UPDATE_CLIENTS);
@@ -204,10 +217,12 @@ public final class LockEntity extends BlockEntity {
     }
     @Override protected void saveAdditional(CompoundTag tag) {
         super.saveAdditional(tag); tag.putBoolean("Assembled",assembled); tag.putBoolean("Mechanical",mechanical); tag.putInt("WaterUnits",units);
+        if(custom!=null)tag.put("CustomLock",custom.save());
         tag.putBoolean("LowerOpen",lowerOpen); tag.putBoolean("UpperOpen",upperOpen); tag.putString("Status",message);
     }
     @Override public void load(CompoundTag tag) {
         super.load(tag); assembled=tag.getBoolean("Assembled"); mechanical=tag.getBoolean("Mechanical"); units=Math.max(LockLayout.LOW,Math.min(LockLayout.HIGH,tag.getInt("WaterUnits")));
+        custom=tag.contains("CustomLock")?CustomLock.load(worldPosition,tag.getCompound("CustomLock")):null;
         lowerOpen=tag.getBoolean("LowerOpen"); upperOpen=tag.getBoolean("UpperOpen"); message=tag.getString("Status");
     }
     @Override public CompoundTag getUpdateTag() { return saveWithoutMetadata(); }
