@@ -230,7 +230,8 @@ public final class LockEntity extends BlockEntity {
             BlockPos p=l.at(x,y,z); BlockState s=level.getBlockState(p);
             if(!s.is(Content.PANEL.get())&&!s.is(Content.SEAL.get())) continue;
             BlockState next=s.setValue(GatePanelBlock.AXIS,l.forward().getAxis()).setValue(GatePanelBlock.OPEN,open).setValue(GatePanelBlock.DEPTH,open?LockLayout.depth(units,y):0);
-            if(!s.equals(next)) level.setBlock(p,next,Block.UPDATE_CLIENTS);
+              if(!s.equals(next)) level.setBlock(p,next,Block.UPDATE_CLIENTS);
+              GateWaterEntity.update(level,p,LockLayout.depth(units,y),LockLayout.depth(z==0?LockLayout.LOW:LockLayout.HIGH,y),z==0?l.forward():l.forward().getOpposite());
         }
     }
     private void writeWater() {
@@ -246,7 +247,7 @@ public final class LockEntity extends BlockEntity {
             lock.deskControl.tick(lock.deskAvailable()&&lock.assembled&&lock.deskHealthy,lock.gateLamp(0)==2,lock.gateLamp(1)==2,level.getGameTime());
             if(!lock.deskAvailable()||lock.deskControl.stopped)for(int side=0;side<2;side++)for(var h:lock.gateHinges(side))if(h!=null)h.hold();
             int outputs=0;for(Direction d:Direction.values())outputs=outputs*16+lock.deskOutput(d);if(lock.deskControl.hornTicks>0)outputs|=1<<24;
-            if(outputs!=lock.lastOutputs){lock.lastOutputs=outputs;level.updateNeighborsAt(pos,Content.CONTROLLER.get());if(level.hasChunkAt(lock.desk)&&level.getBlockEntity(lock.desk) instanceof ControlDeskEntity d)d.signalChanged();}
+            if(outputs!=lock.lastOutputs){lock.lastOutputs=outputs;level.updateNeighborsAt(pos,Content.CONTROLLER.get());level.updateNeighborsAt(pos.below(),Content.CONTROLLER.get());if(level.hasChunkAt(lock.desk)&&level.getBlockEntity(lock.desk) instanceof ControlDeskEntity d)d.signalChanged();}
         }
         int before=lock.waterUnits();
         if(level.getGameTime()%5==0 && lock.assembled) lock.step();
@@ -279,8 +280,8 @@ public final class LockEntity extends BlockEntity {
         control(l.drain(),drain&&!fill&&closed&&route==null&&units>LockLayout.LOW);
         // Also repairs isolated vanilla water/air changes after successful structural validation.
         writeWater();
-        if(lowerOpen) writeGate(0,true);
-        if(upperOpen) writeGate(10,true);
+        writeGate(0,lowerOpen);
+        writeGate(10,upperOpen);
         sync();
     }
     private String lastSynced="";

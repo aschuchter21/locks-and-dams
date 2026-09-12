@@ -11,6 +11,8 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.*;
 
 public final class Content {
+    public static final DeferredRegister<net.minecraft.world.inventory.MenuType<?>> MENUS=DeferredRegister.create(ForgeRegistries.MENU_TYPES,LocksAndDams.MOD_ID);
+    public static final RegistryObject<net.minecraft.world.inventory.MenuType<GateNodeMenu>> NODE_MENU=MENUS.register("gate_node",()->net.minecraftforge.common.extensions.IForgeMenuType.create((id,inventory,buf)->new GateNodeMenu(id,inventory,buf.readBlockPos())));
     public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, LocksAndDams.MOD_ID);
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, LocksAndDams.MOD_ID);
     public static final DeferredRegister<Fluid> FLUIDS = DeferredRegister.create(ForgeRegistries.FLUIDS, LocksAndDams.MOD_ID);
@@ -21,6 +23,7 @@ public final class Content {
     public static final RegistryObject<Block> CONTROLLER = block("lock_controller", ControllerBlock::new);
     public static final RegistryObject<Block> PANEL = block("gate_panel", GatePanelBlock::new);
     public static final RegistryObject<Block> SEAL = BLOCKS.register("gate_seal", GateSealBlock::new);
+    public static final RegistryObject<BlockEntityType<GateWaterEntity>> GATE_WATER_ENTITY=ENTITIES.register("gate_water",()->BlockEntityType.Builder.of(GateWaterEntity::new,SEAL.get()).build(null));
     public static final RegistryObject<Block> HINGE = block("lock_hinge", LockHingeBlock::new);
     public static final RegistryObject<Block> PIPE = block("culvert_pipe", CulvertPipeBlock::new);
     public static final RegistryObject<Block> PORT = block("culvert_port", CulvertPortBlock::new);
@@ -53,6 +56,6 @@ public final class Content {
     }
     public static BlockBehaviour.Properties metal() { return BlockBehaviour.Properties.copy(Blocks.IRON_BLOCK).strength(3, 6); }
     public static void register(IEventBus bus) {
-        BLOCKS.register(bus); ITEMS.register(bus); FLUIDS.register(bus); ENTITIES.register(bus); TABS.register(bus);
+        BLOCKS.register(bus); ITEMS.register(bus); FLUIDS.register(bus); ENTITIES.register(bus); TABS.register(bus);MENUS.register(bus);
     }
 }

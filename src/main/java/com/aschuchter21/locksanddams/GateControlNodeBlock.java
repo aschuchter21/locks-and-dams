@@ -30,7 +30,7 @@ public final class GateControlNodeBlock extends BaseEntityBlock {
     @Override public int getDirectSignal(BlockState s,BlockGetter l,BlockPos p,Direction d){return getSignal(s,l,p,d);}
     @Override public InteractionResult use(BlockState s,Level l,BlockPos p,Player player,InteractionHand h,BlockHitResult hit){
         if(player.getItemInHand(h).is(Content.LINK_TOOL.get()))return InteractionResult.PASS;
-        if(!l.isClientSide){if(player.isShiftKeyDown())l.setBlock(p,s.cycle(UPPER),3);player.displayClientMessage(Component.literal((l.getBlockState(p).getValue(UPPER)?"UPPER":"LOWER")+" GATE NODE | Front: CLUTCH (15 stops) | Top: REVERSE (15 closes) | Shift-right-click changes gate."),true);}
+        if(!l.isClientSide){if(player.isShiftKeyDown()&&player instanceof net.minecraft.server.level.ServerPlayer serverPlayer)net.minecraftforge.network.NetworkHooks.openScreen(serverPlayer,new net.minecraft.world.SimpleMenuProvider((id,inventory,who)->new GateNodeMenu(id,inventory,p),Component.literal("Gate Control Node")),p);else player.displayClientMessage(Component.literal((s.getValue(UPPER)?"UPPER":"LOWER")+" GATE NODE | Front: CLUTCH (15 stops) | Top: REVERSE (15 closes) | Shift-right-click for settings."),true);}
         return InteractionResult.sidedSuccess(l.isClientSide);
     }
 }

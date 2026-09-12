@@ -190,7 +190,7 @@ public final class CustomLock {
             int command=controller.gateCommand(side);
             boolean mayOpen=units==(side==0?low:high);
             a.followRotation(mayOpen,stop,command);b.followRotation(mayOpen,stop,command);
-            writeGate(level,side,a.open()&&b.open());allClosed&=a.closed()&&b.closed();
+            allClosed&=a.closed()&&b.closed();
             for(int i=side*2;i<side*2+2;i++) {
                 BlockPos drive=leaves[i].base().below().relative(leaves[i].inward().getOpposite());
                 if(level.getBlockState(drive).is(Content.DRIVE.get()))control(level,drive,a.open()&&b.open());
@@ -202,6 +202,7 @@ public final class CustomLock {
         if(filling)units++;if(draining)units--;
         message=!allClosed?"Gate open or moving; waiting for both pairs to close.":f&&d?"Paused: both valves powered.":filling?"Filling":draining?"Draining":"Ready";
         control(level,fill,filling);control(level,drain,draining);writeWater(level);
+        for(int side=0;side<2;side++)writeGate(level,side,hinge(level,side*2).open()&&hinge(level,side*2+1).open());
     }
     void control(Level level,BlockPos p,boolean open) {
         var s=level.getBlockState(p);
@@ -220,6 +221,7 @@ public final class CustomLock {
         for(int i=side*2;i<side*2+2;i++)for(int x=0;x<leaves[i].width();x++)for(int y=0;y<leaves[i].height();y++) {
             BlockPos p=leaves[i].at(x,y);var s=level.getBlockState(p);if(!s.is(Content.SEAL.get()))continue;
             var n=s.setValue(GatePanelBlock.OPEN,open).setValue(GatePanelBlock.DEPTH,open?LockLayout.depth(units,p.getY()-base.getY()):0);if(!s.equals(n))level.setBlock(p,n,Block.UPDATE_CLIENTS);
+            GateWaterEntity.update(level,p,LockLayout.depth(units,p.getY()-base.getY()),LockLayout.depth(side==0?low:high,p.getY()-base.getY()),side==0?forward:forward.getOpposite());
         }
     }
     CompoundTag save() {

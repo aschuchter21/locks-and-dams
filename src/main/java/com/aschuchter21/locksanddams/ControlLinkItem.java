@@ -21,7 +21,7 @@ public final class ControlLinkItem extends Item {
         }
         if(state.is(Content.NODE.get())&&level.getBlockEntity(c.getClickedPos()) instanceof GateControlNodeEntity node){
             boolean linked=n.contains("Controller")&&n.getString("Dimension").equals(level.dimension().location().toString())&&node.link(NbtUtils.readBlockPos(n.getCompound("Controller")));
-            player.displayClientMessage(Component.literal(linked?"Gate terminal linked. Shift-right-click with an empty hand to choose UPPER or LOWER.":"Select a loaded controller in this dimension within 128 blocks first."),true);return InteractionResult.SUCCESS;
+            player.displayClientMessage(Component.literal(linked?"Gate terminal linked. Shift-right-click with an empty hand to open gate settings.":"Select a loaded controller in this dimension within 128 blocks first."),true);return InteractionResult.SUCCESS;
         }
         return InteractionResult.PASS;
     }

@@ -54,7 +54,7 @@ public final class ControlDeskBlock extends BaseEntityBlock {
     @Override public int getSignal(BlockState s,BlockGetter l,BlockPos p,Direction side){
         if(!(l.getBlockEntity(root(s,p)) instanceof ControlDeskEntity desk))return 0;
         int part=s.getValue(PART);Direction out=part==0?s.getValue(FACING).getClockWise():s.getValue(FACING).getCounterClockWise();
-        return part!=1&&side==out.getOpposite()?desk.output(part==0):0;
+        return part!=1&&(side==out.getOpposite()||side==Direction.UP)?desk.output(part==0):0;
     }
     @Override public int getDirectSignal(BlockState s,BlockGetter l,BlockPos p,Direction d){return getSignal(s,l,p,d);}
     @Override public void onRemove(BlockState s,Level l,BlockPos p,BlockState next,boolean moving){

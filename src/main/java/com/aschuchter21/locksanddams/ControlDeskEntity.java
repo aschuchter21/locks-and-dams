@@ -53,7 +53,7 @@ public final class ControlDeskEntity extends BlockEntity {
         }
         setChanged();level.sendBlockUpdated(worldPosition,getBlockState(),getBlockState(),Block.UPDATE_CLIENTS);
     }
-    private void notifyOutputs(){for(int part:new int[]{0,2}){BlockPos p=worldPosition.relative(getBlockState().getValue(ControlDeskBlock.FACING).getCounterClockWise(),part-1);level.updateNeighborsAt(p,Content.DESK.get());}}
+    private void notifyOutputs(){for(int part:new int[]{0,2}){BlockPos p=worldPosition.relative(getBlockState().getValue(ControlDeskBlock.FACING).getCounterClockWise(),part-1);level.updateNeighborsAt(p,Content.DESK.get());level.updateNeighborsAt(p.below(),Content.DESK.get());}}
     @Override protected void saveAdditional(CompoundTag n){super.saveAdditional(n);if(controller!=null)n.put("Controller",NbtUtils.writeBlockPos(controller));n.putInt("Alarm",alarm);n.putInt("Horn",horn);}
     @Override public void load(CompoundTag n){super.load(n);controller=n.contains("Controller")?NbtUtils.readBlockPos(n.getCompound("Controller")):null;alarm=horn=0;}
     @Override public CompoundTag getUpdateTag(){return saveWithoutMetadata();}

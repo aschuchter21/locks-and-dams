@@ -5,7 +5,8 @@ import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.*;
 /** Reserved gate opening: the visible panels belong to a Create contraption. */
-public final class GateSealBlock extends GatePanelBlock {
+public final class GateSealBlock extends GatePanelBlock implements net.minecraft.world.level.block.EntityBlock {
+    @Override public net.minecraft.world.level.block.entity.BlockEntity newBlockEntity(BlockPos p,BlockState s){return new GateWaterEntity(p,s);}
     @Override public net.minecraft.world.item.ItemStack getCloneItemStack(BlockGetter l,BlockPos p,BlockState s){return new net.minecraft.world.item.ItemStack(Content.PANEL.get());}
     @Override public void playerWillDestroy(net.minecraft.world.level.Level l,BlockPos p,BlockState s,net.minecraft.world.entity.player.Player player){
         if(!l.isClientSide)for(var h:CustomLock.nearby(l,p)){

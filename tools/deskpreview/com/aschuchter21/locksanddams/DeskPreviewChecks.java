@@ -16,7 +16,7 @@ public final class DeskPreviewChecks {
     static boolean started,ready,done;static int tick;
     static ServerPlayer player;static ServerLevel level;static BlockPos desk;static LockEntity lock;
     static final BlockPos BASE=new BlockPos(3000,200,0);
-    static volatile String shot;
+    static volatile String shot;static volatile int uiStep;static int uiAge;static BlockPos testNode;
     static void finish(Throwable error){done=true;try{Files.writeString(Path.of("desk-preview-result.txt"),error==null?"PASS: native desk models loaded; selector and emergency-stop interactions checked; screenshots captured.\n":"FAIL: "+error+"\n");}catch(Exception ignored){}if(error!=null)error.printStackTrace();}
     static void clickCenter(boolean stop,boolean reset){
         Direction f=level.getBlockState(desk).getValue(ControlDeskBlock.FACING);
@@ -31,6 +31,10 @@ public final class DeskPreviewChecks {
         if(!Boolean.getBoolean("locksanddams.deskPreview")||e.phase!=TickEvent.Phase.END)return;
         Minecraft mc=Minecraft.getInstance();mc.options.pauseOnLostFocus=false;mc.options.cloudStatus().set(CloudStatus.OFF);
         if(shot!=null&&mc.level!=null){Screenshot.grab(mc.gameDirectory,shot,mc.getMainRenderTarget(),c->{});shot=null;}
+        if(mc.screen instanceof GateNodeScreen screen){
+            if(uiStep==0&&++uiAge>=5){Screenshot.grab(mc.gameDirectory,"dev10-gate-node-settings.png",mc.getMainRenderTarget(),c->{});mc.gameMode.handleInventoryButtonClick(screen.getMenu().containerId,0);uiStep=1;}
+            else if(uiStep==2){mc.gameMode.handleInventoryButtonClick(screen.getMenu().containerId,1);uiStep=3;}
+        }
         if(done){mc.stop();return;}
         if(started||mc.player==null||mc.getSingleplayerServer()==null||mc.screen!=null)return;
         started=true;mc.options.hideGui=true;mc.options.setCameraType(CameraType.FIRST_PERSON);
@@ -54,12 +58,25 @@ public final class DeskPreviewChecks {
             if(tick==320){clickCenter(true,false);if(!lock.deskControl().stopped)throw new IllegalStateException("E-stop failed");}
             if(tick==350)shot="dev8-desk-estop.png";
             if(tick==370){clickCenter(true,true);if(lock.deskControl().stopped||lock.deskControl().waterRequest!=0)throw new IllegalStateException("Reset restarted water");}
-            if(tick==400)player.teleportTo(level,BASE.getX()-14,211,7,-137,29);
-            if(tick==470)shot="dev8-wired-lock.png";
+            if(tick==400)player.teleportTo(level,BASE.getX()+4,205, -19,0,20);
+            if(tick==430)shot="dev10-upper-closed-water.png";
+            if(tick==440)player.teleportTo(level,BASE.getX()+4,201.4,5,180,20);
+            if(tick==470)shot="dev10-lower-closed-water.png";
             if(tick==480){lock.deskControl().selectGate(0,DeskControl.OPEN);lock.deskChanged();player.teleportTo(level,BASE.getX()+4,205,7,180,28);}
             if(tick==550)shot="dev9-open-recess.png";
             if(tick==560){lock.deskControl().selectGate(0,DeskControl.CLOSE);lock.deskChanged();}
-            if(tick==620){
+            if(tick==600){
+                player.setGameMode(GameType.CREATIVE);
+                testNode=desk.offset(-3,0,0);level.setBlock(testNode,Content.NODE.get().defaultBlockState(),3);
+                player.teleportTo(level,testNode.getX()+.5,testNode.getY(),testNode.getZ()+2,180,20);
+                player.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND,net.minecraft.world.item.ItemStack.EMPTY);player.setShiftKeyDown(true);
+                var hit=new net.minecraft.world.phys.BlockHitResult(net.minecraft.world.phys.Vec3.atCenterOf(testNode),Direction.SOUTH,testNode,false);
+                level.getBlockState(testNode).use(level,player,net.minecraft.world.InteractionHand.MAIN_HAND,hit);player.setShiftKeyDown(false);
+                if(!(player.containerMenu instanceof GateNodeMenu))throw new IllegalStateException("Shift-right-click did not open node settings");
+            }
+            if(tick==630){if(level.getBlockState(testNode).getValue(GateControlNodeBlock.UPPER))throw new IllegalStateException("UI did not apply Lower gate selection");uiStep=2;}
+            if(tick==640){if(!level.getBlockState(testNode).getValue(GateControlNodeBlock.UPPER))throw new IllegalStateException("UI did not apply Upper gate selection");player.closeContainer();level.removeBlock(testNode,false);}
+            if(tick==660){
                 var geometry=CustomLock.load(lock.getBlockPos(),lock.saveWithoutMetadata().getCompound("CustomLock"));
                 var h=geometry.hinge(level,0);var leaf=h.geometry();BlockPos panel=leaf.at(1,1);
                 player.setGameMode(GameType.CREATIVE);
@@ -72,7 +89,7 @@ public final class DeskPreviewChecks {
                 if(!lock.assemble())throw new IllegalStateException("Repaired gate did not reassemble: "+lock.status());
                 player.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND,net.minecraft.world.item.ItemStack.EMPTY);
             }
-            if(tick==650){
+            if(tick==700){
                 player.setGameMode(GameType.CREATIVE);
                 BlockPos p=desk.offset(-6,0,0);
                 level.setBlock(p.below(),net.minecraft.world.level.block.Blocks.STONE_BRICKS.defaultBlockState(),3);

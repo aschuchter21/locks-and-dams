@@ -2,7 +2,11 @@
 
 A navigation-lock mod for **Minecraft 1.20.1 / Forge 47.4.10 / Create 6.0.8**.
 
-## Prototype: 0.1.0-dev.9
+## Prototype: 0.1.0-dev.10
+
+Gate Control Nodes now have a shift-right-click settings window. Closed gates
+show water against both faces at their respective levels, and the desk alarm
+and horn also power the solid blocks underneath their end sections.
 
 New: [gate repairs and recessed-wall layout](docs/gate-repairs-and-recesses.md).
 Gate sections align on placement and join edge-to-edge; the desk uses a sloped

@@ -9,9 +9,11 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 @Mod.EventBusSubscriber(modid=LocksAndDams.MOD_ID, bus=Mod.EventBusSubscriber.Bus.MOD, value=Dist.CLIENT)
 public final class ClientSetup {
     @SubscribeEvent public static void renderers(net.minecraftforge.client.event.EntityRenderersEvent.RegisterRenderers event) {
+        event.registerBlockEntityRenderer(Content.GATE_WATER_ENTITY.get(),GateWaterRenderer::new);
         event.registerBlockEntityRenderer(Content.HINGE_ENTITY.get(), com.simibubi.create.content.contraptions.bearing.BearingRenderer::new);
     }
     @SubscribeEvent public static void setup(FMLClientSetupEvent event) {
+        event.enqueueWork(()->net.minecraft.client.gui.screens.MenuScreens.register(Content.NODE_MENU.get(),GateNodeScreen::new));
         event.enqueueWork(() -> ItemBlockRenderTypes.setRenderLayer(Content.WATER.get(), RenderType.translucent()));
     }
 }
