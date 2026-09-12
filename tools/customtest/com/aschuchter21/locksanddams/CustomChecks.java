@@ -23,7 +23,7 @@ public final class CustomChecks {
     static void power(BlockPos p,boolean on){level.setBlock(p,level.getBlockState(p).setValue(LeverBlock.POWERED,on),3);level.updateNeighborsAt(p,Blocks.LEVER);}
     static void gate(CustomLock c,int side,boolean on){power(c.at(-2,(side==0?0:c.rise)-1,side*c.length),on);}
     @SubscribeEvent public static void start(ServerStartedEvent e) {
-        if(!Boolean.getBoolean("locksanddams.customChecks"))return;server=e.getServer();level=server.overworld();
+        if(!Boolean.getBoolean("locksanddams.customChecks")||Boolean.getBoolean("locksanddams.controllerRecovery"))return;server=e.getServer();level=server.overworld();
         try {
             int index=0;for(Direction f:Direction.Plane.HORIZONTAL) {
                 BlockPos base=new BlockPos(100+index*160,200,100);int w=new int[]{4,7,10,16}[index],length=new int[]{5,11,17,23}[index],lift=new int[]{1,3,5,8}[index++];

@@ -2,7 +2,10 @@
 
 A navigation-lock mod for **Minecraft 1.20.1 / Forge 47.4.10 / Create 6.0.8**.
 
-## Prototype: 0.1.0-dev.4
+## Prototype: 0.1.0-dev.5
+
+Controller replacement now detects the lock direction automatically, including
+the older demo. Replacing it while facing the side wall no longer loses the chamber.
 
 New: [player-built rectangular chambers](docs/custom-chambers.md). Four hinges
 define the opening width and chamber length; the raised upper pair has its own

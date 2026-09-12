@@ -1,7 +1,7 @@
-# Player-built chambers: dev.4
+# Player-built chambers: dev.5
 
 Minecraft 1.20.1, Forge 47.4.10 and Create 6.0.8. Replace the older Locks & Dams
-JAR with dev.4 on both client and server. Existing fixed-size locks remain supported.
+JAR with dev.5 on both client and server. Existing fixed-size locks remain supported.
 
 ## Try the example
 
@@ -40,8 +40,9 @@ dimensions from the hinges and its water limits from the ports.
    surface, beyond the lower gate. The space above that water must be free of
    fluid. Submerged or dry mouths are refused. The water across each approach
    must match its port's surface.
-7. Place a **Lock Controller** in either side wall, below the upper water limit,
-   while facing toward the upper canal. Keep the valves below that limit too.
+7. Place a **Lock Controller** in either side wall, below the upper water limit.
+   Your placement direction does not matter; the controller detects the canal axis.
+   Keep the valves below that limit too.
    Clear boats and other entities from the chamber, then right-click to assemble.
    The controller reports the detected size and lift, or the part needing repair.
 
@@ -90,7 +91,7 @@ change a running chamber's target.
 To reconfigure, clear the chamber, remove the controller and all four hinges,
 then rebuild the shell and panel leaves before replacing them. Removing hinges
 returns their panels to the original opening. A replacement controller in the
-same location and facing can reclaim uniform managed water if it still fits the
+same location can reclaim uniform managed water if it still fits the
 detected limits. Inconsistent or out-of-range water is refused.
 
 This is a server-tested development build. Client visual/rider verification and

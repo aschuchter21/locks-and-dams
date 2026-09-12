@@ -1,5 +1,17 @@
 # Validation and development fixtures
 
+## Controller replacement: dev.5
+
+September 12, 2026: 32 actual controller break/place/reassemble cases passed.
+The fixture covers both demo types in all four canal orientations, then replaces
+each controller facing each of the four directions while its chamber is partly
+filled. Water levels and the existing contraption entity IDs remained unchanged.
+
+Run `./gradlew -PcustomChecks -PcontrollerRecovery runServer` in a fresh isolated
+`run-custom-checks` world. Require `PASS:` in `controller-recovery-result.txt`.
+This fixes the erroneous missing-hinges message when placing a replacement
+controller while looking into the side wall.
+
 ## Custom chambers: dev.4
 
 September 12, 2026: the dedicated Minecraft/Forge/Create fixture passed complete
@@ -125,5 +137,5 @@ repeating the ride, add `-PlockOverview`.
 ## Packaging
 
 Run `./gradlew clean build` with no fixture properties. Distribute only
-`build/libs/LocksAndDams-Forge-1.20.1-0.1.0-dev.4.jar`. The release must exclude
-`LockChecks`, `CreateChecks`, `CustomChecks` and `ClientRideChecks`. Tests and run worlds are not shipped.
+`build/libs/LocksAndDams-Forge-1.20.1-0.1.0-dev.5.jar`. The release must exclude
+all `*Checks` fixtures. Tests and run worlds are not shipped.

@@ -78,17 +78,34 @@ public final class LockEntity extends BlockEntity {
     public boolean assemble() {
         if (level==null||level.isClientSide) return false;
         if (assembled) return true;
+        // Placement faces the player into the wall. Infer the canal axis from the
+        // actual build instead of requiring that incidental direction to match.
+        java.util.List<CustomLock> matches=new java.util.ArrayList<>();
+        String discoveryError=null;
+        for(Direction direction:Direction.Plane.HORIZONTAL) {
+            try {matches.add(CustomLock.discover(level,worldPosition,direction));}
+            catch(IllegalArgumentException e) {if(direction==getBlockState().getValue(ControllerBlock.FACING))discoveryError=e.getMessage();}
+        }
+        if(matches.size()>1) {message="Multiple valid chambers match this controller; separate their hinges.";sync();return false;}
+        if(matches.size()==1) {
+            CustomLock found=matches.get(0);
+            try {found.assemble(level);}catch(IllegalArgumentException e){message=e.getMessage();sync();return false;}
+            face(found.forward);custom=found;assembled=true;sync();return true;
+        }
+        BlockState original=getBlockState();
+        java.util.List<Direction> legacyMatches=new java.util.ArrayList<>();
+        try {
+            for(Direction direction:Direction.Plane.HORIZONTAL) {
+                setBlockState(original.setValue(ControllerBlock.FACING,direction));
+                LockHingeEntity a=hinge(0),b=hinge(10);
+                mechanical=a!=null&&b!=null&&a.belongsTo(worldPosition)&&b.belongsTo(worldPosition)&&a.isRunning()&&b.isRunning();
+                if(validate()==null)legacyMatches.add(direction);
+            }
+        }finally {setBlockState(original);mechanical=false;}
+        if(legacyMatches.size()!=1) {message=legacyMatches.size()>1?"Multiple legacy chambers match this controller.":discoveryError==null?"No complete chamber found. Restore its hinges, walls and canal connections.":discoveryError;sync();return false;}
+        face(legacyMatches.get(0));
         LockHingeEntity low=hinge(0),high=hinge(10);
         mechanical=low!=null&&high!=null&&low.belongsTo(worldPosition)&&high.belongsTo(worldPosition)&&low.isRunning()&&high.isRunning();
-        if(custom==null) {
-            try {
-                CustomLock found=CustomLock.discover(level,worldPosition,getBlockState().getValue(ControllerBlock.FACING));
-                found.assemble(level);custom=found;assembled=true;sync();return true;
-            }catch(IllegalArgumentException e) {
-                // Older two-hinge layouts retain their original assembly path.
-                if(validate()!=null) {message=e.getMessage();sync();return false;}
-            }
-        }
         String error=validate();
         if(error!=null) { message=error; sync(); return false; }
         // A second controller may not own a gate or water cell already used by a loaded lock.
@@ -121,6 +138,10 @@ public final class LockEntity extends BlockEntity {
             if(depth==0?!s.isAir():!s.is(Content.WATER_BLOCK.get())||s.getValue(ChamberFluid.HEIGHT)!=depth) return -2;
         }
         return found;
+    }
+    private void face(Direction direction) {
+        BlockState state=getBlockState().setValue(ControllerBlock.FACING,direction);
+        level.setBlock(worldPosition,state,Block.UPDATE_CLIENTS);setBlockState(state);
     }
     private boolean obstructed(int z) { return !level.getEntities((Entity)null, layout().gateBox(z).inflate(.25), e -> e.isAlive()&&!e.isSpectator()&&!(e instanceof com.simibubi.create.content.contraptions.AbstractContraptionEntity)).isEmpty(); }
     private LockHingeEntity hinge(int z) {

@@ -80,8 +80,8 @@ but their valves now require culvert routes. A fresh `/locks demo` shows the lay
 ## Build a standard chamber
 
 The prototype has a fixed 5 by 9 interior and three-block lift, in any horizontal
-orientation. The controller faces from the lower canal toward the upper canal,
-in the direction you face when placing it. It occupies the lower-left gate jamb,
+orientation. On assembly, the controller detects the direction from the lower
+canal toward the upper canal regardless of placement direction. It occupies the lower-left gate jamb,
 directly above the floor.
 
 Coordinates are relative to the controller at (0, 0, 0): x goes right, z goes
@@ -124,12 +124,12 @@ problem and the controller resumes according to live inputs. Managed water does
 not spill through a breach: this is not a flooding simulation.
 
 The controller saves water level and gate state. Removing it leaves water and
-panels in place. Replacing it at the same location and facing, then right-clicking,
+panels in place. Replacing it at the same location, then right-clicking,
 can reclaim complete, uniform managed water without resetting its level. Clear
 both gate openings first. Inconsistent water is refused rather than rewritten.
 
 If a hinge is broken, remove both hinges, restore all gate panels, and replace
-the controller at the same position and facing. Right-click to reclaim the
+the controller at the same position. Right-click to reclaim the
 water, then reinstall both hinges. Clear both openings before this repair.
 
 Managed water has no bucket, does not spread or create sources, and cannot be
