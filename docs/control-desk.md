@@ -4,7 +4,7 @@ For Minecraft 1.20.1, Forge 47.4.10 and Create 6.0.8.
 
 ## Try the complete wired example
 
-Install the dev.8 JAR in place of the older Locks & Dams JAR, then run
+Install the dev.9 JAR in place of the older Locks & Dams JAR, then run
 `/locks demo_desk` in clear air in a creative test world. The builder refuses
 occupied space. It creates a custom lock, linked three-block desk, and real
 Create motors, clutches and gearshifts. The supplied motors run at +8 RPM.
@@ -49,7 +49,7 @@ Mountable nodes mirror those channels and make them accessible outside a wall.
 Viewed from the front, the left selector controls the upper gate, the right
 selector controls the lower gate, and the center selector chooses **FILL / DRAIN**.
 Right-click a gate section to turn its selector. On the center section, click
-the rear half for water selection and the front red button for emergency stop.
+the rotary switch for water selection and the front red button for emergency stop.
 There is no OFF position on the water selector.
 
 Every water selection starts a fresh **10-second warning** (200 simulation ticks).

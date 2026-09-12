@@ -21,10 +21,21 @@ public class GatePanelBlock extends Block {
         registerDefaultState(stateDefinition.any().setValue(OPEN, false).setValue(TOP, false).setValue(EDGE,0).setValue(DEPTH, 0).setValue(AXIS,net.minecraft.core.Direction.Axis.Z));
     }
     @Override protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) { builder.add(OPEN, DEPTH, AXIS, TOP, EDGE); }
+    @Override public BlockState getStateForPlacement(net.minecraft.world.item.context.BlockPlaceContext c) {
+        var axis=c.getHorizontalDirection().getAxis();
+        BlockPos support=c.getClickedPos().relative(c.getClickedFace().getOpposite());
+        var adjacent=c.getLevel().getBlockState(support);
+        if(adjacent.getBlock() instanceof GatePanelBlock)axis=adjacent.getValue(AXIS);
+        else for(var d:net.minecraft.core.Direction.values()){
+            adjacent=c.getLevel().getBlockState(c.getClickedPos().relative(d));
+            if(adjacent.getBlock() instanceof GatePanelBlock){axis=adjacent.getValue(AXIS);break;}
+        }
+        return defaultBlockState().setValue(AXIS,axis);
+    }
     @Override public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
         if(state.getValue(OPEN))return Shapes.empty();
         boolean acrossZ=state.getValue(AXIS)==net.minecraft.core.Direction.Axis.X;
-        VoxelShape panel=acrossZ?box(5,0,1,11,16,15):box(1,0,5,15,16,11);
+        VoxelShape panel=acrossZ?box(5,0,0,11,16,16):box(0,0,5,16,16,11);
         int edge=state.getValue(EDGE),lo=edge==1?2:edge==4?1:0,hi=edge==2?14:edge==3?15:16;
         VoxelShape deck=acrossZ?box(3,14,lo,13,16,hi):box(lo,14,3,hi,16,13);
         return state.getValue(TOP)?Shapes.or(panel,deck):panel;

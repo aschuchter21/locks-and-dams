@@ -30,14 +30,23 @@ public final class ControlDeskBlock extends BaseEntityBlock {
     @Override public void setPlacedBy(Level l,BlockPos p,BlockState s,LivingEntity e,ItemStack stack){if(!l.isClientSide)for(int i:new int[]{0,2})l.setBlock(p.relative(s.getValue(FACING).getCounterClockWise(),i-1),s.setValue(PART,i),3);}
     @Override public BlockEntity newBlockEntity(BlockPos p,BlockState s){return new ControlDeskEntity(p,s);}
     @Override public RenderShape getRenderShape(BlockState s){return RenderShape.MODEL;}
-    @Override public VoxelShape getShape(BlockState s,BlockGetter l,BlockPos p,CollisionContext c){return box(0,0,0,16,16,16);}
+    @Override public VoxelShape getShape(BlockState s,BlockGetter l,BlockPos p,CollisionContext c){
+        VoxelShape shape=box(0,0,0,16,8,16);Direction facing=s.getValue(FACING);
+        for(int z=0;z<16;z++)shape=Shapes.or(shape,rotatedBox(0,8,z,16,8.7+(z+1)*.383,z+1,facing));
+        shape=Shapes.or(shape,rotatedBox(6,10,6,10,14,10,facing));
+        if(s.getValue(PART)==1)shape=Shapes.or(shape,rotatedBox(5.5,9,2.5,10.5,12,5.5,facing));
+        return shape;
+    }
+    private static VoxelShape rotatedBox(double x0,double y0,double z0,double x1,double y1,double z1,Direction f){
+        return switch(f){case EAST->box(16-z1,y0,x0,16-z0,y1,x1);case SOUTH->box(16-x1,y0,16-z1,16-x0,y1,16-z0);case WEST->box(z0,y0,16-x1,z1,y1,16-x0);default->box(x0,y0,z0,x1,y1,z1);};
+    }
     @Override public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level l,BlockState s,BlockEntityType<T> t){return l.isClientSide?null:createTickerHelper(t,Content.DESK_ENTITY.get(),ControlDeskEntity::tick);}
     @Override public InteractionResult use(BlockState s,Level l,BlockPos p,Player player,InteractionHand hand,BlockHitResult hit){
         if(player.getItemInHand(hand).is(Content.LINK_TOOL.get()))return InteractionResult.PASS;
         if(!l.isClientSide&&l.getBlockEntity(root(s,p)) instanceof ControlDeskEntity desk) {
             Vec3 relative=hit.getLocation().subtract(Vec3.atCenterOf(p));
             double towardFront=relative.x*s.getValue(FACING).getStepX()+relative.z*s.getValue(FACING).getStepZ();
-            desk.operate(player,s.getValue(PART),towardFront>0,player.isShiftKeyDown());
+            desk.operate(player,s.getValue(PART),towardFront>.15,player.isShiftKeyDown());
         }
         return InteractionResult.sidedSuccess(l.isClientSide);
     }

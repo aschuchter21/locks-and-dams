@@ -17,7 +17,13 @@ public final class CustomLock {
     final int width,length,rise,low,high;
     final BlockPos fill,drain,fillPort,drainPort;
     final GateSpec[] leaves;
+    boolean recessed;
     int units;
+    int minX(){return recessed?1:0;}
+    int maxX(){return width-1-minX();}
+    int wallLeft(){return minX()-1;}
+    int wallRight(){return maxX()+1;}
+    int navigationWidth(){return width-2*minX();}
     String message="Ready";
     CustomLock(BlockPos owner,BlockPos base,Direction forward,int width,int length,int rise,int low,int high,BlockPos fill,BlockPos drain,BlockPos fillPort,BlockPos drainPort,GateSpec[] leaves,int units) {
         this.owner=owner;this.base=base;this.forward=forward;this.width=width;this.length=length;this.rise=rise;this.low=low;this.high=high;
@@ -52,9 +58,10 @@ public final class CustomLock {
         List<LockHingeEntity> hinges=nearby(level,owner);Direction right=f.getClockWise();List<BlockPos[]> candidates=new ArrayList<>();
         for(var a:hinges)for(var b:hinges) {
             BlockPos p=a.getBlockPos(),q=b.getBlockPos();int w=along(q,right)-along(p,right)+1;
-            if(w<4||w>16||p.getY()!=q.getY()||along(p,f)!=along(q,f))continue;
+            if(w<4||w>18||p.getY()!=q.getY()||along(p,f)!=along(q,f))continue;
             int ox=along(owner,right)-along(p,right),oz=along(owner,f)-along(p,f);
-            if(ox!=-1&&ox!=w)continue;
+            if(ox!=-1&&ox!=w&&ox!=0&&ox!=w-1)continue;
+            if((ox==0||ox==w-1)?w<6:w>16)continue;
             for(var c:hinges) {
                 BlockPos r=c.getBlockPos();int len=along(r,f)-along(p,f),dy=r.getY()-p.getY();
                 if(along(r,right)!=along(p,right)||len<4||len>48||dy<0||dy>16||oz<0||oz>len)continue;
@@ -65,8 +72,10 @@ public final class CustomLock {
         if(!candidates.isEmpty())progress[0]=1;
         require(candidates.size()==1,candidates.isEmpty()?"Place four rectangular corner hinges and a controller in a side wall. Width 4-16, interior length 3-47, hinge rise 0-16.":"Multiple hinge rectangles match this controller; remove extra hinges or separate the locks.");
         BlockPos[] corners=candidates.get(0);BlockPos base=corners[0].above();int w=along(corners[1],right)-along(corners[0],right)+1,len=along(corners[2],f)-along(corners[0],f),rise=corners[2].getY()-corners[0].getY();
+        boolean recessed=along(owner,right)-along(base,right)==0||along(owner,right)-along(base,right)==w-1;
+        int wallLeft=recessed?0:-1,wallRight=recessed?w-1:w;
         BlockPos fill=null,drain=null;
-        for(int x:new int[]{-1,w})for(int z=0;z<=len;z++)for(int y=0;y<=32;y++) {
+        for(int x:new int[]{wallLeft,wallRight})for(int z=0;z<=len;z++)for(int y=0;y<=32;y++) {
             BlockPos p=base.relative(right,x).relative(f,z).above(y);require(level.hasChunkAt(p),"Load the chamber walls before assembly.");var s=level.getBlockState(p);
             if(s.is(Content.FILL.get())) {require(fill==null,"Use one fill valve per chamber.");fill=p;}
             if(s.is(Content.DRAIN.get())) {require(drain==null,"Use one drain valve per chamber.");drain=p;}
@@ -78,7 +87,7 @@ public final class CustomLock {
         require(along(lower.mouth(),f)<along(base,f)&&along(upper.mouth(),f)>along(base,f)+len,"Fill port belongs beyond the upper gate; drain port beyond the lower gate.");
         progress[0]=2;
         require(rise*16<high,"Upper gate starts above the upper water surface.");
-        require((long)w*(len-1)*((high+15)/16)<=16384,"Chamber exceeds 16,384 managed water blocks.");
+        require((long)(recessed?w-2:w)*(len-1)*((high+15)/16)<=16384,"Chamber exceeds 16,384 managed water blocks.");
         for(BlockPos p:new BlockPos[]{owner,fill,drain})require(p.getY()>=base.getY()&&p.getY()<base.getY()+(high+15)/16,"Place the controller and valves in the side walls below the upper water limit.");
         GateSpec[] leaves=new GateSpec[4];
         for(int i=0;i<4;i++) {
@@ -92,6 +101,7 @@ public final class CustomLock {
             leaves[i]=new GateSpec(corners[i].above(),inward,leafWidth,height,(i<2?-90:90)*(i%2==0?1:-1));
         }
         CustomLock result=new CustomLock(owner,base,f,w,len,rise,low,high,fill,drain,upper.port(),lower.port(),leaves,low);
+        result.recessed=recessed;
         progress[0]=3;
         result.validate(level,false);return result;
     }
@@ -103,12 +113,12 @@ public final class CustomLock {
         for(BlockPos p:BlockPos.betweenClosed(BlockPos.containing(bounds().minX,bounds().minY,bounds().minZ),BlockPos.containing(bounds().maxX-1,bounds().maxY-1,bounds().maxZ-1)))require(level.hasChunkAt(p),"Load the entire chamber.");
         require(level.getBlockState(fill).is(Content.FILL.get())&&level.getBlockState(drain).is(Content.DRAIN.get()),"Restore the linked valves.");
         int top=(high+15)/16;
-        for(int x=-1;x<=width;x++)for(int z=0;z<=length;z++) {
+        for(int x=wallLeft();x<=wallRight();x++)for(int z=0;z<=length;z++) {
             BlockPos floor=at(x,-1,z);boolean lowerHinge=(z==0||rise==0&&z==length)&&(x==0||x==width-1);
             require(lowerHinge?level.getBlockState(floor).is(Content.HINGE.get()):solid(level,floor),"Restore solid chamber floor at "+floor.toShortString());
         }
-        for(int x:new int[]{-1,width})for(int z=0;z<=length;z++)for(int y=0;y<top;y++) {
-            BlockPos p=at(x,y,z);if(p.equals(owner)||p.equals(fill)||p.equals(drain))continue;
+        for(int x:new int[]{wallLeft(),wallRight()})for(int z=0;z<=length;z++)for(int y=0;y<top;y++) {
+            BlockPos p=at(x,y,z);if(recessed&&(z==0||z==length)&&y>=(z==0?0:rise))continue;if(p.equals(owner)||p.equals(fill)||p.equals(drain))continue;
             require(solid(level,p),"Restore solid side wall at "+p.toShortString());
         }
         for(int x=0;x<width;x++)for(int y=0;y<rise;y++) {
@@ -116,6 +126,17 @@ public final class CustomLock {
             require(hinge?level.getBlockState(p).is(Content.HINGE.get()):solid(level,p),"Restore the solid wall below the upper gates at "+p.toShortString());
         }
         for(int i=0;i<4;i++) {
+            if(recessed){
+                GateSpec leaf=leaves[i];Direction approach=i<2?forward.getOpposite():forward;
+                for(int step=1;step<=leaf.width();step++){
+                    BlockPos floor=leaf.base().relative(approach,step).below();
+                    require(level.hasChunkAt(floor)&&solid(level,floor),"Build a solid floor under the gate recess at "+floor.toShortString());
+                }
+                for(int step=0;step<=leaf.width();step++)for(int y=0;y<leaf.height();y++){
+                    BlockPos back=leaf.base().relative(leaf.inward().getOpposite()).relative(approach,step).above(y);
+                    require(level.hasChunkAt(back)&&solid(level,back),"Build a solid backing wall behind the gate recess at "+back.toShortString());
+                }
+            }
             LockHingeEntity h=hinge(level,i);require(h!=null,"Restore all four hinges.");
             if(running)require(h.belongsTo(owner)&&h.isRunning()&&h.getMovedContraption()!=null&&leaves[i].equals(h.geometry()),"Waiting for the linked gate contraption; restore/reassemble if its hinge was removed.");
             else {
@@ -127,13 +148,13 @@ public final class CustomLock {
                 require(s.is(running||h.isRunning()?Content.SEAL.get():Content.PANEL.get()),"Restore gate panels/seals at "+p.toShortString());
             }
         }
-        for(int x=0;x<width;x++)for(int z=1;z<length;z++)for(int y=0;y<top;y++) {
+        for(int x=minX();x<=maxX();x++)for(int z=1;z<length;z++)for(int y=0;y<top;y++) {
             BlockPos p=at(x,y,z);var s=level.getBlockState(p);require(s.isAir()||s.is(Content.WATER_BLOCK.get())||s.is(Blocks.WATER),"Chamber obstructed at "+p.toShortString());
         }
-        for(int x=0;x<width;x++)for(int z=1;z<length;z++)require(!level.getBlockState(at(x,top,z)).is(Content.WATER_BLOCK.get()),"Existing managed water exceeds this port height; restore the original limits before reclaiming.");
+        for(int x=minX();x<=maxX();x++)for(int z=1;z<length;z++)require(!level.getBlockState(at(x,top,z)).is(Content.WATER_BLOCK.get()),"Existing managed water exceeds this port height; restore the original limits before reclaiming.");
         WaterConnection a=WaterConnection.discover(level,fill),b=WaterConnection.discover(level,drain);
         require(a.port().equals(fillPort)&&b.port().equals(drainPort)&&a.surface()==base.getY()*16+high&&b.surface()==base.getY()*16+low,"Canal port or water level changed; restore it before operating.");
-        for(int side=0;side<2;side++)for(int x=0;x<width;x++) {
+        for(int side=0;side<2;side++)for(int x=minX();x<=maxX();x++) {
             int surface=side==0?low:high;BlockPos p=at(x,surface/16,side==0?-1:length+1);
             require(level.hasChunkAt(p),"Load both canal approaches.");var fluid=level.getFluidState(p);
             require(fluid.is(net.minecraft.tags.FluidTags.WATER)&&fluid.isSource()&&level.getFluidState(p.above()).isEmpty()&&p.getY()*16+Math.round(fluid.getHeight(level,p)*16)==base.getY()*16+surface,"Canal water across each gate must match its linked port's surface.");
@@ -145,18 +166,18 @@ public final class CustomLock {
         for(int cx=(owner.getX()-80)>>4;cx<=(owner.getX()+80)>>4;cx++)for(int cz=(owner.getZ()-80)>>4;cz<=(owner.getZ()+80)>>4;cz++)if(level.hasChunk(cx,cz))
             for(var be:level.getChunk(cx,cz).getBlockEntities().values())if(be instanceof LockEntity other&&!other.getBlockPos().equals(owner)&&other.assembled())require(!bounds().intersects(other.ownedBounds()),"Chamber overlaps another assembled lock.");
         // Uniform managed water can be reclaimed after a controller replacement.
-        int found=-1;for(int y=0;y<(high+15)/16;y++) {var s=level.getBlockState(at(0,y,1));if(s.is(Content.WATER_BLOCK.get()))found=y*16+s.getValue(ChamberFluid.HEIGHT);}
-        boolean managed=false;for(int x=0;x<width;x++)for(int z=1;z<length;z++)for(int y=0;y<(high+15)/16;y++)if(level.getBlockState(at(x,y,z)).is(Content.WATER_BLOCK.get()))managed=true;
+        int found=-1;for(int y=0;y<(high+15)/16;y++) {var s=level.getBlockState(at(minX(),y,1));if(s.is(Content.WATER_BLOCK.get()))found=y*16+s.getValue(ChamberFluid.HEIGHT);}
+        boolean managed=false;for(int x=minX();x<=maxX();x++)for(int z=1;z<length;z++)for(int y=0;y<(high+15)/16;y++)if(level.getBlockState(at(x,y,z)).is(Content.WATER_BLOCK.get()))managed=true;
         if(managed) {
             require(found>=low&&found<=high,"Managed water is inconsistent.");
-            for(int x=0;x<width;x++)for(int z=1;z<length;z++)for(int y=0;y<(high+15)/16;y++) {
+            for(int x=minX();x<=maxX();x++)for(int z=1;z<length;z++)for(int y=0;y<(high+15)/16;y++) {
                 var s=level.getBlockState(at(x,y,z));int d=LockLayout.depth(found,y);
                 require(d==0?s.isAir():s.is(Content.WATER_BLOCK.get())&&s.getValue(ChamberFluid.HEIGHT)==d,"Managed water is inconsistent; restore it before reclaiming.");
             }units=found;
         }
         for(int i=0;i<4;i++) {var h=hinge(level,i);h.bind(owner,leaves[i]);h.assemble();require(h.isRunning(),"Gate assembly failed.");}
         writeWater(level);for(int side=0;side<2;side++)writeGate(level,side,hinge(level,side*2).open()&&hinge(level,side*2+1).open());
-        message="Assembled "+width+" x "+(length-1)+" chamber; lift "+(high-low)/16.0+" blocks.";
+        message="Assembled "+navigationWidth()+" x "+(length-1)+" chamber; lift "+(high-low)/16.0+" blocks.";
     }
     boolean occupied(Level level,int side) {return !level.getEntities((Entity)null,box(0,side==0?0:rise,side*length,width-1,(high+15)/16,side*length).inflate(.2),e->e.isAlive()&&!e.isSpectator()&&!(e instanceof com.simibubi.create.content.contraptions.AbstractContraptionEntity)).isEmpty();}
     void step(Level level,LockEntity controller) {
@@ -191,7 +212,7 @@ public final class CustomLock {
         }
     }
     void writeWater(Level level) {
-        for(int x=0;x<width;x++)for(int z=1;z<length;z++)for(int y=0;y<(high+15)/16;y++) {
+        for(int x=minX();x<=maxX();x++)for(int z=1;z<length;z++)for(int y=0;y<(high+15)/16;y++) {
             int d=LockLayout.depth(units,y);var s=d==0?Blocks.AIR.defaultBlockState():Content.WATER_BLOCK.get().defaultBlockState().setValue(ChamberFluid.HEIGHT,d);BlockPos p=at(x,y,z);if(!level.getBlockState(p).equals(s))level.setBlock(p,s,Block.UPDATE_CLIENTS);
         }
     }
@@ -202,12 +223,12 @@ public final class CustomLock {
         }
     }
     CompoundTag save() {
-        CompoundTag n=new CompoundTag();n.put("Base",NbtUtils.writeBlockPos(base));n.putInt("Forward",forward.get2DDataValue());n.putInt("Width",width);n.putInt("Length",length);n.putInt("Rise",rise);n.putInt("Low",low);n.putInt("High",high);n.putInt("Units",units);
+        CompoundTag n=new CompoundTag();n.put("Base",NbtUtils.writeBlockPos(base));n.putInt("Forward",forward.get2DDataValue());n.putInt("Width",width);n.putInt("Length",length);n.putInt("Rise",rise);n.putInt("Low",low);n.putInt("High",high);n.putInt("Units",units);n.putBoolean("Recessed",recessed);
         n.put("Fill",NbtUtils.writeBlockPos(fill));n.put("Drain",NbtUtils.writeBlockPos(drain));n.put("FillPort",NbtUtils.writeBlockPos(fillPort));n.put("DrainPort",NbtUtils.writeBlockPos(drainPort));
         for(int i=0;i<4;i++)n.put("Leaf"+i,leaves[i].save());n.putString("Message",message);return n;
     }
     static CustomLock load(BlockPos owner,CompoundTag n) {
         GateSpec[] leaves=new GateSpec[4];for(int i=0;i<4;i++)leaves[i]=GateSpec.load(n.getCompound("Leaf"+i));
-        CustomLock lock=new CustomLock(owner,NbtUtils.readBlockPos(n.getCompound("Base")),Direction.from2DDataValue(n.getInt("Forward")),n.getInt("Width"),n.getInt("Length"),n.getInt("Rise"),n.getInt("Low"),n.getInt("High"),NbtUtils.readBlockPos(n.getCompound("Fill")),NbtUtils.readBlockPos(n.getCompound("Drain")),NbtUtils.readBlockPos(n.getCompound("FillPort")),NbtUtils.readBlockPos(n.getCompound("DrainPort")),leaves,n.getInt("Units"));lock.message=n.getString("Message");return lock;
+        CustomLock lock=new CustomLock(owner,NbtUtils.readBlockPos(n.getCompound("Base")),Direction.from2DDataValue(n.getInt("Forward")),n.getInt("Width"),n.getInt("Length"),n.getInt("Rise"),n.getInt("Low"),n.getInt("High"),NbtUtils.readBlockPos(n.getCompound("Fill")),NbtUtils.readBlockPos(n.getCompound("Drain")),NbtUtils.readBlockPos(n.getCompound("FillPort")),NbtUtils.readBlockPos(n.getCompound("DrainPort")),leaves,n.getInt("Units"));lock.recessed=n.getBoolean("Recessed");lock.message=n.getString("Message");return lock;
     }
 }

@@ -2,7 +2,11 @@
 
 A navigation-lock mod for **Minecraft 1.20.1 / Forge 47.4.10 / Create 6.0.8**.
 
-## Prototype: 0.1.0-dev.8.1
+## Prototype: 0.1.0-dev.9
+
+New: [gate repairs and recessed-wall layout](docs/gate-repairs-and-recesses.md).
+Gate sections align on placement and join edge-to-edge; the desk uses a sloped
+click shape. New demos put hinges and open leaves inside the wall footprint.
 
 The three-block industrial desk links to a lock controller and supplies labeled
 gate selectors, a FILL/DRAIN selector, status lamps and a latched emergency stop.

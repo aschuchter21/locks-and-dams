@@ -44,6 +44,10 @@ public final class LockHingeEntity extends MechanicalBearingBlockEntity {
     public void bind(LockLayout l,int z) { forward=l.forward();side=z;bind(l.origin(),new GateSpec(l.at(1,0,z),forward.getClockWise(),5,6,z==0?-90:90)); }
     public void bind(BlockPos controller,GateSpec geometry) { owner=controller;leaf=geometry;setChanged(); }
     public GateSpec geometry() {return leaf;}
+    public void preparePanelEdit(){
+        if(level!=null&&owner!=null&&level.getBlockEntity(owner) instanceof LockEntity lock)lock.beginGateEdit();
+        disassemble();
+    }
     public boolean catwalkOccupied() {
         if(level==null||leaf==null)return false;
         Vec3 u=VecHelper.rotate(Vec3.atLowerCornerOf(new BlockPos(leaf.inward().getNormal())),angle,Direction.Axis.Y);
@@ -135,7 +139,7 @@ public final class LockHingeEntity extends MechanicalBearingBlockEntity {
             for(int x=0;x<leaf.width();x++)for(int y=0;y<leaf.height();y++) {
                 BlockPos p=leaf.at(x,y);BlockState s=level.getBlockState(p);
                 if(s.is(Content.SEAL.get()))level.setBlock(p,Content.PANEL.get().defaultBlockState()
-                    .setValue(GatePanelBlock.OPEN,s.getValue(GatePanelBlock.OPEN)).setValue(GatePanelBlock.DEPTH,s.getValue(GatePanelBlock.DEPTH))
+                    .setValue(GatePanelBlock.OPEN,false).setValue(GatePanelBlock.DEPTH,0)
                     .setValue(GatePanelBlock.AXIS,leaf.normal()),Block.UPDATE_CLIENTS);
                 else Block.popResource(level,worldPosition,new net.minecraft.world.item.ItemStack(Content.PANEL.get()));
             }

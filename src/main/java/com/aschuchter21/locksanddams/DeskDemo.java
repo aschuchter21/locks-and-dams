@@ -21,7 +21,7 @@ public final class DeskDemo {
     }
     public static BlockPos build(ServerLevel level,BlockPos base,Direction forward,net.minecraft.world.entity.player.Player player){
         LockLayout grid=new LockLayout(base,forward);
-        CustomDemo.AABBCheck.check(level,grid,-7,-4,-6,7,8,19);
+        CustomDemo.AABBCheck.check(level,grid,-7,-4,-7,8,8,20);
         BlockPos controller=CustomDemo.build(level,base,forward,6,11,4);
         BlockPos desk=grid.at(-6,1,6);var deskState=Content.DESK.get().defaultBlockState().setValue(ControlDeskBlock.FACING,forward.getCounterClockWise());
         for(int part=0;part<3;part++){
@@ -31,7 +31,7 @@ public final class DeskDemo {
         var deskEntity=(ControlDeskEntity)level.getBlockEntity(desk);
         if(player!=null)WaterConnection.require(deskEntity.link(controller,player),"Could not link desk.");
         else deskEntity.linkForDemo(controller);
-        for(int side=0;side<2;side++)for(int x:new int[]{0,5}){
+        for(int side=0;side<2;side++)for(int x:new int[]{0,7}){
             int z=side*12;BlockPos motor=grid.at(x,-4,z),clutch=grid.at(x,-3,z),gear=grid.at(x,-2,z);
             level.setBlock(gear,AllBlocks.GEARSHIFT.getDefaultState().setValue(RotatedPillarBlock.AXIS,Direction.Axis.Y),3);
             level.setBlock(clutch,AllBlocks.CLUTCH.getDefaultState().setValue(RotatedPillarBlock.AXIS,Direction.Axis.Y),3);

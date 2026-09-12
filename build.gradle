@@ -54,6 +54,13 @@ tasks.named('processResources').configure {
 tasks.withType(JavaCompile).configureEach { options.encoding = 'UTF-8' }
 
 // Test fixtures are opt-in and excluded from normal distribution builds.
+if (project.hasProperty('recessChecks')) {
+    sourceSets.main.java.srcDir 'tools/recesstest'
+    legacyForge.runs.server {
+        gameDirectory = project.file('run-desk-checks')
+        systemProperty 'locksanddams.recessChecks', 'true'
+    }
+}
 if (project.hasProperty('deskPreview')) {
     sourceSets.main.java.srcDir 'tools/deskpreview'
     legacyForge.runs.client {

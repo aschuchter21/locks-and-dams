@@ -24,22 +24,37 @@ public final class CustomDemo {
         catch(IllegalArgumentException error){source.sendFailure(Component.literal(error.getMessage()));return 0;}
     }
     public static BlockPos build(ServerLevel level,BlockPos base,Direction f,int w,int interior,int lift) {
+        w+=2; // Include the two wall-mounted hinge columns around the navigable width.
         int len=interior+1,pool=(w+1)/2+3,top=lift+3;LockLayout grid=new LockLayout(base,f);
-        WaterConnection.require((long)w*interior*(lift+1)<=16384,"Demo exceeds the chamber volume limit.");
+        WaterConnection.require((long)(w-2)*interior*(lift+1)<=16384,"Demo exceeds the chamber volume limit.");
         AABBCheck.check(level,grid,-5,-2,-pool,w,top,len+pool);
         var wall=Blocks.STONE_BRICKS.defaultBlockState();
         for(int x=-1;x<=w;x++)for(int z=-pool;z<=len+pool;z++) {
             level.setBlock(grid.at(x,-1,z),wall,2);
             if(z>len)for(int y=0;y<lift;y++)level.setBlock(grid.at(x,y,z),wall,2);
         }
-        for(int x:new int[]{-1,w})for(int z=-pool;z<=len+pool;z++)for(int y=0;y<=top;y++)level.setBlock(grid.at(x,y,z),wall,2);
+        for(int x:new int[]{0,w-1})for(int z=-pool;z<=len+pool;z++)for(int y=0;y<=top;y++)level.setBlock(grid.at(x,y,z),wall,2);
         for(int z:new int[]{-pool,len+pool})for(int x=0;x<w;x++)for(int y=0;y<=top;y++)level.setBlock(grid.at(x,y,z),wall,2);
-        for(int x=0;x<w;x++) {
+        for(int x=1;x<w-1;x++) {
             for(int z=-pool+1;z<0;z++)level.setBlock(grid.at(x,0,z),Blocks.WATER.defaultBlockState(),2);
             for(int z=len+1;z<len+pool;z++)level.setBlock(grid.at(x,lift,z),Blocks.WATER.defaultBlockState(),2);
             for(int y=0;y<lift;y++)level.setBlock(grid.at(x,y,len),wall,2);
             for(int y=0;y<lift+2;y++)level.setBlock(grid.at(x,y,0),Content.PANEL.get().defaultBlockState(),2);
             for(int y=lift;y<lift+3;y++)level.setBlock(grid.at(x,y,len),Content.PANEL.get().defaultBlockState(),2);
+        }
+        // Recesses sit in the approach walls, outside the managed chamber.
+        for(int side=0;side<2;side++)for(int x:new int[]{0,w-1}){
+            int bottom=side==0?0:lift,gateZ=side*len,reach=(x==0?w/2:w-w/2);
+            for(int y=bottom;y<(side==0?lift+2:lift+3);y++){
+                level.setBlock(grid.at(x,y,gateZ),Content.PANEL.get().defaultBlockState(),2);
+                level.setBlock(grid.at(x==0?-1:w,y,gateZ),wall,2);
+                for(int step=1;step<=reach;step++){
+                    int z=gateZ+(side==0?-step:step);
+                    level.setBlock(grid.at(x,y,z),y==bottom?Blocks.WATER.defaultBlockState():Blocks.AIR.defaultBlockState(),2);
+                    level.setBlock(grid.at(x==0?-1:w,y,z),wall,2);
+                }
+            }
+            for(int step=1;step<=reach;step++)level.setBlock(grid.at(x,bottom-1,gateZ+(side==0?-step:step)),wall,2);
         }
         for(int side=0;side<2;side++)for(int x:new int[]{0,w-1}) {
             int y=(side==0?0:lift)-1,z=side*len;
@@ -48,19 +63,19 @@ public final class CustomDemo {
             level.setBlock(grid.at(x,-2,z),com.simibubi.create.AllBlocks.CREATIVE_MOTOR.getDefaultState().setValue(com.simibubi.create.content.kinetics.base.DirectionalKineticBlock.FACING,Direction.UP),3);
             ((com.simibubi.create.content.kinetics.motor.CreativeMotorBlockEntity)level.getBlockEntity(grid.at(x,-2,z))).generatedSpeed.setValue(-8);
         }
-        BlockPos controller=grid.at(-1,0,2),fill=grid.at(-1,lift,interior),drain=grid.at(-1,1,1);
+        BlockPos controller=grid.at(0,0,2),fill=grid.at(0,lift,interior),drain=grid.at(0,1,1);
         level.setBlock(controller,Content.CONTROLLER.get().defaultBlockState().setValue(ControllerBlock.FACING,f),2);
         level.setBlock(fill,Content.FILL.get().defaultBlockState(),2);level.setBlock(drain,Content.DRAIN.get().defaultBlockState(),2);
         lever(level,fill.relative(f.getCounterClockWise()),f.getCounterClockWise());lever(level,drain.relative(f.getCounterClockWise()),f.getCounterClockWise());
         // Supply crosses above the drain, separated by two empty columns.
-        pipe(level,fill.below());for(int x=-5;x<=-1;x++)pipe(level,grid.at(x,lift-1,interior));
-        for(int z=interior;z<=len+2;z++)pipe(level,grid.at(-5,lift-1,z));
-        pipe(level,grid.at(-5,lift,len+2));for(int x=-5;x<-1;x++)pipe(level,grid.at(x,lift,len+2));
-        pipe(level,drain.below());for(int x=-3;x<=-1;x++)pipe(level,grid.at(x,0,1));
-        for(int z=-2;z<=1;z++)pipe(level,grid.at(-3,0,z));pipe(level,grid.at(-2,0,-2));
-        for(int[] p:new int[][]{{-1,lift,len+2},{-1,0,-2}})level.setBlock(grid.at(p[0],p[1],p[2]),Content.PORT.get().defaultBlockState().setValue(CulvertPortBlock.FACING,f.getClockWise()),2);
+        pipe(level,fill.below());for(int x=-5;x<=0;x++)pipe(level,grid.at(x,lift-1,interior));
+        for(int z=interior;z<=len+pool-1;z++)pipe(level,grid.at(-5,lift-1,z));
+        pipe(level,grid.at(-5,lift,len+pool-1));for(int x=-5;x<0;x++)pipe(level,grid.at(x,lift,len+pool-1));
+        pipe(level,drain.below());for(int x=-3;x<=0;x++)pipe(level,grid.at(x,0,1));
+        for(int z=-pool+1;z<=1;z++)pipe(level,grid.at(-3,0,z));for(int x=-2;x<0;x++)pipe(level,grid.at(x,0,-pool+1));
+        for(int[] p:new int[][]{{0,lift,len+pool-1},{0,0,-pool+1}})level.setBlock(grid.at(p[0],p[1],p[2]),Content.PORT.get().defaultBlockState().setValue(CulvertPortBlock.FACING,f.getClockWise()),2);
         // Step the wall walkway down to each gate's deck, without touching the wet wall below.
-        for(int side=0;side<2;side++)for(int x:new int[]{-1,w}) {
+        for(int side=0;side<2;side++)for(int x:new int[]{0,w-1}) {
             int gateZ=side*len,deck=lift+(side==0?2:3),steps=top+1-deck;
             for(int dz=-steps;dz<=steps;dz++) {
                 int y=deck+Math.max(0,Math.abs(dz)-1);

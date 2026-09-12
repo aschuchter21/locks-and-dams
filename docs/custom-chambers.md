@@ -1,7 +1,11 @@
-# Player-built chambers: dev.8
+# Player-built chambers: dev.9
+
+For the new wall-mounted hinge layout and gate pockets, use
+[the recessed gate guide](gate-repairs-and-recesses.md). The geometry instructions
+below describe the previous layout, which remains supported. New demos use recesses.
 
 Minecraft 1.20.1, Forge 47.4.10 and Create 6.0.8. Replace the older Locks & Dams
-JAR with dev.8 on both client and server. Existing fixed-size locks remain supported.
+JAR with dev.9 on both client and server. Existing fixed-size locks remain supported.
 
 ## Try the example
 

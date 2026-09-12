@@ -40,9 +40,9 @@ def bolts(z,y0=2,y1=13):
     return [box([x,y,z],[x+1,y+1,z+.6],'brass') for x in (1,14) for y in (y0,y1)]
 
 # Timber boards in a riveted steel frame. Top tiles receive the walking deck.
-panel=[box([1,0,6.25],[15,16,9.75],'wood')]
-for x in (1,13):panel.append(box([x,0,5],[x+2,16,11],'steel'))
-for y in (0,7,14):panel.append(box([1,y,5.5],[15,y+2,10.5],'edge'))
+panel=[box([0,0,6.25],[16,16,9.75],'wood')]
+for x in (0,14):panel.append(box([x,0,5],[x+2,16,11],'steel'))
+for y in (0,7,14):panel.append(box([0,y,5.5],[16,y+2,10.5],'edge'))
 for z in (5,10.5):panel+=bolts(z)
 model('gate_panel',panel)
 for edge in range(5):
@@ -57,7 +57,7 @@ item('gate_panel','gate_panel_top')
 write('blockstates/gate_panel.json',{'variants':{f'axis={axis},top={str(top).lower()},edge={edge}':{'model':'locksanddams:block/gate_panel'+(('_top'+('' if edge==0 else '_'+str(edge))) if top else ''),**({'y':90} if axis=='x' else {})} for axis in ('x','y','z') for top in (False,True) for edge in range(5)}})
 
 # The existing kinetic bearing renderer supplies the turning plate and shaft.
-hinge=[box([0,0,0],[16,3,16],'steel'),box([1,3,1],[15,10,15],'edge'),box([3,10,3],[13,13,13],'brass'),box([4,13,4],[12,15,12],'steel')]
+hinge=[box([0,0,0],[16,16,16],'steel'),box([1,3,1],[15,10,15],'edge'),box([3,10,3],[13,13,13],'brass'),box([4,13,4],[12,15,12],'steel')]
 for x in (1,13):
     for z in (1,13):hinge.append(box([x,3,z],[x+2,4,z+2],'brass'))
 for z in (0,15):hinge.append(box([4,4,z],[12,8,z+1],'dark'))

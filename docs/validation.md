@@ -1,5 +1,25 @@
 # Validation and development fixtures
 
+## Gate repairs, desk hit targets and recesses: dev.9
+
+The dedicated wired suite passed full gate/water cycles in all four orientations
+using the recessed demo. A separate `-PrecessChecks runServer` fixture verified
+clear widths 4, 7, 10 and 16, saved recessed geometry, and complete lower-gate
+opening/closing with signed rotation. Its gates reached 90 degrees, parallel to
+the walls. An in-game screenshot confirms the leaves sit inside the pockets.
+
+The client fixture now uses actual player-eye block raycasts and block-use calls
+for the center switch, emergency-stop button and reset. It also mines a closed
+gate seal through the player's game mode, verifies the moving leaf disappears
+and the selected cell becomes air, places a replacement while facing the wrong
+direction, checks that it inherits the neighboring panel's axis, and reassembles
+the repaired gate. These checks passed, along with desk placement and linking.
+The preview world was reloaded between runs with its recessed geometry retained.
+
+Mining an open moving contraption is not the repair workflow: close the gate
+before editing. Existing walls and gate locations are not automatically rebuilt
+into the new recessed layout. The updated building guide describes that conversion.
+
 ## Industrial control desk and signed rotation: dev.8
 
 September 12, 2026: `-PdeskChecks runServer` passed a 2,850-tick acceptance
