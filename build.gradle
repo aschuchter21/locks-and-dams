@@ -54,6 +54,26 @@ tasks.named('processResources').configure {
 tasks.withType(JavaCompile).configureEach { options.encoding = 'UTF-8' }
 
 // Test fixtures are opt-in and excluded from normal distribution builds.
+if (project.hasProperty('modelMigration')) {
+    sourceSets.main.java.srcDir 'tools/migrationtest'
+    legacyForge.runs.server {
+        gameDirectory = project.file('run-custom-checks')
+        systemProperty 'locksanddams.modelMigration', 'true'
+    }
+}
+if (project.hasProperty('modelPreview')) {
+    sourceSets.main.java.srcDir 'tools/modeltest'
+    legacyForge.runs.client {
+        gameDirectory = project.file('run-preview')
+        systemProperty 'locksanddams.modelPreview', 'true'
+        programArgument '--quickPlaySingleplayer'
+        programArgument 'Create Lock QA 2'
+        programArgument '--width'
+        programArgument '1280'
+        programArgument '--height'
+        programArgument '800'
+    }
+}
 if (project.hasProperty('customChecks')) {
     sourceSets.main.java.srcDir 'tools/customtest'
     legacyForge.runs.server {

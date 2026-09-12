@@ -2,7 +2,13 @@
 
 A navigation-lock mod for **Minecraft 1.20.1 / Forge 47.4.10 / Create 6.0.8**.
 
-## Prototype: 0.1.0-dev.6
+## Prototype: 0.1.0-dev.7
+
+Industrial gate, hinge, valve and culvert models now replace the placeholder
+art. Gate top rows automatically carry grated catwalks, including existing
+saved gate contraptions. A closed pair forms a crossing when both leaves have
+matching top heights. Both leaves pause while a player or mob occupies the
+catwalk. See [the model and catwalk guide](docs/infrastructure-models.md).
 
 Custom controllers can now move to another valid side-wall position. Remove the
 old controller and repair its wall opening before assembling the new one. Existing

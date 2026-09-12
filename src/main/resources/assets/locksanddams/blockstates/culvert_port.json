@@ -1,19 +1,48 @@
 {
   "variants": {
-    "facing=north": {
-      "model": "locksanddams:block/culvert_port",
-      "y": 0
+    "facing=north,role=0": {
+      "model": "locksanddams:block/culvert_port"
     },
-    "facing=east": {
+    "facing=north,role=1": {
+      "model": "locksanddams:block/culvert_port_intake"
+    },
+    "facing=north,role=2": {
+      "model": "locksanddams:block/culvert_port_outlet"
+    },
+    "facing=east,role=0": {
       "model": "locksanddams:block/culvert_port",
       "y": 90
     },
-    "facing=south": {
+    "facing=east,role=1": {
+      "model": "locksanddams:block/culvert_port_intake",
+      "y": 90
+    },
+    "facing=east,role=2": {
+      "model": "locksanddams:block/culvert_port_outlet",
+      "y": 90
+    },
+    "facing=south,role=0": {
       "model": "locksanddams:block/culvert_port",
       "y": 180
     },
-    "facing=west": {
+    "facing=south,role=1": {
+      "model": "locksanddams:block/culvert_port_intake",
+      "y": 180
+    },
+    "facing=south,role=2": {
+      "model": "locksanddams:block/culvert_port_outlet",
+      "y": 180
+    },
+    "facing=west,role=0": {
       "model": "locksanddams:block/culvert_port",
+      "y": 270
+    },
+    "facing=west,role=1": {
+      "model": "locksanddams:block/culvert_port_intake",
+      "y": 270
+    },
+    "facing=west,role=2": {
+      "model": "locksanddams:block/culvert_port_outlet",
       "y": 270
     }
   }

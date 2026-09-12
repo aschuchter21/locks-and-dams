@@ -1,5 +1,44 @@
 # Validation and development fixtures
 
+## Infrastructure models and catwalks: dev.7
+
+September 12, 2026: the dedicated Forge/Create fixture passed full fill/drain
+cycles at widths 4, 7, 10 and 16, across four orientations. It verified top-row
+catwalks on all 16 leaves, port visual roles, both leaves holding still while
+the catwalk was occupied, and subsequent opening/closing of both raised and
+lower gate pairs. The legacy two-hinge gate also opened successfully. Boat
+passengers and cargo remained intact through the existing regression suite.
+
+An actual integrated client player crossed the closed six-wide gate. Position
+samples verified continuous support at deck height throughout the crossing;
+Create collision does not consistently set vanilla's `onGround` flag, so this
+check measures support and completed travel rather than relying on that flag.
+The client baked the native models and captured walking, gate and plumbing
+screenshots without missing model or texture warnings.
+
+The actual dev.6 controller-relocation test world was loaded with dev.7. All
+16 saved leaves acquired their top-row catwalk states, and four relocated
+controllers retained valid chambers, low water targets and gate ownership.
+The migration fixture waits for saved contraption entities to attach before
+checking their state.
+
+Reproduction:
+
+- `./gradlew -PcustomChecks runServer` in a fresh isolated world; require
+  `PASS:` in `run-custom-checks/custom-checks-result.txt`.
+- `./gradlew -PmodelPreview runClient` uses the isolated `run-preview` world
+  `Create Lock QA 2`; require `PASS:` in `model-preview-result.txt` and inspect
+  `screenshots/dev7-*.png`. The fixture uses a dedicated build at X=2200.
+- `./gradlew -PmodelMigration runServer` targets the saved dev.6 relocation
+  fixture (`controller-relocation-1` in `run-custom-checks/server.properties`);
+  require `PASS:` in `model-migration-result.txt`. This fixture needs that
+  earlier saved world and is not a fresh-world generator.
+
+The geometry contact sheet is an offline model preview, not a game screenshot.
+Resource validation checks model cuboids, legal element rotation angles,
+material references and PNG integrity. All fixtures are excluded from the
+normal release JAR. Remote multiplayer and new boat types remain untested.
+
 ## Controller relocation: dev.6
 
 September 12, 2026: 12 controller relocations passed on the dedicated
@@ -152,5 +191,5 @@ repeating the ride, add `-PlockOverview`.
 ## Packaging
 
 Run `./gradlew clean build` with no fixture properties. Distribute only
-`build/libs/LocksAndDams-Forge-1.20.1-0.1.0-dev.6.jar`. The release must exclude
+`build/libs/LocksAndDams-Forge-1.20.1-0.1.0-dev.7.jar`. The release must exclude
 all `*Checks` fixtures. Tests and run worlds are not shipped.

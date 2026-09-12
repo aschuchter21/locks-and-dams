@@ -1,10 +1,36 @@
 {
   "variants": {
-    "open=false": {
-      "model": "locksanddams:block/fill_valve"
+    "facing=north,open=false": {
+      "model": "locksanddams:block/fill_valve",
+      "y": 0
     },
-    "open=true": {
-      "model": "locksanddams:block/fill_valve_open"
+    "facing=north,open=true": {
+      "model": "locksanddams:block/fill_valve_open",
+      "y": 0
+    },
+    "facing=east,open=false": {
+      "model": "locksanddams:block/fill_valve",
+      "y": 90
+    },
+    "facing=east,open=true": {
+      "model": "locksanddams:block/fill_valve_open",
+      "y": 90
+    },
+    "facing=south,open=false": {
+      "model": "locksanddams:block/fill_valve",
+      "y": 180
+    },
+    "facing=south,open=true": {
+      "model": "locksanddams:block/fill_valve_open",
+      "y": 180
+    },
+    "facing=west,open=false": {
+      "model": "locksanddams:block/fill_valve",
+      "y": 270
+    },
+    "facing=west,open=true": {
+      "model": "locksanddams:block/fill_valve_open",
+      "y": 270
     }
   }
 }

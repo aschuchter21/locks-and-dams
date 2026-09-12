@@ -1,14 +1,104 @@
 {
   "variants": {
-    "axis=x": {
+    "axis=x,top=false,edge=0": {
       "model": "locksanddams:block/gate_panel",
       "y": 90
     },
-    "axis=y": {
+    "axis=x,top=false,edge=1": {
+      "model": "locksanddams:block/gate_panel",
+      "y": 90
+    },
+    "axis=x,top=false,edge=2": {
+      "model": "locksanddams:block/gate_panel",
+      "y": 90
+    },
+    "axis=x,top=false,edge=3": {
+      "model": "locksanddams:block/gate_panel",
+      "y": 90
+    },
+    "axis=x,top=false,edge=4": {
+      "model": "locksanddams:block/gate_panel",
+      "y": 90
+    },
+    "axis=x,top=true,edge=0": {
+      "model": "locksanddams:block/gate_panel_top",
+      "y": 90
+    },
+    "axis=x,top=true,edge=1": {
+      "model": "locksanddams:block/gate_panel_top_1",
+      "y": 90
+    },
+    "axis=x,top=true,edge=2": {
+      "model": "locksanddams:block/gate_panel_top_2",
+      "y": 90
+    },
+    "axis=x,top=true,edge=3": {
+      "model": "locksanddams:block/gate_panel_top_3",
+      "y": 90
+    },
+    "axis=x,top=true,edge=4": {
+      "model": "locksanddams:block/gate_panel_top_4",
+      "y": 90
+    },
+    "axis=y,top=false,edge=0": {
       "model": "locksanddams:block/gate_panel"
     },
-    "axis=z": {
+    "axis=y,top=false,edge=1": {
       "model": "locksanddams:block/gate_panel"
+    },
+    "axis=y,top=false,edge=2": {
+      "model": "locksanddams:block/gate_panel"
+    },
+    "axis=y,top=false,edge=3": {
+      "model": "locksanddams:block/gate_panel"
+    },
+    "axis=y,top=false,edge=4": {
+      "model": "locksanddams:block/gate_panel"
+    },
+    "axis=y,top=true,edge=0": {
+      "model": "locksanddams:block/gate_panel_top"
+    },
+    "axis=y,top=true,edge=1": {
+      "model": "locksanddams:block/gate_panel_top_1"
+    },
+    "axis=y,top=true,edge=2": {
+      "model": "locksanddams:block/gate_panel_top_2"
+    },
+    "axis=y,top=true,edge=3": {
+      "model": "locksanddams:block/gate_panel_top_3"
+    },
+    "axis=y,top=true,edge=4": {
+      "model": "locksanddams:block/gate_panel_top_4"
+    },
+    "axis=z,top=false,edge=0": {
+      "model": "locksanddams:block/gate_panel"
+    },
+    "axis=z,top=false,edge=1": {
+      "model": "locksanddams:block/gate_panel"
+    },
+    "axis=z,top=false,edge=2": {
+      "model": "locksanddams:block/gate_panel"
+    },
+    "axis=z,top=false,edge=3": {
+      "model": "locksanddams:block/gate_panel"
+    },
+    "axis=z,top=false,edge=4": {
+      "model": "locksanddams:block/gate_panel"
+    },
+    "axis=z,top=true,edge=0": {
+      "model": "locksanddams:block/gate_panel_top"
+    },
+    "axis=z,top=true,edge=1": {
+      "model": "locksanddams:block/gate_panel_top_1"
+    },
+    "axis=z,top=true,edge=2": {
+      "model": "locksanddams:block/gate_panel_top_2"
+    },
+    "axis=z,top=true,edge=3": {
+      "model": "locksanddams:block/gate_panel_top_3"
+    },
+    "axis=z,top=true,edge=4": {
+      "model": "locksanddams:block/gate_panel_top_4"
     }
   }
 }

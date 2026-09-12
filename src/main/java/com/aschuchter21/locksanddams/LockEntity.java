@@ -164,7 +164,7 @@ public final class LockEntity extends BlockEntity {
         if(!loaded(pos)) return;
         BlockState s=level.getBlockState(pos);
         if(s.getBlock() instanceof ControlBlock) {
-            BlockState next=s.setValue(ControlBlock.POWERED,signal(pos)).setValue(ControlBlock.OPEN,open);
+            BlockState next=s.setValue(ControlBlock.POWERED,signal(pos)).setValue(ControlBlock.OPEN,open).setValue(ControlBlock.FACING,layout().forward().getCounterClockWise());
             if(!s.equals(next)) level.setBlock(pos,next,Block.UPDATE_CLIENTS);
         }
     }

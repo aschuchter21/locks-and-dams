@@ -1,7 +1,62 @@
 {
-  "variants": {
-    "": {
-      "model": "locksanddams:block/culvert_pipe"
+  "multipart": [
+    {
+      "apply": {
+        "model": "locksanddams:block/culvert_pipe_core"
+      }
+    },
+    {
+      "when": {
+        "north": "true"
+      },
+      "apply": {
+        "model": "locksanddams:block/culvert_pipe_branch"
+      }
+    },
+    {
+      "when": {
+        "east": "true"
+      },
+      "apply": {
+        "model": "locksanddams:block/culvert_pipe_branch",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "south": "true"
+      },
+      "apply": {
+        "model": "locksanddams:block/culvert_pipe_branch",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "west": "true"
+      },
+      "apply": {
+        "model": "locksanddams:block/culvert_pipe_branch",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "up": "true"
+      },
+      "apply": {
+        "model": "locksanddams:block/culvert_pipe_branch",
+        "x": 90
+      }
+    },
+    {
+      "when": {
+        "down": "true"
+      },
+      "apply": {
+        "model": "locksanddams:block/culvert_pipe_branch",
+        "x": 270
+      }
     }
-  }
+  ]
 }

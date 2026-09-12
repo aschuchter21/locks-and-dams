@@ -17,6 +17,7 @@ import net.minecraftforge.fml.common.Mod;
 public final class CustomChecks {
     static MinecraftServer server;static ServerLevel level;static int tick;static boolean done;
     static final List<CustomLock> locks=new ArrayList<>();static final List<ChestBoat> boats=new ArrayList<>();static final List<Villager> riders=new ArrayList<>();static final Map<BlockPos,Integer> paused=new HashMap<>();
+    static final List<Villager> walkers=new ArrayList<>();
     static LockLayout legacy=new LockLayout(new BlockPos(1000,200,100),Direction.NORTH);
     static void check(boolean ok,String msg){if(!ok)throw new IllegalStateException("tick "+tick+": "+msg);}
     static void finish(Throwable e){done=true;try{Files.writeString(Path.of(Boolean.getBoolean("locksanddams.customRestore")?"custom-restart-result.txt":"custom-checks-result.txt"),e==null?"PASS: custom chamber checks completed\n":"FAIL: "+e+"\n");}catch(Exception x){x.printStackTrace();}if(e!=null)e.printStackTrace();server.halt(false);}
@@ -59,11 +60,24 @@ public final class CustomChecks {
                 if(tick==90) {for(CustomLock c:locks){LockEntity be=(LockEntity)level.getBlockEntity(c.owner);check(be.waterUnits()>c.low&&be.validate()==null,"Repaired port did not resume filling");power(c.fill.relative(c.forward.getCounterClockWise()),false);}finish(null);}return;
             }
             if(tick==20)power(legacy.at(-1,1,0),true);
-            if(tick==160)check(((LockHingeEntity)level.getBlockEntity(legacy.at(1,-2,0))).open(),"Legacy hinge stopped working");
+            if(tick==160){var h=(LockHingeEntity)level.getBlockEntity(legacy.at(1,-2,0));check(h.open(),"Legacy hinge stopped working: "+h.gateAngle()+" "+h.obstruction());}
             int i=0;for(CustomLock c:locks) {
                 LockEntity be=(LockEntity)level.getBlockEntity(c.owner);
                 if(tick<=310||tick>330)check(be.validate()==null,"Validation: "+be.validate()+" "+be.status());
                 if(tick>20&&tick%25==0){var b=boats.get(i);check(b.isAlive()&&riders.get(i).getVehicle()==b&&b.getItem(0).getCount()==17,"Lost boat, passenger or cargo");check(Math.abs(b.getY()-(c.base.getY()+be.waterUnits()/16.0-.36))<.6,"Boat lost surface");}i++;
+                if(tick==5) {
+                    for(int leaf=0;leaf<4;leaf++) {
+                        var h=c.hinge(level,leaf);var blocks=h.getMovedContraption().getContraption().getBlocks();int top=0;
+                        for(var entry:blocks.entrySet()) {
+                            var state=entry.getValue().state();boolean isTop=entry.getKey().getY()==h.geometry().height()-1;
+                            check(state.getValue(GatePanelBlock.TOP)==isTop,"Catwalk outside top row");if(isTop)top++;
+                        }
+                        check(top==h.geometry().width(),"Incomplete catwalk width");
+                    }
+                    check(level.getBlockState(c.fillPort).getValue(CulvertPortBlock.ROLE)==1&&level.getBlockState(c.drainPort).getValue(CulvertPortBlock.ROLE)==2,"Port visual roles wrong");
+                    var walker=EntityType.VILLAGER.create(level);walker.setNoAi(true);var pos=c.leaves[0].at(1,c.leaves[0].height()-1);walker.setPos(pos.getX()+.5,pos.getY()+1,pos.getZ()+.5);level.addFreshEntity(walker);walkers.add(walker);gate(c,0,true);
+                }
+                if(tick==18){check(Math.abs(c.hinge(level,0).gateAngle())<.001&&Math.abs(c.hinge(level,1).gateAngle())<.001,"Gate pair moved beneath catwalk occupant");walkers.get(i-1).discard();gate(c,0,false);}
                 if(tick==20){gate(c,0,true);power(c.fill.relative(c.forward.getCounterClockWise()),true);}
                 if(tick==60)check(c.hinge(level,0).gateAngle()<0&&c.hinge(level,1).gateAngle()>0,"Paired gates not swinging apart");
                 if(tick==150){check(c.hinge(level,0).open()&&c.hinge(level,1).open(),"Lower pair failed opening "+c.hinge(level,0).gateAngle()+" "+c.hinge(level,0).obstruction());check(be.waterUnits()==c.low,"Filled with gate open");gate(c,0,false);}

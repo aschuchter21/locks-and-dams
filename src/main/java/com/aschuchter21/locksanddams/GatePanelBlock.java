@@ -13,14 +13,21 @@ import net.minecraft.world.level.Level;
 public class GatePanelBlock extends Block {
     public static final EnumProperty<net.minecraft.core.Direction.Axis> AXIS = EnumProperty.create("axis", net.minecraft.core.Direction.Axis.class);
     public static final BooleanProperty OPEN = BooleanProperty.create("open");
+    public static final BooleanProperty TOP = BooleanProperty.create("top");
+    public static final IntegerProperty EDGE = IntegerProperty.create("edge",0,4);
     public static final IntegerProperty DEPTH = IntegerProperty.create("depth", 0, 16);
     public GatePanelBlock() {
         super(Content.metal().noOcclusion().isSuffocating((s, l, p) -> !s.getValue(OPEN)));
-        registerDefaultState(stateDefinition.any().setValue(OPEN, false).setValue(DEPTH, 0).setValue(AXIS,net.minecraft.core.Direction.Axis.Z));
+        registerDefaultState(stateDefinition.any().setValue(OPEN, false).setValue(TOP, false).setValue(EDGE,0).setValue(DEPTH, 0).setValue(AXIS,net.minecraft.core.Direction.Axis.Z));
     }
-    @Override protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) { builder.add(OPEN, DEPTH, AXIS); }
+    @Override protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) { builder.add(OPEN, DEPTH, AXIS, TOP, EDGE); }
     @Override public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-        return state.getValue(OPEN)?Shapes.empty():state.getValue(AXIS)==net.minecraft.core.Direction.Axis.X?box(6,0,.5,10,16,15.5):box(.5,0,6,15.5,16,10);
+        if(state.getValue(OPEN))return Shapes.empty();
+        boolean acrossZ=state.getValue(AXIS)==net.minecraft.core.Direction.Axis.X;
+        VoxelShape panel=acrossZ?box(5,0,1,11,16,15):box(1,0,5,15,16,11);
+        int edge=state.getValue(EDGE),lo=edge==1?2:edge==4?1:0,hi=edge==2?14:edge==3?15:16;
+        VoxelShape deck=acrossZ?box(3,14,lo,13,16,hi):box(lo,14,3,hi,16,13);
+        return state.getValue(TOP)?Shapes.or(panel,deck):panel;
     }
     @Override public VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) { return getShape(state, level, pos, context); }
     @Override public RenderShape getRenderShape(BlockState state) { return state.getValue(OPEN) ? RenderShape.INVISIBLE : RenderShape.MODEL; }

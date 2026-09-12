@@ -24,6 +24,7 @@ public final class LockHingeEntity extends MechanicalBearingBlockEntity {
     private long permitUntil;
     private boolean obstructed;
     private String obstruction="";
+    private AbstractContraptionEntity modeledContraption;
     public LockHingeEntity(BlockPos p,BlockState s) { super(Content.HINGE_ENTITY.get(),p,s); }
     @Override public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
         super.addBehaviours(behaviours);movementMode.setValue(RotationMode.ROTATE_NEVER_PLACE.ordinal());
@@ -43,7 +44,19 @@ public final class LockHingeEntity extends MechanicalBearingBlockEntity {
     public void bind(LockLayout l,int z) { forward=l.forward();side=z;bind(l.origin(),new GateSpec(l.at(1,0,z),forward.getClockWise(),5,6,z==0?-90:90)); }
     public void bind(BlockPos controller,GateSpec geometry) { owner=controller;leaf=geometry;setChanged(); }
     public GateSpec geometry() {return leaf;}
+    public boolean catwalkOccupied() {
+        if(level==null||leaf==null)return false;
+        Vec3 u=VecHelper.rotate(Vec3.atLowerCornerOf(new BlockPos(leaf.inward().getNormal())),angle,Direction.Axis.Y);
+        Vec3 v=new Vec3(-u.z,0,u.x),center=Vec3.atCenterOf(leaf.base()).add(u.scale((leaf.width()-1)/2.0));
+        double y=leaf.base().getY()+leaf.height(),r=leaf.width()/2.0+1;
+        AABB search=new AABB(center.x-r,y-.1,center.z-r,center.x+r,y+2,center.z+r);
+        for(Entity e:level.getEntities((Entity)null,search,e->!e.isSpectator()&&e instanceof LivingEntity))
+            if(e.getBoundingBox().minY<=y+.2&&intersects(e.getBoundingBox().inflate(.05),center,u,v,.3125))return true;
+        return false;
+    }
+    public void hold() {if(target!=angle){target=angle;sendData();}permitUntil=level.getGameTime()+6;}
     public void request(boolean open) {
+        if(catwalkOccupied()){hold();return;}
         float requested=open?openAngle():0;
         if(target!=requested) { target=requested;sendData(); }
         permitUntil=level.getGameTime()+6;
@@ -66,26 +79,30 @@ public final class LockHingeEntity extends MechanicalBearingBlockEntity {
         Vec3 u=VecHelper.rotate(Vec3.atLowerCornerOf(new BlockPos(leaf.inward().getNormal())),a,Direction.Axis.Y);
         Vec3 v=new Vec3(-u.z,0,u.x);Vec3 center=pivot.add(u.scale((leaf.width()-1)/2.0));
         double radius=leaf.width()/2.0+1;
-        AABB search=new AABB(center.x-radius,leaf.base().getY(),center.z-radius,center.x+radius,leaf.base().getY()+leaf.height(),center.z+radius);
+        double deckY=leaf.base().getY()+leaf.height();
+        AABB search=new AABB(center.x-radius,leaf.base().getY(),center.z-radius,center.x+radius,deckY+2,center.z+radius);
         for(Entity e:level.getEntities((Entity)null,search,e -> !e.isSpectator()&&(e instanceof Boat||e instanceof LivingEntity))) {
-            if(intersects(e.getBoundingBox().inflate(.18),center,u,v))return true;
+            AABB body=e.getBoundingBox().inflate(.18);
+            if(body.minY<=deckY+.1&&intersects(body,center,u,v,body.minY>=deckY-.2?.3125:.1875))return true;
         }
         for(BlockPos p:BlockPos.betweenClosed(BlockPos.containing(search.minX,search.minY,search.minZ),BlockPos.containing(search.maxX,search.maxY-.001,search.maxZ))) {
             if(!level.hasChunkAt(p))return true;
             BlockState state=level.getBlockState(p);
-            if(state.is(Content.SEAL.get()))continue;
+            if(state.is(Content.SEAL.get())||p.getY()>=deckY)continue;
             for(AABB box:state.getCollisionShape(level,p).toAabbs())
-                if(intersects(box.move(p),center,u,v)) {obstruction=p.toShortString()+" "+state;return true;}
+                if(intersects(box.move(p),center,u,v,p.getY()==deckY-1?.3125:.1875)) {obstruction=p.toShortString()+" "+state;return true;}
         }
         return false;
     }
-    private boolean intersects(AABB box,Vec3 center,Vec3 u,Vec3 v) {
+    private boolean intersects(AABB box,Vec3 center,Vec3 u,Vec3 v,double halfDepth) {
+        if(halfDepth>.2)center=center.add(u.scale(.03125));
+        double halfWidth=leaf.width()/2.0-(halfDepth>.2?.09375:.0625);
         double dx=box.getCenter().x-center.x,dz=box.getCenter().z-center.z;
         double ex=box.getXsize()/2,ez=box.getZsize()/2;
-        return Math.abs(dx)<ex+(leaf.width()/2.0-.03125)*Math.abs(u.x)+.125*Math.abs(v.x)-.0001
-            &&Math.abs(dz)<ez+(leaf.width()/2.0-.03125)*Math.abs(u.z)+.125*Math.abs(v.z)-.0001
-            &&Math.abs(dx*u.x+dz*u.z)<(leaf.width()/2.0-.03125)+ex*Math.abs(u.x)+ez*Math.abs(u.z)-.0001
-            &&Math.abs(dx*v.x+dz*v.z)<.125+ex*Math.abs(v.x)+ez*Math.abs(v.z)-.0001;
+        return Math.abs(dx)<ex+halfWidth*Math.abs(u.x)+halfDepth*Math.abs(v.x)-.0001
+            &&Math.abs(dz)<ez+halfWidth*Math.abs(u.z)+halfDepth*Math.abs(v.z)-.0001
+            &&Math.abs(dx*u.x+dz*u.z)<halfWidth+ex*Math.abs(u.x)+ez*Math.abs(u.z)-.0001
+            &&Math.abs(dx*v.x+dz*v.z)<halfDepth+ex*Math.abs(v.x)+ez*Math.abs(v.z)-.0001;
     }
     @Override public void assemble() {
         if(level==null||level.isClientSide||owner==null||running)return;
@@ -119,7 +136,25 @@ public final class LockHingeEntity extends MechanicalBearingBlockEntity {
         // Saved contraptions attach after their controller loads; never discard that pending state.
         if(running&&movedContraption==null)assembleNextTick=false;
         super.tick();
+        if(level!=null&&!level.isClientSide&&leaf!=null&&movedContraption!=null&&modeledContraption!=movedContraption) {
+            // Upgrade saved gate entities in place, preserving their angle and identity.
+            var contraption=movedContraption.getContraption();
+            for(var entry:List.copyOf(contraption.getBlocks().entrySet())) {
+                var info=entry.getValue();
+                if(info.state().is(Content.PANEL.get())) {
+                    int column=Math.abs(entry.getKey().getX())+Math.abs(entry.getKey().getZ());
+                    int topY=leaf.base().getY()-worldPosition.getY()-1+leaf.height()-1;
+                    var state=info.state().setValue(GatePanelBlock.TOP,entry.getKey().getY()==topY).setValue(GatePanelBlock.EDGE,edge(leaf,column));
+                    if(!state.equals(info.state()))movedContraption.setBlock(entry.getKey(),new net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate.StructureBlockInfo(info.pos(),state,info.nbt()));
+                }
+            }
+            contraption.invalidateColliders();modeledContraption=movedContraption;
+        }
         if(level!=null&&!level.isClientSide&&running&&level.getGameTime()%5==0) {setChanged();sendData();}
+    }
+    private static int edge(GateSpec leaf,int column) {
+        boolean positive=leaf.inward()==Direction.EAST||leaf.inward()==Direction.SOUTH;
+        return column==0?(positive?1:2):column==leaf.width()-1?(positive?3:4):0;
     }
     @Override public void write(CompoundTag tag,boolean packet) {
         super.write(tag,packet);if(leaf!=null)tag.put("Leaf",leaf.save());if(owner!=null)tag.put("LockOwner",NbtUtils.writeBlockPos(owner));
@@ -140,7 +175,7 @@ public final class LockHingeEntity extends MechanicalBearingBlockEntity {
             for(int x=0;x<leaf.width();x++)for(int y=0;y<leaf.height();y++)if(!level.getBlockState(leaf.at(x,y)).is(Content.PANEL.get()))return false;
             for(int x=0;x<leaf.width();x++)for(int y=0;y<leaf.height();y++) {
                 BlockPos p=leaf.at(x,y);
-                level.setBlock(p,level.getBlockState(p).setValue(GatePanelBlock.OPEN,false).setValue(GatePanelBlock.DEPTH,0).setValue(GatePanelBlock.AXIS,leaf.normal()),Block.UPDATE_CLIENTS);
+                level.setBlock(p,level.getBlockState(p).setValue(GatePanelBlock.OPEN,false).setValue(GatePanelBlock.TOP,y==leaf.height()-1).setValue(GatePanelBlock.EDGE,edge(leaf,x)).setValue(GatePanelBlock.DEPTH,0).setValue(GatePanelBlock.AXIS,leaf.normal()),Block.UPDATE_CLIENTS);
                 addBlock(level,p,capture(level,p));
             }
             startMoving(level);expandBoundsAroundAxis(Direction.Axis.Y);return true;

@@ -60,6 +60,15 @@ public final class CustomDemo {
         pipe(level,drain.below());for(int x=-3;x<=-1;x++)pipe(level,grid.at(x,0,1));
         for(int z=-2;z<=1;z++)pipe(level,grid.at(-3,0,z));pipe(level,grid.at(-2,0,-2));
         for(int[] p:new int[][]{{-1,lift,len+2},{-1,0,-2}})level.setBlock(grid.at(p[0],p[1],p[2]),Content.PORT.get().defaultBlockState().setValue(CulvertPortBlock.FACING,f.getClockWise()),2);
+        // Step the wall walkway down to each gate's deck, without touching the wet wall below.
+        for(int side=0;side<2;side++)for(int x:new int[]{-1,w}) {
+            int gateZ=side*len,deck=lift+(side==0?2:3),steps=top+1-deck;
+            for(int dz=-steps;dz<=steps;dz++) {
+                int y=deck+Math.max(0,Math.abs(dz)-1);
+                for(int clear=y;clear<=top;clear++)level.setBlock(grid.at(x,clear,gateZ+dz),Blocks.AIR.defaultBlockState(),2);
+                if(dz!=0)level.setBlock(grid.at(x,y,gateZ+dz),Blocks.STONE_BRICK_STAIRS.defaultBlockState().setValue(StairBlock.FACING,dz>0?f:f.getOpposite()),2);
+            }
+        }
         LockEntity lock=(LockEntity)level.getBlockEntity(controller);WaterConnection.require(lock.assemble(),"Demo assembly: "+lock.status());return controller;
     }
     static void pipe(ServerLevel level,BlockPos p){level.setBlock(p,Content.PIPE.get().defaultBlockState(),2);}

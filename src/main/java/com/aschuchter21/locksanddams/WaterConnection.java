@@ -29,7 +29,20 @@ public record WaterConnection(BlockPos port,BlockPos mouth,int surface) {
                 if(n.is(Content.PIPE.get())||n.is(Content.PORT.get()))queue.add(next);
             }
         }
-        require(result!=null,"Connect each culvert to a canal surface port.");return result;
+        require(result!=null,"Connect each culvert to a canal surface port.");
+        if(!level.isClientSide) {
+            for(BlockPos p:seen) {
+                var state=level.getBlockState(p);
+                if(state.is(Content.PIPE.get())) {
+                    var next=CulvertPipeBlock.connected(state,level,p);
+                    if(!next.equals(state))level.setBlock(p,next,2);
+                }
+            }
+            var state=level.getBlockState(result.port());
+            var next=state.setValue(CulvertPortBlock.ROLE,level.getBlockState(valve).is(Content.FILL.get())?1:2);
+            if(!next.equals(state))level.setBlock(result.port(),next,2);
+        }
+        return result;
     }
     static void require(boolean ok,String message) {if(!ok)throw new IllegalArgumentException(message);}
 }

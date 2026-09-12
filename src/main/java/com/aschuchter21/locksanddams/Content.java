@@ -22,7 +22,7 @@ public final class Content {
     public static final RegistryObject<Block> PANEL = block("gate_panel", GatePanelBlock::new);
     public static final RegistryObject<Block> SEAL = BLOCKS.register("gate_seal", GateSealBlock::new);
     public static final RegistryObject<Block> HINGE = block("lock_hinge", LockHingeBlock::new);
-    public static final RegistryObject<Block> PIPE = block("culvert_pipe", () -> new Block(metal()));
+    public static final RegistryObject<Block> PIPE = block("culvert_pipe", CulvertPipeBlock::new);
     public static final RegistryObject<Block> PORT = block("culvert_port", CulvertPortBlock::new);
     public static final RegistryObject<Block> DRIVE = block("gate_drive", ControlBlock::new);
     public static final RegistryObject<Block> FILL = block("fill_valve", ControlBlock::new);

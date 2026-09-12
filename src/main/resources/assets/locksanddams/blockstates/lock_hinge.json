@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "create:block/mechanical_bearing"
+      "model": "locksanddams:block/lock_hinge"
     }
   }
 }

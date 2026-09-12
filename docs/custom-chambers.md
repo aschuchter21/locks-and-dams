@@ -1,7 +1,7 @@
-# Player-built chambers: dev.6
+# Player-built chambers: dev.7
 
 Minecraft 1.20.1, Forge 47.4.10 and Create 6.0.8. Replace the older Locks & Dams
-JAR with dev.6 on both client and server. Existing fixed-size locks remain supported.
+JAR with dev.7 on both client and server. Existing fixed-size locks remain supported.
 
 ## Try the example
 
@@ -28,6 +28,9 @@ dimensions from the hinges and its water limits from the ports.
    above the hinges and extending toward the center. No glue is needed. The
    left leaf covers half the width, rounded down; the right gets the remainder.
    For a seven-wide opening, use a three-wide left leaf and four-wide right leaf.
+   Build both leaves at an opening to the same top height for a level catwalk.
+   Assembly automatically adds the walking deck to their top rows; no separate
+   catwalk item is needed. Connect side-wall landings at that deck height.
 4. Make both lower leaves tall enough to contain the upper water level. The
    upper leaves need to contain the upper canal above its raised sill. Give
    boats adequate clearance above both canal surfaces. Keep both outward gate
@@ -65,6 +68,12 @@ For accessible controls, put a **Gate Drive** directly against the outward side
 of that hinge, then attach a lever to the drive. Removing the signal requests
 closed. Gate Drives elsewhere are not automatically linked.
 
+Players can walk across the gate-top catwalk when both leaves are fully closed.
+Both leaves pause while a player or mob stands on either leaf's catwalk, then
+resume the redstone request once it is clear. Keep the wider top sweep clear
+as well as the gate panels below it. Upper and lower gate catwalks may be at
+different elevations.
+
 Power the fill valve to raise the water, or the drain valve to lower it. Both
 gate pairs must finish closing first. Powering both valves pauses the water.
 The port surfaces supply the targets automatically. A full block of lift takes
@@ -101,5 +110,5 @@ returns their panels to the original opening. A replacement controller in the
 same location can reclaim uniform managed water if it still fits the
 detected limits. Inconsistent or out-of-range water is refused.
 
-This is a server-tested development build. Client visual/rider verification and
-remote multiplayer testing remain separate acceptance checks.
+See the validation notes for client and server checks. Remote multiplayer
+testing remains a separate acceptance check.

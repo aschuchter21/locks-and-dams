@@ -167,7 +167,9 @@ public final class CustomLock {
             boolean requested=level.hasNeighborSignal(a.getBlockPos())||level.hasNeighborSignal(b.getBlockPos());
             boolean wanted=requested&&units==(side==0?low:high);
             if(!wanted&&a.open()&&b.open()&&occupied(level,side))wanted=true;
-            a.request(wanted);b.request(wanted);writeGate(level,side,a.open()&&b.open()&&wanted);allClosed&=a.closed()&&b.closed();
+            if(a.catwalkOccupied()||b.catwalkOccupied()){a.hold();b.hold();}
+            else {a.request(wanted);b.request(wanted);}
+            writeGate(level,side,a.open()&&b.open()&&wanted);allClosed&=a.closed()&&b.closed();
             for(int i=side*2;i<side*2+2;i++) {
                 BlockPos drive=leaves[i].base().below().relative(leaves[i].inward().getOpposite());
                 if(level.getBlockState(drive).is(Content.DRIVE.get()))control(level,drive,a.open()&&b.open());
@@ -178,7 +180,14 @@ public final class CustomLock {
         message=!allClosed?"Gate open or moving; waiting for both pairs to close.":f&&d?"Paused: both valves powered.":filling?"Filling":draining?"Draining":"Ready";
         control(level,fill,filling);control(level,drain,draining);writeWater(level);
     }
-    void control(Level level,BlockPos p,boolean open) {var s=level.getBlockState(p);if(s.getBlock() instanceof ControlBlock)level.setBlock(p,s.setValue(ControlBlock.OPEN,open).setValue(ControlBlock.POWERED,level.hasNeighborSignal(p)),Block.UPDATE_CLIENTS);}
+    void control(Level level,BlockPos p,boolean open) {
+        var s=level.getBlockState(p);
+        if(s.getBlock() instanceof ControlBlock) {
+            Direction right=forward.getClockWise();Direction outward=along(p,right)<along(base,right)?right.getOpposite():right;
+            var next=s.setValue(ControlBlock.OPEN,open).setValue(ControlBlock.POWERED,level.hasNeighborSignal(p)).setValue(ControlBlock.FACING,outward);
+            if(!s.equals(next))level.setBlock(p,next,Block.UPDATE_CLIENTS);
+        }
+    }
     void writeWater(Level level) {
         for(int x=0;x<width;x++)for(int z=1;z<length;z++)for(int y=0;y<(high+15)/16;y++) {
             int d=LockLayout.depth(units,y);var s=d==0?Blocks.AIR.defaultBlockState():Content.WATER_BLOCK.get().defaultBlockState().setValue(ChamberFluid.HEIGHT,d);BlockPos p=at(x,y,z);if(!level.getBlockState(p).equals(s))level.setBlock(p,s,Block.UPDATE_CLIENTS);
