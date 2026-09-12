@@ -2,7 +2,7 @@
 
 A navigation-lock mod for **Minecraft 1.20.1 / Forge 47.4.10 / Create 6.0.8**.
 
-## Prototype: 0.1.0-dev.8
+## Prototype: 0.1.0-dev.8.1
 
 The three-block industrial desk links to a lock controller and supplies labeled
 gate selectors, a FILL/DRAIN selector, status lamps and a latched emergency stop.

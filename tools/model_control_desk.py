@@ -27,7 +27,9 @@ for part,name in enumerate(['UPPER GATE','WATER CONTROL','LOWER GATE']):
     d.rectangle((3,3,124,124),outline='#899da5',width=2)
     desk_text(im,(64,113),name,font,'#f3edcf')
     labels=['CLOSED','OPEN','MOVING'] if part!=1 else ['CLOSED','FLOW','WARN']
-    for x,label in zip([22,64,106],labels):desk_text(im,(x,84),label,small,'#c4d3d7')
+    # Lamps occupy texture rows 80-96. Keep their captions in a separate row
+    # above the lenses, with clearance below the section title.
+    for x,label in zip([22,64,106],labels):desk_text(im,(x,102),label,small,'#c4d3d7')
     desk_text(im,(20,48),'FILL' if part==1 else 'CLOSE',small,'#e7debd')
     desk_text(im,(108,48),'DRAIN' if part==1 else 'OPEN',small,'#e7debd')
     if part==1:desk_text(im,(64,9),'EMERGENCY STOP',small,'#f5d875')
