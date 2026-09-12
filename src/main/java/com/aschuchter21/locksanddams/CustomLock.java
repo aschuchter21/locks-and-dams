@@ -159,23 +159,25 @@ public final class CustomLock {
         message="Assembled "+width+" x "+(length-1)+" chamber; lift "+(high-low)/16.0+" blocks.";
     }
     boolean occupied(Level level,int side) {return !level.getEntities((Entity)null,box(0,side==0?0:rise,side*length,width-1,(high+15)/16,side*length).inflate(.2),e->e.isAlive()&&!e.isSpectator()&&!(e instanceof com.simibubi.create.content.contraptions.AbstractContraptionEntity)).isEmpty();}
-    void step(Level level) {
+    void step(Level level,LockEntity controller) {
         try {validate(level,true);}catch(IllegalArgumentException error) {message="Paused: "+error.getMessage();control(level,fill,false);control(level,drain,false);return;}
         boolean allClosed=true;
         for(int side=0;side<2;side++) {
             var a=hinge(level,side*2);var b=hinge(level,side*2+1);
-            boolean requested=level.hasNeighborSignal(a.getBlockPos())||level.hasNeighborSignal(b.getBlockPos());
-            boolean wanted=requested&&units==(side==0?low:high);
-            if(!wanted&&a.open()&&b.open()&&occupied(level,side))wanted=true;
-            if(a.catwalkOccupied()||b.catwalkOccupied()){a.hold();b.hold();}
-            else {a.request(wanted);b.request(wanted);}
-            writeGate(level,side,a.open()&&b.open()&&wanted);allClosed&=a.closed()&&b.closed();
+            boolean clear=!a.catwalkOccupied()&&!b.catwalkOccupied();
+            boolean stop=controller.deskStop()||!clear;
+            int command=controller.gateCommand(side);
+            boolean mayOpen=units==(side==0?low:high);
+            a.followRotation(mayOpen,stop,command);b.followRotation(mayOpen,stop,command);
+            writeGate(level,side,a.open()&&b.open());allClosed&=a.closed()&&b.closed();
             for(int i=side*2;i<side*2+2;i++) {
                 BlockPos drive=leaves[i].base().below().relative(leaves[i].inward().getOpposite());
                 if(level.getBlockState(drive).is(Content.DRIVE.get()))control(level,drive,a.open()&&b.open());
             }
         }
-        boolean f=level.hasNeighborSignal(fill),d=level.hasNeighborSignal(drain),filling=allClosed&&f&&!d&&units<high,draining=allClosed&&d&&!f&&units>low;
+        boolean f=!controller.deskStop()&&(controller.deskPosition()==null?level.hasNeighborSignal(fill):controller.waterCommand()==DeskControl.FILL);
+        boolean d=!controller.deskStop()&&(controller.deskPosition()==null?level.hasNeighborSignal(drain):controller.waterCommand()==DeskControl.DRAIN);
+        boolean filling=allClosed&&f&&!d&&units<high,draining=allClosed&&d&&!f&&units>low;
         if(filling)units++;if(draining)units--;
         message=!allClosed?"Gate open or moving; waiting for both pairs to close.":f&&d?"Paused: both valves powered.":filling?"Filling":draining?"Draining":"Ready";
         control(level,fill,filling);control(level,drain,draining);writeWater(level);

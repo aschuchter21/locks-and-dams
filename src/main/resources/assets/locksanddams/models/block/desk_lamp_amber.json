@@ -1,0 +1,58 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "steel": "locksanddams:block/steel",
+    "edge": "locksanddams:block/edge",
+    "dark": "locksanddams:block/dark",
+    "brass": "locksanddams:block/brass",
+    "teal": "locksanddams:block/teal",
+    "amber": "locksanddams:block/amber",
+    "green": "locksanddams:block/green",
+    "red": "locksanddams:block/red",
+    "ivory": "locksanddams:block/ivory",
+    "particle": "locksanddams:block/steel"
+  },
+  "elements": [
+    {
+      "from": [
+        12,
+        11.75,
+        10
+      ],
+      "to": [
+        14,
+        12.2,
+        12
+      ],
+      "faces": {
+        "north": {
+          "texture": "#amber"
+        },
+        "south": {
+          "texture": "#amber"
+        },
+        "east": {
+          "texture": "#amber"
+        },
+        "west": {
+          "texture": "#amber"
+        },
+        "up": {
+          "texture": "#amber"
+        },
+        "down": {
+          "texture": "#amber"
+        }
+      },
+      "rotation": {
+        "origin": [
+          8,
+          11,
+          8
+        ],
+        "axis": "x",
+        "angle": -22.5
+      }
+    }
+  ]
+}

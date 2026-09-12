@@ -1,5 +1,32 @@
 # Validation and development fixtures
 
+## Industrial control desk and signed rotation: dev.8
+
+September 12, 2026: `-PdeskChecks runServer` passed a 2,850-tick acceptance
+sequence with four separately wired locks, one in each horizontal orientation.
+Each uses real Create creative motors, clutches and gearshifts, driven by linked
+gate nodes. The fixture verified opening, stopping mid-travel, resetting without
+restart, reverse rotation to close, a complete fill/drain cycle, and both raised
+and lower gates. It checked a 200-tick warning, restarting that warning when the
+selection changes, an 80-tick post-opening delay, and exactly 40 horn ticks.
+
+Checks read the actual redstone signal received outside both desk ends and from
+the controller's bottom face. E-stop was checked during gate movement, water
+movement and the warning interval. Saved command state reloads idle, while a
+latched stop remains latched. Destroying an end section removed the complete
+desk, unlinked the controller and retained its stop.
+
+`-PdeskPreview runClient` uses the isolated preview world and captures native
+desk models and indicators. It exercises water selection, E-stop/reset, desk
+item placement, all three sections, the link tool, and complete removal.
+The fixture sources are excluded from normal builds. Use a clean normal build
+before distributing, then verify no fixture classes appear in the JAR.
+
+The older fixtures below document their original versions; those that operate
+Gate Drive levers need conversion before serving as dev.8 rotation tests.
+Direct Immersive Engineering wire attachment and remote multiplayer sessions
+have not been tested. Terminals implement ordinary directional redstone.
+
 ## Infrastructure models and catwalks: dev.7
 
 September 12, 2026: the dedicated Forge/Create fixture passed full fill/drain

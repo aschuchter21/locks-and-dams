@@ -1,0 +1,36 @@
+{
+  "variants": {
+    "facing=north,upper=false": {
+      "model": "locksanddams:block/gate_node_lower",
+      "y": 0
+    },
+    "facing=north,upper=true": {
+      "model": "locksanddams:block/gate_node_upper",
+      "y": 0
+    },
+    "facing=east,upper=false": {
+      "model": "locksanddams:block/gate_node_lower",
+      "y": 90
+    },
+    "facing=east,upper=true": {
+      "model": "locksanddams:block/gate_node_upper",
+      "y": 90
+    },
+    "facing=south,upper=false": {
+      "model": "locksanddams:block/gate_node_lower",
+      "y": 180
+    },
+    "facing=south,upper=true": {
+      "model": "locksanddams:block/gate_node_upper",
+      "y": 180
+    },
+    "facing=west,upper=false": {
+      "model": "locksanddams:block/gate_node_lower",
+      "y": 270
+    },
+    "facing=west,upper=true": {
+      "model": "locksanddams:block/gate_node_upper",
+      "y": 270
+    }
+  }
+}

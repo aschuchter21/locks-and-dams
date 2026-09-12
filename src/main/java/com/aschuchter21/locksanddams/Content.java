@@ -27,6 +27,11 @@ public final class Content {
     public static final RegistryObject<Block> DRIVE = block("gate_drive", ControlBlock::new);
     public static final RegistryObject<Block> FILL = block("fill_valve", ControlBlock::new);
     public static final RegistryObject<Block> DRAIN = block("drain_valve", ControlBlock::new);
+    public static final RegistryObject<Block> DESK = block("control_desk", ControlDeskBlock::new);
+    public static final RegistryObject<Block> NODE = block("gate_control_node", GateControlNodeBlock::new);
+    public static final RegistryObject<BlockEntityType<GateControlNodeEntity>> NODE_ENTITY=ENTITIES.register("gate_control_node",()->BlockEntityType.Builder.of(GateControlNodeEntity::new,NODE.get()).build(null));
+    public static final RegistryObject<Item> LINK_TOOL=ITEMS.register("control_link",ControlLinkItem::new);
+    public static final RegistryObject<BlockEntityType<ControlDeskEntity>> DESK_ENTITY=ENTITIES.register("control_desk",()->BlockEntityType.Builder.of(ControlDeskEntity::new,DESK.get()).build(null));
     public static final RegistryObject<BlockEntityType<LockEntity>> LOCK = ENTITIES.register("lock_controller",
         () -> BlockEntityType.Builder.of(LockEntity::new, CONTROLLER.get()).build(null));
     public static final RegistryObject<BlockEntityType<LockHingeEntity>> HINGE_ENTITY = ENTITIES.register("lock_hinge",
@@ -36,7 +41,7 @@ public final class Content {
             .title(Component.literal("Locks & Dams"))
             .icon(() -> new ItemStack(CONTROLLER.get()))
             .displayItems((parameters, output) -> {
-                output.accept(CONTROLLER.get()); output.accept(PANEL.get()); output.accept(DRIVE.get());
+                output.accept(CONTROLLER.get()); output.accept(PANEL.get());output.accept(DESK.get());output.accept(NODE.get());output.accept(LINK_TOOL.get());
                 output.accept(FILL.get()); output.accept(DRAIN.get());
                 output.accept(HINGE.get()); output.accept(PIPE.get()); output.accept(PORT.get());
             }).build());

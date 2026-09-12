@@ -1,7 +1,7 @@
 package com.aschuchter21.locksanddams;
 
 import net.minecraft.core.*;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.*;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.entity.Entity;
@@ -13,6 +13,49 @@ import net.minecraft.world.phys.AABB;
 
 public final class LockEntity extends BlockEntity {
     private CustomLock custom;
+    private BlockPos desk;
+    private final DeskControl deskControl=new DeskControl();
+    private boolean waterMoving;
+    private int lastOutputs;
+    private boolean deskHealthy=true;
+    public BlockPos deskPosition(){return desk;}
+    public DeskControl deskControl(){return deskControl;}
+    public boolean waterMoving(){return waterMoving;}
+    public boolean deskAvailable(){return desk!=null&&level.hasChunkAt(desk)&&level.getBlockEntity(desk) instanceof ControlDeskEntity d&&d.controller()==this;}
+    public boolean deskStop(){return deskControl.stopped||desk!=null&&(!deskAvailable()||!deskHealthy);}
+    public int gateCommand(int side){return desk==null?-1:deskControl.gate[side];}
+    public int waterCommand(){return desk==null?0:deskControl.waterCommand();}
+    public void linkDesk(BlockPos p){desk=p.immutable();deskControl.reset();deskChanged();}
+    public void unlinkDesk(){deskChangedStop();desk=null;deskChanged();}
+    public void deskChangedStop(){deskControl.stop();deskChanged();}
+    public void deskChanged(){
+        if(level==null)return;
+        if(deskControl.stopped||deskControl.gate[0]==DeskControl.HOLD&&deskControl.gate[1]==DeskControl.HOLD) {
+            for(int side=0;side<2;side++)for(var h:gateHinges(side))if(h!=null)h.hold();
+        }
+        if(deskControl.stopped){waterMoving=false;if(custom!=null){custom.control(level,custom.fill,false);custom.control(level,custom.drain,false);}else{control(layout().fill(),false);control(layout().drain(),false);}}
+        setChanged();level.updateNeighborsAt(worldPosition,Content.CONTROLLER.get());sync();
+    }
+    private LockHingeEntity[] gateHinges(int side){return custom==null?new LockHingeEntity[]{hinge(side*10)}:new LockHingeEntity[]{custom.hinge(level,side*2),custom.hinge(level,side*2+1)};}
+    public int gateLamp(int side){
+        boolean closed=true,open=true,moving=false;
+        for(var h:gateHinges(side)){if(h==null||!h.isRunning()||h.getMovedContraption()==null)return 0;closed&=h.closed();open&=h.open();moving|=h.travelling();}
+        return closed?1:open?2:moving?3:4;
+    }
+    public int deskOutput(Direction outward){
+        if(desk==null)return 0;
+        if(outward==Direction.DOWN)return !deskStop()&&deskControl.warningTicks>0?15:0;
+        if(outward==Direction.UP)return 0;
+        Direction f=getBlockState().getValue(ControllerBlock.FACING);
+        int side=outward==f||outward==f.getClockWise()?1:0;
+        boolean reverse=outward==f.getClockWise()||outward==f.getCounterClockWise();
+        if(reverse)return deskControl.gate[side]==DeskControl.CLOSE?15:0;
+        int command=deskControl.gate[side];boolean stopped=deskStop()||!assembled||command==DeskControl.HOLD||gateLamp(side)==0;
+        if(command==DeskControl.OPEN)stopped|=gateLamp(side)==2||waterUnits()!=(custom==null?(side==0?LockLayout.LOW:LockLayout.HIGH):(side==0?custom.low:custom.high));
+        if(command==DeskControl.CLOSE)stopped|=gateLamp(side)==1;
+        for(var h:gateHinges(side))stopped|=h==null||h.blockedFor(command)||h.catwalkOccupied();
+        return stopped?15:0;
+    }
     public AABB ownedBounds() {return custom==null?layout().bounds():custom.bounds();}
     private boolean assembled, lowerOpen, upperOpen, mechanical;
     private int units = LockLayout.LOW;
@@ -46,13 +89,11 @@ public final class LockEntity extends BlockEntity {
         for (int x=0;x<=6;x++) for(int z=0;z<=10;z++)
             if (!solid(l.at(x,-1,z))) return "Floor must be solid and dry at " + l.at(x,-1,z).toShortString();
         String error;
-        if ((error=require(l.lowerDrive(),Content.DRIVE.get(),"lower gate drive"))!=null) return error;
-        if ((error=require(l.upperDrive(),Content.DRIVE.get(),"upper gate drive"))!=null) return error;
         if ((error=require(l.fill(),Content.FILL.get(),"fill valve"))!=null) return error;
         if ((error=require(l.drain(),Content.DRAIN.get(),"drain valve"))!=null) return error;
         for(int x : new int[]{0,6}) for(int z=0;z<=10;z++) for(int y=0;y<6;y++) {
             BlockPos p=l.at(x,y,z);
-            if (p.equals(worldPosition)||p.equals(l.lowerDrive())||p.equals(l.upperDrive())||p.equals(l.fill())||p.equals(l.drain())) continue;
+            if (p.equals(worldPosition)||p.equals(l.fill())||p.equals(l.drain())) continue;
             if(!solid(p)) return "Wall must be solid and dry at " + p.toShortString();
         }
         for(int z : new int[]{0,10}) {
@@ -173,8 +214,9 @@ public final class LockEntity extends BlockEntity {
             LockHingeEntity h=hinge(z);
             // Do not restore the closed seal while a boat occupies the opening.
             if(!wanted&&current&&obstructed(z))wanted=true;
-            h.request(wanted);
-            boolean open=h.open()&&wanted;
+            int side=z==0?0:1;
+            h.followRotation(units==(side==0?LockLayout.LOW:LockLayout.HIGH),deskStop(),gateCommand(side));
+            boolean open=h.open();
             writeGate(z,open);return open;
         }
         if(current==wanted) return current;
@@ -199,18 +241,27 @@ public final class LockEntity extends BlockEntity {
         }
     }
     public static void tick(Level level, BlockPos pos, BlockState state, LockEntity lock) {
+        if(lock.desk!=null) {
+            lock.deskControl.tick(lock.deskAvailable()&&lock.assembled&&lock.deskHealthy,lock.gateLamp(0)==2,lock.gateLamp(1)==2,level.getGameTime());
+            if(!lock.deskAvailable()||lock.deskControl.stopped)for(int side=0;side<2;side++)for(var h:lock.gateHinges(side))if(h!=null)h.hold();
+            int outputs=0;for(Direction d:Direction.values())outputs=outputs*16+lock.deskOutput(d);if(lock.deskControl.hornTicks>0)outputs|=1<<24;
+            if(outputs!=lock.lastOutputs){lock.lastOutputs=outputs;level.updateNeighborsAt(pos,Content.CONTROLLER.get());if(level.hasChunkAt(lock.desk)&&level.getBlockEntity(lock.desk) instanceof ControlDeskEntity d)d.signalChanged();}
+        }
+        int before=lock.waterUnits();
         if(level.getGameTime()%5==0 && lock.assembled) lock.step();
+        if(level.getGameTime()%5==0){lock.waterMoving=before!=lock.waterUnits();}
     }
     private void step() {
-        if(custom!=null) {custom.step(level);sync();return;}
+        deskHealthy=validate()==null;
+        if(custom!=null) {custom.step(level,this);sync();return;}
         LockLayout l=layout();
         String error=validate();
         if(error!=null) {
             message="Paused: "+error; control(l.fill(),false); control(l.drain(),false); sync(); return;
         }
         connectHinges();
-        boolean wantLower=signal(l.lowerDrive()),wantUpper=signal(l.upperDrive());
-        boolean fill=signal(l.fill()),drain=signal(l.drain());
+        boolean wantLower=hinge(0)!=null&&hinge(0).getSpeed()>0,wantUpper=hinge(10)!=null&&hinge(10).getSpeed()>0;
+        boolean fill=!deskStop()&&(desk==null?signal(l.fill()):waterCommand()==DeskControl.FILL),drain=!deskStop()&&(desk==null?signal(l.drain()):waterCommand()==DeskControl.DRAIN);
         lowerOpen=gate(0,lowerOpen,wantLower&&units==LockLayout.LOW);
         upperOpen=gate(10,upperOpen,wantUpper&&units==LockLayout.HIGH);
         boolean closed=!lowerOpen&&!upperOpen&&(!mechanical||(hinge(0).closed()&&hinge(10).closed()));
@@ -241,11 +292,15 @@ public final class LockEntity extends BlockEntity {
         }
     }
     @Override protected void saveAdditional(CompoundTag tag) {
+        tag.putBoolean("RotationControls",true);
+        if(desk!=null)tag.put("Desk",NbtUtils.writeBlockPos(desk));tag.put("DeskControl",deskControl.save());
         super.saveAdditional(tag); tag.putBoolean("Assembled",assembled); tag.putBoolean("Mechanical",mechanical); tag.putInt("WaterUnits",units);
         if(custom!=null)tag.put("CustomLock",custom.save());
         tag.putBoolean("LowerOpen",lowerOpen); tag.putBoolean("UpperOpen",upperOpen); tag.putString("Status",message);
     }
     @Override public void load(CompoundTag tag) {
+        desk=tag.contains("Desk")?NbtUtils.readBlockPos(tag.getCompound("Desk")):null;deskControl.load(tag.getCompound("DeskControl"));
+        if(tag.getBoolean("Assembled")&&!tag.getBoolean("RotationControls"))deskControl.stop();
         super.load(tag); assembled=tag.getBoolean("Assembled"); mechanical=tag.getBoolean("Mechanical"); units=Math.max(LockLayout.LOW,Math.min(LockLayout.HIGH,tag.getInt("WaterUnits")));
         custom=tag.contains("CustomLock")?CustomLock.load(worldPosition,tag.getCompound("CustomLock")):null;
         lowerOpen=tag.getBoolean("LowerOpen"); upperOpen=tag.getBoolean("UpperOpen"); message=tag.getString("Status");

@@ -61,6 +61,19 @@ public final class LockHingeEntity extends MechanicalBearingBlockEntity {
         if(target!=requested) { target=requested;sendData(); }
         permitUntil=level.getGameTime()+6;
     }
+    public boolean travelling(){return running&&Math.abs(getSpeed())>.001&&Math.abs(target-angle)>.01&&!obstructed&&level!=null&&level.getGameTime()<=permitUntil;}
+    public boolean blockedFor(int command){
+        if(leaf==null||level==null||command==DeskControl.HOLD)return false;
+        float destination=command==DeskControl.OPEN?openAngle():0;
+        if(Math.abs(destination-angle)<.01)return false;
+        return blockedAt(angle)||blockedAt(angle+Math.copySign(Math.min(.5f,Math.abs(destination-angle)),destination-angle));
+    }
+    public void followRotation(boolean mayOpen,boolean stopped,int command) {
+        if(stopped||Math.abs(getSpeed())<.001){hold();return;}
+        boolean opening=getSpeed()>0;
+        if(opening&&!mayOpen||command==DeskControl.HOLD||command>=0&&(opening!=(command==DeskControl.OPEN))){hold();return;}
+        request(opening);
+    }
     @Override public float calculateStressApplied() { return lastStressApplied=16; }
     @Override public float getAngularSpeed() {
         if(level==null||!running||owner==null||Math.abs(target-angle)<.001)return 0;

@@ -17,3 +17,4 @@ logs/
 crash-reports/
 *.hprof
 local.properties
+run-desk-checks/

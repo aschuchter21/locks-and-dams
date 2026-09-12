@@ -20,7 +20,7 @@ public final class CustomDemo {
     }
     static int run(CommandSourceStack source,int w,int length,int lift) throws com.mojang.brigadier.exceptions.CommandSyntaxException {
         var player=source.getPlayerOrException();Direction f=player.getDirection();BlockPos base=player.blockPosition().above(4).relative(f,10);
-        try {BlockPos controller=build(source.getLevel(),base,f,w,length,lift);source.sendSuccess(()->Component.literal("Custom lock built: "+w+" x "+length+", lift "+lift+". Controller "+controller.toShortString()+". Gate levers sit at the left hinges; valve levers on the side wall."),false);return 1;}
+        try {BlockPos controller=build(source.getLevel(),base,f,w,length,lift);source.sendSuccess(()->Component.literal("Custom lock built: "+w+" x "+length+", lift "+lift+". Controller "+controller.toShortString()+". Positive hinge RPM opens; negative closes. Valve levers are on the side wall. Use /locks demo_desk for a wired control desk."),false);return 1;}
         catch(IllegalArgumentException error){source.sendFailure(Component.literal(error.getMessage()));return 0;}
     }
     public static BlockPos build(ServerLevel level,BlockPos base,Direction f,int w,int interior,int lift) {
@@ -46,8 +46,7 @@ public final class CustomDemo {
             level.setBlock(grid.at(x,y,z),Content.HINGE.get().defaultBlockState(),3);
             for(int sy=-1;sy<y;sy++)level.setBlock(grid.at(x,sy,z),com.simibubi.create.AllBlocks.ANDESITE_ENCASED_SHAFT.getDefaultState().setValue(RotatedPillarBlock.AXIS,Direction.Axis.Y),3);
             level.setBlock(grid.at(x,-2,z),com.simibubi.create.AllBlocks.CREATIVE_MOTOR.getDefaultState().setValue(com.simibubi.create.content.kinetics.base.DirectionalKineticBlock.FACING,Direction.UP),3);
-            ((com.simibubi.create.content.kinetics.motor.CreativeMotorBlockEntity)level.getBlockEntity(grid.at(x,-2,z))).generatedSpeed.setValue(8);
-            if(x==0) {level.setBlock(grid.at(-1,y,z),Content.DRIVE.get().defaultBlockState(),2);lever(level,grid.at(-2,y,z),f.getCounterClockWise());}
+            ((com.simibubi.create.content.kinetics.motor.CreativeMotorBlockEntity)level.getBlockEntity(grid.at(x,-2,z))).generatedSpeed.setValue(-8);
         }
         BlockPos controller=grid.at(-1,0,2),fill=grid.at(-1,lift,interior),drain=grid.at(-1,1,1);
         level.setBlock(controller,Content.CONTROLLER.get().defaultBlockState().setValue(ControllerBlock.FACING,f),2);

@@ -1,3 +1,5 @@
+> Historical prototype guide. For dev.8 gate rotation, desk controls and wiring, use [the current guide](control-desk.md). Gate Drive instructions below describe older builds.
+
 # Building and operating the prototype
 
 ## Quick start

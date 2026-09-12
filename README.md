@@ -2,7 +2,13 @@
 
 A navigation-lock mod for **Minecraft 1.20.1 / Forge 47.4.10 / Create 6.0.8**.
 
-## Prototype: 0.1.0-dev.7
+## Prototype: 0.1.0-dev.8
+
+The three-block industrial desk links to a lock controller and supplies labeled
+gate selectors, a FILL/DRAIN selector, status lamps and a latched emergency stop.
+Separate contacts drive a pre-start alarm and departure horn. Linked gate nodes
+operate real Create clutches and reversing gearshifts. Start with
+`/locks demo_desk` and [the desk wiring guide](docs/control-desk.md).
 
 Industrial gate, hinge, valve and culvert models now replace the placeholder
 art. Gate top rows automatically carry grated catwalks, including existing
@@ -23,7 +29,7 @@ height. Two canal surface ports establish the water limits automatically.
 Try `/locks demo_custom` or `/locks demo_custom 7 15 5`.
 
 - Automatically detected rectangular chambers, plus the legacy 5 by 9 example.
-- Two gate drives, a fill valve, and a drain valve with independent redstone inputs.
+- Linked industrial control desk, gate terminals, and physical fill/drain valves.
 - Non-flowing managed water and boat support across changing water levels.
 - Level and obstruction interlocks, fault pauses, and saved chamber state.
 - Creative tab, survival recipes, and a non-destructive `/locks demo` builder.
@@ -37,15 +43,16 @@ Canals remain fixed water supplies; finite reservoir simulation and dams are lat
 
 Install the normal mod JAR and [Create 6.0.8 for 1.20.1](https://github.com/Creators-of-Create/Create/releases/tag/mc1.20.1-6.0.8) in a Forge 47.4.10 / Minecraft 1.20.1 instance. Both
 client and server need the mod. In a creative test world with commands enabled,
-fly into clear space and run `/locks demo`. It refuses to replace blocks or
-entities and creates two pools, the chamber, four levers, culvert plumbing and
-two hinges powered by 8 RPM creative motors. Replace those motors with your own
-Create shaft network for a survival build.
+fly into clear space and run `/locks demo_desk`. It creates a custom lock with a
+linked three-block control desk and real Create clutches and reversing gearshifts.
+See [the control-desk and wiring guide](docs/control-desk.md) for placement,
+linking, selectors, warning/horn terminals, and emergency-stop reset.
 
-From the lower end, the levers are **lower gate, fill, drain, upper gate**.
-Open the lower gate and row in. Turn that gate off, turn fill on, wait for the
-upper level, then open the upper gate and row out. Reverse the sequence to descend.
-Right-click the controller to read the level and any interlock message.
+Positive hinge RPM opens, negative closes, and zero holds. The Gate Drive is
+retired. The desk provides a 10-second warning before filling/draining, a latched
+emergency stop, and a 2-second horn pulse 4 seconds after a gate fully opens.
+Existing assembled locks load stopped on upgrade; link a desk or shift-right-click
+an unlinked controller after preparing the new rotation controls.
 
 See [the building and operating guide](docs/prototype.md) and
 [validation notes](docs/validation.md).

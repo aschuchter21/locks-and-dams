@@ -21,7 +21,7 @@ public final class DemoLock {
                 LockLayout layout=new LockLayout(player.blockPosition().above(4).relative(player.getDirection(),6),player.getDirection());
                 String error=build(ctx.getSource().getLevel(),layout);
                 if(error!=null) { ctx.getSource().sendFailure(Component.literal(error)); return 0; }
-                ctx.getSource().sendSuccess(() -> Component.literal("Demo lock created. Controller: "+layout.origin().toShortString()+". Four levers: lower gate, fill, drain, upper gate. Right-click controller for status. Enter either pool with your boat."),false);
+                ctx.getSource().sendSuccess(() -> Component.literal("Demo lock created. Controller: "+layout.origin().toShortString()+". Valve levers: fill and drain. Positive hinge RPM opens; negative closes. Right-click controller for status. Enter either pool with your boat."),false);
                 return 1;
             })));
     }
@@ -47,18 +47,18 @@ public final class DemoLock {
         }
         for(int x=-2;x<=-1;x++) for(int z=0;z<=10;z++) level.setBlock(l.at(x,0,z),wall,FLAGS);
         level.setBlock(l.origin(),Content.CONTROLLER.get().defaultBlockState().setValue(ControllerBlock.FACING,l.forward()),FLAGS);
-        level.setBlock(l.lowerDrive(),Content.DRIVE.get().defaultBlockState(),FLAGS);
-        level.setBlock(l.upperDrive(),Content.DRIVE.get().defaultBlockState(),FLAGS);
+        level.setBlock(l.lowerDrive(),wall,FLAGS);
+        level.setBlock(l.upperDrive(),wall,FLAGS);
         level.setBlock(l.fill(),Content.FILL.get().defaultBlockState(),FLAGS);
         level.setBlock(l.drain(),Content.DRAIN.get().defaultBlockState(),FLAGS);
-        for(int z : new int[]{0,3,7,10}) level.setBlock(l.at(-1,1,z),Blocks.LEVER.defaultBlockState()
+        for(int z : new int[]{3,7}) level.setBlock(l.at(-1,1,z),Blocks.LEVER.defaultBlockState()
             .setValue(LeverBlock.FACE,AttachFace.WALL).setValue(LeverBlock.FACING,l.forward().getCounterClockWise()),Block.UPDATE_ALL);
         plumbing(level,l);
         for(int z:new int[]{0,10}) {
             level.setBlock(l.at(1,-2,z),Content.HINGE.get().defaultBlockState(),Block.UPDATE_ALL);
             level.setBlock(l.at(1,-3,z),com.simibubi.create.AllBlocks.CREATIVE_MOTOR.getDefaultState()
                 .setValue(com.simibubi.create.content.kinetics.base.DirectionalKineticBlock.FACING,Direction.UP),Block.UPDATE_ALL);
-            if(level.getBlockEntity(l.at(1,-3,z)) instanceof com.simibubi.create.content.kinetics.motor.CreativeMotorBlockEntity motor)motor.generatedSpeed.setValue(8);
+            if(level.getBlockEntity(l.at(1,-3,z)) instanceof com.simibubi.create.content.kinetics.motor.CreativeMotorBlockEntity motor)motor.generatedSpeed.setValue(-8);
         }
         if(!(level.getBlockEntity(l.origin()) instanceof LockEntity lock)||!lock.assemble()) return "Demo created, but assembly failed; inspect its controller.";
         return null;

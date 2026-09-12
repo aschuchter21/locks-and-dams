@@ -5,6 +5,8 @@
     "locksanddams:gate_panel",
     "locksanddams:gate_drive",
     "locksanddams:fill_valve",
-    "locksanddams:drain_valve"
+    "locksanddams:drain_valve",
+    "locksanddams:control_desk",
+    "locksanddams:gate_control_node"
   ]
 }

@@ -1,7 +1,7 @@
-# Player-built chambers: dev.7
+# Player-built chambers: dev.8
 
 Minecraft 1.20.1, Forge 47.4.10 and Create 6.0.8. Replace the older Locks & Dams
-JAR with dev.7 on both client and server. Existing fixed-size locks remain supported.
+JAR with dev.8 on both client and server. Existing fixed-size locks remain supported.
 
 ## Try the example
 
@@ -61,16 +61,16 @@ Supply Create rotation below **all four hinges**. Fully enclosed Create shafts
 can run through the wall below the upper gates; the demo uses Andesite Encased
 Shafts with motors beneath the chamber floor. Bare shafts do not count as a
 solid wall. Gates move at up to two degrees per tick; 8 RPM gives approximately
-5.6 seconds for a quarter turn.
+2.25 seconds for a quarter turn.
 
-Apply redstone to either hinge in a pair to request that both leaves open.
-For accessible controls, put a **Gate Drive** directly against the outward side
-of that hinge, then attach a lever to the drive. Removing the signal requests
-closed. Gate Drives elsewhere are not automatically linked.
-
+Positive incoming RPM opens each leaf, negative closes, and zero holds. Supply
+both hinges in a pair with matching RPM signs. Use Create clutches to stop
+rotation and gearshifts to reverse it. Gate Drives are retired.
+For a linked industrial control desk and automatic signals, see
+[the control-desk guide](control-desk.md) and try `/locks demo_desk`.
 Players can walk across the gate-top catwalk when both leaves are fully closed.
 Both leaves pause while a player or mob stands on either leaf's catwalk, then
-resume the redstone request once it is clear. Keep the wider top sweep clear
+resume the rotation request once it is clear. Keep the wider top sweep clear
 as well as the gate panels below it. Upper and lower gate catwalks may be at
 different elevations.
 

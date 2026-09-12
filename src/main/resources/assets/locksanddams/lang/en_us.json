@@ -1,11 +1,14 @@
 {
   "block.locksanddams.lock_controller": "Lock Controller",
   "block.locksanddams.gate_panel": "Lock Gate Panel",
-  "block.locksanddams.gate_drive": "Gate Drive",
+  "block.locksanddams.gate_drive": "Legacy Gate Drive",
   "block.locksanddams.fill_valve": "Fill Valve",
   "block.locksanddams.drain_valve": "Drain Valve",
   "block.locksanddams.chamber_water": "Managed Chamber Water",
   "block.locksanddams.lock_hinge": "Lock Hinge",
   "block.locksanddams.culvert_pipe": "Culvert Pipe",
-  "block.locksanddams.culvert_port": "Culvert Port"
+  "block.locksanddams.culvert_port": "Culvert Port",
+  "block.locksanddams.control_desk": "Lock Control Desk",
+  "item.locksanddams.control_link": "Control Link Tool",
+  "block.locksanddams.gate_control_node": "Gate Control Node"
 }
