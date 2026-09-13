@@ -27,7 +27,7 @@ public final class CustomDemo {
         w+=2; // Include the two wall-mounted hinge columns around the navigable width.
         int len=interior+1,pool=(w+1)/2+3,top=lift+3;LockLayout grid=new LockLayout(base,f);
         WaterConnection.require((long)(w-2)*interior*(lift+1)<=16384,"Demo exceeds the chamber volume limit.");
-        AABBCheck.check(level,grid,-5,-2,-pool,w,top,len+pool);
+        AABBCheck.check(level,grid,-5,-2,-pool,w,top+2,len+pool);
         var wall=Blocks.STONE_BRICKS.defaultBlockState();
         for(int x=-1;x<=w;x++)for(int z=-pool;z<=len+pool;z++) {
             level.setBlock(grid.at(x,-1,z),wall,2);
@@ -82,6 +82,12 @@ public final class CustomDemo {
                 for(int clear=y;clear<=top;clear++)level.setBlock(grid.at(x,clear,gateZ+dz),Blocks.AIR.defaultBlockState(),2);
                 if(dz!=0)level.setBlock(grid.at(x,y,gateZ+dz),Blocks.STONE_BRICK_STAIRS.defaultBlockState().setValue(StairBlock.FACING,dz>0?f:f.getOpposite()),2);
             }
+        }
+        // The approved handrails need headroom throughout each approach-wall pocket.
+        for(int side=0;side<2;side++)for(int x:new int[]{0,w-1}) {
+            int deck=lift+(side==0?2:3),reach=x==0?w/2:w-w/2;
+            for(int step=0;step<=reach;step++)for(int y=deck;y<=deck+1;y++)
+                level.setBlock(grid.at(x,y,side*len+(side==0?-step:step)),Blocks.AIR.defaultBlockState(),2);
         }
         LockEntity lock=(LockEntity)level.getBlockEntity(controller);WaterConnection.require(lock.assemble(),"Demo assembly: "+lock.status());return controller;
     }

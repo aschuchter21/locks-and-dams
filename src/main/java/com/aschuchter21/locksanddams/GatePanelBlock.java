@@ -36,9 +36,11 @@ public class GatePanelBlock extends Block {
         if(state.getValue(OPEN))return Shapes.empty();
         boolean acrossZ=state.getValue(AXIS)==net.minecraft.core.Direction.Axis.X;
         VoxelShape panel=acrossZ?box(5,0,0,11,16,16):box(0,0,5,16,16,11);
-        int edge=state.getValue(EDGE),lo=edge==1?2:edge==4?1:0,hi=edge==2?14:edge==3?15:16;
-        VoxelShape deck=acrossZ?box(3,14,lo,13,16,hi):box(lo,14,3,hi,16,13);
-        return state.getValue(TOP)?Shapes.or(panel,deck):panel;
+        int edge=state.getValue(EDGE),lo=edge==1?5:edge==4?1:0,hi=edge==2?11:edge==3?15:16;
+        VoxelShape deck=acrossZ?box(1,14,lo,15,16,hi):box(lo,14,1,hi,16,15);
+        VoxelShape rails=acrossZ?Shapes.or(box(1,16,lo,2,33,hi),box(14,16,lo,15,33,hi))
+            :Shapes.or(box(lo,16,1,hi,33,2),box(lo,16,14,hi,33,15));
+        return state.getValue(TOP)?Shapes.or(panel,deck,rails):panel;
     }
     @Override public VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) { return getShape(state, level, pos, context); }
     @Override public RenderShape getRenderShape(BlockState state) { return state.getValue(OPEN) ? RenderShape.INVISIBLE : RenderShape.MODEL; }

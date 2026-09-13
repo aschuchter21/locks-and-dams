@@ -55,7 +55,7 @@ public final class LockHingeEntity extends MechanicalBearingBlockEntity {
         double y=leaf.base().getY()+leaf.height(),r=leaf.width()/2.0+1;
         AABB search=new AABB(center.x-r,y-.1,center.z-r,center.x+r,y+2,center.z+r);
         for(Entity e:level.getEntities((Entity)null,search,e->!e.isSpectator()&&e instanceof LivingEntity))
-            if(e.getBoundingBox().minY<=y+.2&&intersects(e.getBoundingBox().inflate(.05),center,u,v,.3125))return true;
+            if(e.getBoundingBox().minY<=y+.2&&intersects(e.getBoundingBox().inflate(.05),center,u,v,.4375))return true;
         return false;
     }
     public void hold() {if(target!=angle){target=angle;sendData();}permitUntil=level.getGameTime()+6;}
@@ -100,20 +100,20 @@ public final class LockHingeEntity extends MechanicalBearingBlockEntity {
         AABB search=new AABB(center.x-radius,leaf.base().getY(),center.z-radius,center.x+radius,deckY+2,center.z+radius);
         for(Entity e:level.getEntities((Entity)null,search,e -> !e.isSpectator()&&(e instanceof Boat||e instanceof LivingEntity))) {
             AABB body=e.getBoundingBox().inflate(.18);
-            if(body.minY<=deckY+.1&&intersects(body,center,u,v,body.minY>=deckY-.2?.3125:.1875))return true;
+            if(body.minY<=deckY+1.1&&intersects(body,center,u,v,body.minY>=deckY-.2?.4375:.1875))return true;
         }
         for(BlockPos p:BlockPos.betweenClosed(BlockPos.containing(search.minX,search.minY,search.minZ),BlockPos.containing(search.maxX,search.maxY-.001,search.maxZ))) {
             if(!level.hasChunkAt(p))return true;
             BlockState state=level.getBlockState(p);
-            if(state.is(Content.SEAL.get())||p.getY()>=deckY)continue;
+            if(state.is(Content.SEAL.get())||p.getY()>deckY+1)continue;
             for(AABB box:state.getCollisionShape(level,p).toAabbs())
-                if(intersects(box.move(p),center,u,v,p.getY()==deckY-1?.3125:.1875)) {obstruction=p.toShortString()+" "+state;return true;}
+                if(intersects(box.move(p),center,u,v,p.getY()>=deckY-1?.4375:.1875)) {obstruction=p.toShortString()+" "+state;return true;}
         }
         return false;
     }
     private boolean intersects(AABB box,Vec3 center,Vec3 u,Vec3 v,double halfDepth) {
-        if(halfDepth>.2)center=center.add(u.scale(.03125));
-        double halfWidth=leaf.width()/2.0-(halfDepth>.2?.09375:.0625);
+        if(halfDepth>.2)center=center.add(u.scale(.125));
+        double halfWidth=leaf.width()/2.0-(halfDepth>.2?.1875:.0625);
         double dx=box.getCenter().x-center.x,dz=box.getCenter().z-center.z;
         double ex=box.getXsize()/2,ez=box.getZsize()/2;
         return Math.abs(dx)<ex+halfWidth*Math.abs(u.x)+halfDepth*Math.abs(v.x)-.0001
@@ -195,7 +195,7 @@ public final class LockHingeEntity extends MechanicalBearingBlockEntity {
                 level.setBlock(p,level.getBlockState(p).setValue(GatePanelBlock.OPEN,false).setValue(GatePanelBlock.TOP,y==leaf.height()-1).setValue(GatePanelBlock.EDGE,edge(leaf,x)).setValue(GatePanelBlock.DEPTH,0).setValue(GatePanelBlock.AXIS,leaf.normal()),Block.UPDATE_CLIENTS);
                 addBlock(level,p,capture(level,p));
             }
-            startMoving(level);expandBoundsAroundAxis(Direction.Axis.Y);return true;
+            startMoving(level);bounds=bounds.expandTowards(0,1.1,0);expandBoundsAroundAxis(Direction.Axis.Y);return true;
         }
     }
 }

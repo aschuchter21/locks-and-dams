@@ -2,7 +2,11 @@
 
 A navigation-lock mod for **Minecraft 1.20.1 / Forge 47.4.10 / Create 6.0.8**.
 
-## Prototype: 0.1.0-dev.10
+## Prototype: 0.1.0-dev.11
+
+Approved Blender gate and pipe designs are integrated: modular steel gates with
+grated catwalks and collidable handrails, and rounded flanged culverts that follow
+their connections. See [installation and clearance](docs/approved-gates-and-pipes.md).
 
 Gate Control Nodes now have a shift-right-click settings window. Closed gates
 show water against both faces at their respective levels, and the desk alarm

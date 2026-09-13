@@ -1,0 +1,46 @@
+{
+  "loader": "forge:obj",
+  "model": "locksanddams:models/block/culvert_round_14.obj",
+  "flip_v": true,
+  "automatic_culling": false,
+  "shade_quads": true,
+  "ambientocclusion": false,
+  "textures": {
+    "paint": "locksanddams:block/approved_paint",
+    "edge": "locksanddams:block/approved_edge",
+    "steel": "locksanddams:block/approved_steel",
+    "dark": "locksanddams:block/approved_dark",
+    "yellow": "locksanddams:block/approved_yellow",
+    "rubber": "locksanddams:block/approved_rubber",
+    "pipe": "locksanddams:block/approved_pipe",
+    "particle": "locksanddams:block/approved_paint"
+  },
+  "display": {
+    "gui": {
+      "rotation": [
+        25,
+        225,
+        0
+      ],
+      "scale": [
+        0.65,
+        0.65,
+        0.65
+      ]
+    },
+    "ground": {
+      "scale": [
+        0.35,
+        0.35,
+        0.35
+      ]
+    },
+    "fixed": {
+      "scale": [
+        0.6,
+        0.6,
+        0.6
+      ]
+    }
+  }
+}
