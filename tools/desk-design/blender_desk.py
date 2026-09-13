@@ -51,8 +51,8 @@ for x in [-1,0,1]:
  for xx in [x-.425,x+.425]:
   for z in [-.40,.40]:disk('Instrument panel screw',xx,z,.014,.008,'steel')
 for x,key,title in [(1,'upper','UPPER GATE'),(0,'water','FILL / DRAIN'),(-1,'lower','LOWER GATE')]:
- label(title,x,.403,.052)
- for dx,color,caption in [(.23,'green','CLOSED'),(0,'red','OPEN'),(-.23,'amber','MOVING')]:
+ label(title,x,.36,.052)
+ for dx,color,caption in ([ (.23,'amber','WARN'),(0,'red','FLOW'),(-.23,'green','CLOSED')] if key=='water' else [(.23,'green','CLOSED'),(0,'red','OPEN'),(-.23,'amber','MOVING')]):
   label(caption,x+dx,.298,.026)
   disk('Lamp metal bezel '+key+' '+color,x+dx,.205,.057,.021,'steel')
   disk('Lamp gasket '+key+' '+color,x+dx,.205,.047,.028,'rubber')
@@ -74,7 +74,7 @@ for x,key,title in [(1,'upper','UPPER GATE'),(0,'water','FILL / DRAIN'),(-1,'low
 disk('Emergency stop yellow collar',0,-.31,.113,.022,'yellow')
 disk('Emergency stop rubber boot',0,-.31,.066,.051,'rubber')
 disk('Emergency stop red mushroom',0,-.31,.083,.093,'red')
-label('EMERGENCY STOP',0,-.445,.026)
+label('EMERGENCY\nSTOP',.235,-.31,.026)
 disk('Emergency stop flashing bezel',-.225,-.31,.038,.018,'steel')
 disk('Emergency stop flashing indicator',-.225,-.31,.026,.038,'red')
 label('STOP',-.225,-.405,.024)
