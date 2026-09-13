@@ -4,6 +4,30 @@ from pathlib import Path
 from mathutils import Vector,Matrix
 ROOT=Path(__file__).resolve().parents[1];A=ROOT/'src/main/resources/assets/locksanddams';M=A/'models/block'
 bpy.ops.wm.open_mainfile(filepath=str(ROOT/'tools/approved-art/Industrial-Control-Desk.blend'))
+# Keep the review master untouched. Production geometry omits microscopic ridges
+# and multi-segment bevels that are expensive in Minecraft's chunk renderer.
+for o in list(bpy.context.scene.objects):
+ if o.name.startswith('Lens highlight'):
+  bpy.data.objects.remove(o,do_unlink=True);continue
+ if o.type=='FONT':
+  o.data.extrude=0;o.data.resolution_u=2
+  # Separate lettering from the instrument plate, including at oblique angles.
+  o.location.z+=.006
+ if o.type=='MESH':
+  for modifier in list(o.modifiers):o.modifiers.remove(modifier)
+  # Native cylinders have two rings. Dissolve alternate vertical edges evenly
+  # to retain round silhouettes without dozens of invisible tiny facets.
+  mesh=o.data
+  if len(mesh.vertices)>=24 and len(mesh.polygons)==len(mesh.vertices)//2+2:
+   bm=bmesh.new();bm.from_mesh(mesh);bm.verts.ensure_lookup_table()
+   caps=[f for f in bm.faces if len(f.verts)>4]
+   if len(caps)==2:
+    ring=list(caps[0].verts)
+    for v in ring[::2]:
+     edges=[e for e in v.link_edges if all(len(f.verts)==4 for f in e.link_faces)]
+     if edges:bmesh.ops.dissolve_edges(bm,edges=edges,use_verts=True)
+    bm.normal_update();bm.to_mesh(mesh)
+   bm.free()
 bpy.ops.object.select_all(action='DESELECT')
 for o in bpy.context.scene.objects:
  if o.type in ['MESH','FONT']:o.select_set(True)
@@ -36,7 +60,7 @@ def export(name,items,part=None,suffix='',rotate=0):
   if max(v.co.x for v in mesh.vertices)<lo or min(v.co.x for v in mesh.vertices)>hi:bpy.data.meshes.remove(mesh);continue
   bm=bmesh.new();bm.from_mesh(mesh)
   for x,n in [(lo,(1,0,0)),(hi,(-1,0,0))]:bmesh.ops.bisect_plane(bm,geom=list(bm.verts)+list(bm.edges)+list(bm.faces),dist=.000001,plane_co=(x,0,0),plane_no=n,clear_inner=True)
-  bm.to_mesh(mesh);bm.free();mesh.calc_loop_triangles()
+  bm.normal_update();bm.to_mesh(mesh);bm.free();mesh.calc_loop_triangles()
   for tri in mesh.loop_triangles:
    mat=o.data.materials[tri.material_index].name+suffix;lines.append('usemtl '+mat)
    for i,loop in enumerate(tri.loops):

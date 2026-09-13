@@ -42,16 +42,15 @@ public final class ControlDeskEntity extends BlockEntity {
     private void refresh(){
         if(level==null)return;LockEntity lock=controller();DeskControl c=lock==null?null:lock.deskControl();
         int nextAlarm=c!=null&&!c.stopped&&c.warningTicks>0?15:0,nextHorn=c!=null&&!c.stopped&&c.hornTicks>0?15:0;
-        if(alarm!=nextAlarm||horn!=nextHorn){alarm=nextAlarm;horn=nextHorn;notifyOutputs();}
+        if(alarm!=nextAlarm||horn!=nextHorn){alarm=nextAlarm;horn=nextHorn;setChanged();notifyOutputs();}
         for(int part=0;part<3;part++) {
             BlockPos p=worldPosition.relative(getBlockState().getValue(ControlDeskBlock.FACING).getCounterClockWise(),part-1);var s=level.getBlockState(p);if(!s.is(Content.DESK.get()))continue;
             boolean water=part==1,active=lock!=null&&water&&lock.waterMoving();
-            int lamp=lock==null?0:water?(active||c.warningTicks>0?3:1):lock.gateLamp(part==0?1:0);
+            int lamp=lock==null?0:water?(c.warningTicks>0?3:active?2:1):lock.gateLamp(part==0?1:0);
             boolean selection=c!=null&&(water?c.waterSelection==DeskControl.FILL:c.gateSelection[part==0?1:0]);
-            var n=s.setValue(ControlDeskBlock.LAMP,lamp).setValue(ControlDeskBlock.SWITCH,selection).setValue(ControlDeskBlock.FLASH,level.getGameTime()%20<10).setValue(ControlDeskBlock.ALERT,c!=null&&c.stopped).setValue(ControlDeskBlock.ACTIVE,active);
+            var n=s.setValue(ControlDeskBlock.LAMP,lamp).setValue(ControlDeskBlock.SWITCH,selection).setValue(ControlDeskBlock.FLASH,(lamp==3||(water&&c!=null&&c.stopped))&&level.getGameTime()%20<10).setValue(ControlDeskBlock.ALERT,c!=null&&c.stopped).setValue(ControlDeskBlock.ACTIVE,active);
             if(!s.equals(n))level.setBlock(p,n,Block.UPDATE_CLIENTS);
         }
-        setChanged();level.sendBlockUpdated(worldPosition,getBlockState(),getBlockState(),Block.UPDATE_CLIENTS);
     }
     private void notifyOutputs(){for(int part:new int[]{0,2}){BlockPos p=worldPosition.relative(getBlockState().getValue(ControlDeskBlock.FACING).getCounterClockWise(),part-1);level.updateNeighborsAt(p,Content.DESK.get());level.updateNeighborsAt(p.below(),Content.DESK.get());}}
     @Override protected void saveAdditional(CompoundTag n){super.saveAdditional(n);if(controller!=null)n.put("Controller",NbtUtils.writeBlockPos(controller));n.putInt("Alarm",alarm);n.putInt("Horn",horn);}
