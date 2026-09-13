@@ -1,5 +1,8 @@
 # Fill/drain operation — dev.12
 
+For dev.13 two-port circuits, use the [inline plumbing guide](inline-plumbing.md).
+The routing below describes the older wall-valve layout, which remains supported.
+
 The plumbing route is **valve → Culvert Pipe → canal surface Culvert Port**.
 Place pipe immediately beneath each valve. Keep the fill and drain networks separate.
 At the canal, connect the pipe to the back of the port, with its mouth facing a

@@ -19,7 +19,9 @@ public final class GateWaterRenderer implements BlockEntityRenderer<GateWaterEnt
         for(int side=0;side<2;side++){
             int depth=side==0?w.inside:w.outside;if(depth==0)continue;Direction d=side==0?w.inward:w.inward.getOpposite();
             float x0=0,x1=1,z0=0,z1=1,y=depth/16f;
-            if(d==Direction.WEST)x1=8.76f/16;else if(d==Direction.EAST)x0=9.74f/16;else if(d==Direction.NORTH)z1=6.26f/16;else z0=7.24f/16;
+            boolean reverse=w.getBlockState().getValue(GatePanelBlock.REVERSED);
+            float zLow=(reverse?8.76f:6.26f)/16,zHigh=(reverse?9.74f:7.24f)/16,xLow=(reverse?6.26f:8.76f)/16,xHigh=(reverse?7.24f:9.74f)/16;
+            if(d==Direction.WEST)x1=xLow;else if(d==Direction.EAST)x0=xHigh;else if(d==Direction.NORTH)z1=zLow;else z0=zHigh;
             boolean above=w.getLevel().getBlockEntity(w.getBlockPos().above()) instanceof GateWaterEntity a&&(side==0?a.inside:a.outside)>0;
             if(!above)quad(v,pose,light,tint,sprite,new float[][]{{x0,y,z0},{x0,y,z1},{x1,y,z1},{x1,y,z0}},0,1,0);
             // End faces are only exposed at the end of a row, avoiding internal translucent seams.

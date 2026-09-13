@@ -126,8 +126,10 @@ public final class LockHingeEntity extends MechanicalBearingBlockEntity {
         if(leaf==null)return;
         GateContraption gate=new GateContraption(leaf);
         if(!gate.assemble(level,worldPosition))return;
+        boolean[][] reversed=new boolean[leaf.width()][leaf.height()];
+        for(int x=0;x<leaf.width();x++)for(int y=0;y<leaf.height();y++)reversed[x][y]=level.getBlockState(leaf.at(x,y)).getValue(GatePanelBlock.REVERSED);
         gate.removeBlocksFromWorld(level,BlockPos.ZERO);
-        for(int x=0;x<leaf.width();x++)for(int y=0;y<leaf.height();y++)level.setBlock(leaf.at(x,y),Content.SEAL.get().defaultBlockState().setValue(GatePanelBlock.AXIS,leaf.normal()),Block.UPDATE_CLIENTS);
+        for(int x=0;x<leaf.width();x++)for(int y=0;y<leaf.height();y++)level.setBlock(leaf.at(x,y),Content.SEAL.get().defaultBlockState().setValue(GatePanelBlock.REVERSED,reversed[x][y]).setValue(GatePanelBlock.AXIS,leaf.normal()),Block.UPDATE_CLIENTS);
         movedContraption=ControlledContraptionEntity.create(level,this,gate);
         BlockPos anchor=worldPosition.above();movedContraption.setPos(anchor.getX(),anchor.getY(),anchor.getZ());
         movedContraption.setRotationAxis(Direction.Axis.Y);level.addFreshEntity(movedContraption);
@@ -139,7 +141,7 @@ public final class LockHingeEntity extends MechanicalBearingBlockEntity {
             for(int x=0;x<leaf.width();x++)for(int y=0;y<leaf.height();y++) {
                 BlockPos p=leaf.at(x,y);BlockState s=level.getBlockState(p);
                 if(s.is(Content.SEAL.get()))level.setBlock(p,Content.PANEL.get().defaultBlockState()
-                    .setValue(GatePanelBlock.OPEN,false).setValue(GatePanelBlock.DEPTH,0)
+                    .setValue(GatePanelBlock.REVERSED,s.getValue(GatePanelBlock.REVERSED)).setValue(GatePanelBlock.OPEN,false).setValue(GatePanelBlock.DEPTH,0)
                     .setValue(GatePanelBlock.AXIS,leaf.normal()),Block.UPDATE_CLIENTS);
                 else Block.popResource(level,worldPosition,new net.minecraft.world.item.ItemStack(Content.PANEL.get()));
             }

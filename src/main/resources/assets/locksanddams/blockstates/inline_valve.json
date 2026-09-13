@@ -1,0 +1,26 @@
+{
+  "variants": {
+    "axis=z,open=false": {
+      "model": "locksanddams:block/inline_valve_closed"
+    },
+    "axis=z,open=true": {
+      "model": "locksanddams:block/inline_valve_open"
+    },
+    "axis=x,open=false": {
+      "model": "locksanddams:block/inline_valve_closed",
+      "y": 90
+    },
+    "axis=x,open=true": {
+      "model": "locksanddams:block/inline_valve_open",
+      "y": 90
+    },
+    "axis=y,open=false": {
+      "model": "locksanddams:block/inline_valve_closed",
+      "x": 90
+    },
+    "axis=y,open=true": {
+      "model": "locksanddams:block/inline_valve_open",
+      "x": 90
+    }
+  }
+}

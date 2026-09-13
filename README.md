@@ -2,7 +2,11 @@
 
 A navigation-lock mod for **Minecraft 1.20.1 / Forge 47.4.10 / Create 6.0.8**.
 
-## Prototype: 0.1.0-dev.12
+## Prototype: 0.1.0-dev.13
+
+New plumbing uses a chamber port and canal port with one flanged **Inline Culvert Valve**
+anywhere along each circuit. The controller assigns intake/outlet roles automatically.
+[Build and upgrade guide](docs/inline-plumbing.md). Gate panels place their smooth canal face toward the player.
 
 New desk demos start with DRAIN selected, so the first water-selector click requests FILL.
 Controller status reports the warning countdown, water limits, idle state and gate interlocks.

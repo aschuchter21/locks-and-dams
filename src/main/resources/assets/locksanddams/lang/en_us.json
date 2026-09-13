@@ -10,5 +10,6 @@
   "block.locksanddams.culvert_port": "Culvert Port",
   "block.locksanddams.control_desk": "Lock Control Desk",
   "item.locksanddams.control_link": "Control Link Tool",
-  "block.locksanddams.gate_control_node": "Gate Control Node"
+  "block.locksanddams.gate_control_node": "Gate Control Node",
+  "block.locksanddams.inline_valve": "Inline Culvert Valve"
 }

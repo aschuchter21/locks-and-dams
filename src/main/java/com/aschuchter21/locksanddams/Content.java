@@ -26,6 +26,7 @@ public final class Content {
     public static final RegistryObject<BlockEntityType<GateWaterEntity>> GATE_WATER_ENTITY=ENTITIES.register("gate_water",()->BlockEntityType.Builder.of(GateWaterEntity::new,SEAL.get()).build(null));
     public static final RegistryObject<Block> HINGE = block("lock_hinge", LockHingeBlock::new);
     public static final RegistryObject<Block> PIPE = block("culvert_pipe", CulvertPipeBlock::new);
+    public static final RegistryObject<Block> INLINE = block("inline_valve", InlineValveBlock::new);
     public static final RegistryObject<Block> PORT = block("culvert_port", CulvertPortBlock::new);
     public static final RegistryObject<Block> DRIVE = block("gate_drive", ControlBlock::new);
     public static final RegistryObject<Block> FILL = block("fill_valve", ControlBlock::new);
@@ -45,7 +46,7 @@ public final class Content {
             .icon(() -> new ItemStack(CONTROLLER.get()))
             .displayItems((parameters, output) -> {
                 output.accept(CONTROLLER.get()); output.accept(PANEL.get());output.accept(DESK.get());output.accept(NODE.get());output.accept(LINK_TOOL.get());
-                output.accept(FILL.get()); output.accept(DRAIN.get());
+                output.accept(INLINE.get()); output.accept(FILL.get()); output.accept(DRAIN.get());
                 output.accept(HINGE.get()); output.accept(PIPE.get()); output.accept(PORT.get());
             }).build());
     }

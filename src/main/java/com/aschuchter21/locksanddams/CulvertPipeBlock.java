@@ -19,6 +19,7 @@ public final class CulvertPipeBlock extends Block {
         for(Direction d:Direction.values()) {
             BlockState n=level.getBlockState(pos.relative(d));
             boolean joins=n.is(Content.PIPE.get())||n.is(Content.PORT.get())&&n.getValue(CulvertPortBlock.FACING)==d
+                ||n.is(Content.INLINE.get())&&n.getValue(InlineValveBlock.AXIS)==d.getAxis()
                 ||d==Direction.UP&&(n.is(Content.FILL.get())||n.is(Content.DRAIN.get()));
             state=state.setValue(CONNECTIONS[d.ordinal()],joins);
         }

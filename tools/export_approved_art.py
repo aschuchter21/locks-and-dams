@@ -127,3 +127,13 @@ names=['down','up','north','south','west','east']
 (A/'blockstates/culvert_pipe.json').write_text(json.dumps({'variants':{','.join(f'{d}={str(bool(mask&(1<<i))).lower()}' for i,d in enumerate(names)):{'model':'locksanddams:block/culvert_round_'+str(mask)} for mask in range(64)}},indent=2))
 (A/'models/item/culvert_pipe.json').write_text(json.dumps({'parent':'locksanddams:block/culvert_round_12'}))
 print('APPROVED ART EXPORT COMPLETE')
+
+variants={}
+for axis in ['x','y','z']:
+    for top in [False,True]:
+        for edge in range(5):
+            for reverse in [False,True]:
+                model_edge=({1:2,2:1,3:4,4:3}.get(edge,edge) if reverse else edge)
+                model='gate_panel'+(('_top'+('' if model_edge==0 else '_'+str(model_edge))) if top else '')
+                variants[f'axis={axis},top={str(top).lower()},edge={edge},reversed={str(reverse).lower()}']={'model':'locksanddams:block/'+model,'y':((90 if axis=='x' else 0)+(180 if reverse else 0))%360}
+(A/'blockstates/gate_panel.json').write_text(json.dumps({'variants':variants},indent=2)+'\n')

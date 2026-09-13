@@ -1,104 +1,224 @@
 {
   "variants": {
-    "axis=x,top=false,edge=0": {
+    "axis=x,top=false,edge=0,reversed=false": {
       "model": "locksanddams:block/gate_panel",
       "y": 90
     },
-    "axis=x,top=false,edge=1": {
+    "axis=x,top=false,edge=0,reversed=true": {
+      "model": "locksanddams:block/gate_panel",
+      "y": 270
+    },
+    "axis=x,top=false,edge=1,reversed=false": {
       "model": "locksanddams:block/gate_panel",
       "y": 90
     },
-    "axis=x,top=false,edge=2": {
+    "axis=x,top=false,edge=1,reversed=true": {
+      "model": "locksanddams:block/gate_panel",
+      "y": 270
+    },
+    "axis=x,top=false,edge=2,reversed=false": {
       "model": "locksanddams:block/gate_panel",
       "y": 90
     },
-    "axis=x,top=false,edge=3": {
+    "axis=x,top=false,edge=2,reversed=true": {
+      "model": "locksanddams:block/gate_panel",
+      "y": 270
+    },
+    "axis=x,top=false,edge=3,reversed=false": {
       "model": "locksanddams:block/gate_panel",
       "y": 90
     },
-    "axis=x,top=false,edge=4": {
+    "axis=x,top=false,edge=3,reversed=true": {
+      "model": "locksanddams:block/gate_panel",
+      "y": 270
+    },
+    "axis=x,top=false,edge=4,reversed=false": {
       "model": "locksanddams:block/gate_panel",
       "y": 90
     },
-    "axis=x,top=true,edge=0": {
+    "axis=x,top=false,edge=4,reversed=true": {
+      "model": "locksanddams:block/gate_panel",
+      "y": 270
+    },
+    "axis=x,top=true,edge=0,reversed=false": {
       "model": "locksanddams:block/gate_panel_top",
       "y": 90
     },
-    "axis=x,top=true,edge=1": {
+    "axis=x,top=true,edge=0,reversed=true": {
+      "model": "locksanddams:block/gate_panel_top",
+      "y": 270
+    },
+    "axis=x,top=true,edge=1,reversed=false": {
       "model": "locksanddams:block/gate_panel_top_1",
       "y": 90
     },
-    "axis=x,top=true,edge=2": {
+    "axis=x,top=true,edge=1,reversed=true": {
+      "model": "locksanddams:block/gate_panel_top_2",
+      "y": 270
+    },
+    "axis=x,top=true,edge=2,reversed=false": {
       "model": "locksanddams:block/gate_panel_top_2",
       "y": 90
     },
-    "axis=x,top=true,edge=3": {
+    "axis=x,top=true,edge=2,reversed=true": {
+      "model": "locksanddams:block/gate_panel_top_1",
+      "y": 270
+    },
+    "axis=x,top=true,edge=3,reversed=false": {
       "model": "locksanddams:block/gate_panel_top_3",
       "y": 90
     },
-    "axis=x,top=true,edge=4": {
+    "axis=x,top=true,edge=3,reversed=true": {
+      "model": "locksanddams:block/gate_panel_top_4",
+      "y": 270
+    },
+    "axis=x,top=true,edge=4,reversed=false": {
       "model": "locksanddams:block/gate_panel_top_4",
       "y": 90
     },
-    "axis=y,top=false,edge=0": {
+    "axis=x,top=true,edge=4,reversed=true": {
+      "model": "locksanddams:block/gate_panel_top_3",
+      "y": 270
+    },
+    "axis=y,top=false,edge=0,reversed=false": {
       "model": "locksanddams:block/gate_panel"
     },
-    "axis=y,top=false,edge=1": {
+    "axis=y,top=false,edge=0,reversed=true": {
+      "model": "locksanddams:block/gate_panel",
+      "y": 180
+    },
+    "axis=y,top=false,edge=1,reversed=false": {
       "model": "locksanddams:block/gate_panel"
     },
-    "axis=y,top=false,edge=2": {
+    "axis=y,top=false,edge=1,reversed=true": {
+      "model": "locksanddams:block/gate_panel",
+      "y": 180
+    },
+    "axis=y,top=false,edge=2,reversed=false": {
       "model": "locksanddams:block/gate_panel"
     },
-    "axis=y,top=false,edge=3": {
+    "axis=y,top=false,edge=2,reversed=true": {
+      "model": "locksanddams:block/gate_panel",
+      "y": 180
+    },
+    "axis=y,top=false,edge=3,reversed=false": {
       "model": "locksanddams:block/gate_panel"
     },
-    "axis=y,top=false,edge=4": {
+    "axis=y,top=false,edge=3,reversed=true": {
+      "model": "locksanddams:block/gate_panel",
+      "y": 180
+    },
+    "axis=y,top=false,edge=4,reversed=false": {
       "model": "locksanddams:block/gate_panel"
     },
-    "axis=y,top=true,edge=0": {
+    "axis=y,top=false,edge=4,reversed=true": {
+      "model": "locksanddams:block/gate_panel",
+      "y": 180
+    },
+    "axis=y,top=true,edge=0,reversed=false": {
       "model": "locksanddams:block/gate_panel_top"
     },
-    "axis=y,top=true,edge=1": {
+    "axis=y,top=true,edge=0,reversed=true": {
+      "model": "locksanddams:block/gate_panel_top",
+      "y": 180
+    },
+    "axis=y,top=true,edge=1,reversed=false": {
       "model": "locksanddams:block/gate_panel_top_1"
     },
-    "axis=y,top=true,edge=2": {
+    "axis=y,top=true,edge=1,reversed=true": {
+      "model": "locksanddams:block/gate_panel_top_2",
+      "y": 180
+    },
+    "axis=y,top=true,edge=2,reversed=false": {
       "model": "locksanddams:block/gate_panel_top_2"
     },
-    "axis=y,top=true,edge=3": {
+    "axis=y,top=true,edge=2,reversed=true": {
+      "model": "locksanddams:block/gate_panel_top_1",
+      "y": 180
+    },
+    "axis=y,top=true,edge=3,reversed=false": {
       "model": "locksanddams:block/gate_panel_top_3"
     },
-    "axis=y,top=true,edge=4": {
+    "axis=y,top=true,edge=3,reversed=true": {
+      "model": "locksanddams:block/gate_panel_top_4",
+      "y": 180
+    },
+    "axis=y,top=true,edge=4,reversed=false": {
       "model": "locksanddams:block/gate_panel_top_4"
     },
-    "axis=z,top=false,edge=0": {
+    "axis=y,top=true,edge=4,reversed=true": {
+      "model": "locksanddams:block/gate_panel_top_3",
+      "y": 180
+    },
+    "axis=z,top=false,edge=0,reversed=false": {
       "model": "locksanddams:block/gate_panel"
     },
-    "axis=z,top=false,edge=1": {
+    "axis=z,top=false,edge=0,reversed=true": {
+      "model": "locksanddams:block/gate_panel",
+      "y": 180
+    },
+    "axis=z,top=false,edge=1,reversed=false": {
       "model": "locksanddams:block/gate_panel"
     },
-    "axis=z,top=false,edge=2": {
+    "axis=z,top=false,edge=1,reversed=true": {
+      "model": "locksanddams:block/gate_panel",
+      "y": 180
+    },
+    "axis=z,top=false,edge=2,reversed=false": {
       "model": "locksanddams:block/gate_panel"
     },
-    "axis=z,top=false,edge=3": {
+    "axis=z,top=false,edge=2,reversed=true": {
+      "model": "locksanddams:block/gate_panel",
+      "y": 180
+    },
+    "axis=z,top=false,edge=3,reversed=false": {
       "model": "locksanddams:block/gate_panel"
     },
-    "axis=z,top=false,edge=4": {
+    "axis=z,top=false,edge=3,reversed=true": {
+      "model": "locksanddams:block/gate_panel",
+      "y": 180
+    },
+    "axis=z,top=false,edge=4,reversed=false": {
       "model": "locksanddams:block/gate_panel"
     },
-    "axis=z,top=true,edge=0": {
+    "axis=z,top=false,edge=4,reversed=true": {
+      "model": "locksanddams:block/gate_panel",
+      "y": 180
+    },
+    "axis=z,top=true,edge=0,reversed=false": {
       "model": "locksanddams:block/gate_panel_top"
     },
-    "axis=z,top=true,edge=1": {
+    "axis=z,top=true,edge=0,reversed=true": {
+      "model": "locksanddams:block/gate_panel_top",
+      "y": 180
+    },
+    "axis=z,top=true,edge=1,reversed=false": {
       "model": "locksanddams:block/gate_panel_top_1"
     },
-    "axis=z,top=true,edge=2": {
+    "axis=z,top=true,edge=1,reversed=true": {
+      "model": "locksanddams:block/gate_panel_top_2",
+      "y": 180
+    },
+    "axis=z,top=true,edge=2,reversed=false": {
       "model": "locksanddams:block/gate_panel_top_2"
     },
-    "axis=z,top=true,edge=3": {
+    "axis=z,top=true,edge=2,reversed=true": {
+      "model": "locksanddams:block/gate_panel_top_1",
+      "y": 180
+    },
+    "axis=z,top=true,edge=3,reversed=false": {
       "model": "locksanddams:block/gate_panel_top_3"
     },
-    "axis=z,top=true,edge=4": {
+    "axis=z,top=true,edge=3,reversed=true": {
+      "model": "locksanddams:block/gate_panel_top_4",
+      "y": 180
+    },
+    "axis=z,top=true,edge=4,reversed=false": {
       "model": "locksanddams:block/gate_panel_top_4"
+    },
+    "axis=z,top=true,edge=4,reversed=true": {
+      "model": "locksanddams:block/gate_panel_top_3",
+      "y": 180
     }
   }
 }

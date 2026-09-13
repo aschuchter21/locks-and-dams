@@ -20,7 +20,7 @@ public final class CustomDemo {
     }
     static int run(CommandSourceStack source,int w,int length,int lift) throws com.mojang.brigadier.exceptions.CommandSyntaxException {
         var player=source.getPlayerOrException();Direction f=player.getDirection();BlockPos base=player.blockPosition().above(4).relative(f,10);
-        try {BlockPos controller=build(source.getLevel(),base,f,w,length,lift);source.sendSuccess(()->Component.literal("Custom lock built: "+w+" x "+length+", lift "+lift+". Controller "+controller.toShortString()+". Positive hinge RPM opens; negative closes. Valve levers are on the side wall. Use /locks demo_desk for a wired control desk."),false);return 1;}
+        try {BlockPos controller=build(source.getLevel(),base,f,w,length,lift);source.sendSuccess(()->Component.literal("Custom lock built: "+w+" x "+length+", lift "+lift+". Controller "+controller.toShortString()+". Positive hinge RPM opens; negative closes. Valve levers are beside the inline pipe valves. Use /locks demo_desk for a wired control desk."),false);return 1;}
         catch(IllegalArgumentException error){source.sendFailure(Component.literal(error.getMessage()));return 0;}
     }
     public static BlockPos build(ServerLevel level,BlockPos base,Direction f,int w,int interior,int lift) {
@@ -63,17 +63,25 @@ public final class CustomDemo {
             level.setBlock(grid.at(x,-2,z),com.simibubi.create.AllBlocks.CREATIVE_MOTOR.getDefaultState().setValue(com.simibubi.create.content.kinetics.base.DirectionalKineticBlock.FACING,Direction.UP),3);
             ((com.simibubi.create.content.kinetics.motor.CreativeMotorBlockEntity)level.getBlockEntity(grid.at(x,-2,z))).generatedSpeed.setValue(-8);
         }
-        BlockPos controller=grid.at(0,0,2),fill=grid.at(0,lift,interior),drain=grid.at(0,1,1);
+        BlockPos controller=grid.at(0,0,2),fill=grid.at(-3,lift-1,interior),drain=grid.at(-2,0,1);
         level.setBlock(controller,Content.CONTROLLER.get().defaultBlockState().setValue(ControllerBlock.FACING,f),2);
-        level.setBlock(fill,Content.FILL.get().defaultBlockState(),2);level.setBlock(drain,Content.DRAIN.get().defaultBlockState(),2);
-        lever(level,fill.relative(f.getCounterClockWise()),f.getCounterClockWise());lever(level,drain.relative(f.getCounterClockWise()),f.getCounterClockWise());
-        // Supply crosses above the drain, separated by two empty columns.
-        pipe(level,fill.below());for(int x=-5;x<=0;x++)pipe(level,grid.at(x,lift-1,interior));
+        // The chamber ports connect through separate external circuits to canal surface ports.
+        for(int x=-5;x<=-1;x++)pipe(level,grid.at(x,lift-1,interior));pipe(level,grid.at(-1,lift,interior));
         for(int z=interior;z<=len+pool-1;z++)pipe(level,grid.at(-5,lift-1,z));
         pipe(level,grid.at(-5,lift,len+pool-1));for(int x=-5;x<0;x++)pipe(level,grid.at(x,lift,len+pool-1));
-        pipe(level,drain.below());for(int x=-3;x<=0;x++)pipe(level,grid.at(x,0,1));
+        for(int x=-3;x<0;x++)pipe(level,grid.at(x,0,1));
         for(int z=-pool+1;z<=1;z++)pipe(level,grid.at(-3,0,z));for(int x=-2;x<0;x++)pipe(level,grid.at(x,0,-pool+1));
-        for(int[] p:new int[][]{{0,lift,len+pool-1},{0,0,-pool+1}})level.setBlock(grid.at(p[0],p[1],p[2]),Content.PORT.get().defaultBlockState().setValue(CulvertPortBlock.FACING,f.getClockWise()),2);
+        for(int[] p:new int[][]{{0,lift,interior},{0,0,1},{0,lift,len+pool-1},{0,0,-pool+1}})
+            level.setBlock(grid.at(p[0],p[1],p[2]),Content.PORT.get().defaultBlockState().setValue(CulvertPortBlock.FACING,f.getClockWise()),2);
+        for(BlockPos valve:new BlockPos[]{fill,drain}) {
+            level.setBlock(valve,Content.INLINE.get().defaultBlockState().setValue(InlineValveBlock.AXIS,f.getClockWise().getAxis()),2);
+            // A separate support keeps the lever clear of both pipe flanges.
+            BlockPos support=valve.relative(f);level.setBlock(support,wall,2);
+            level.setBlock(support.above(),Blocks.LEVER.defaultBlockState().setValue(LeverBlock.FACE,AttachFace.FLOOR).setValue(LeverBlock.FACING,f),3);
+        }
+        for(int side=0;side<2;side++)for(int x=0;x<w;x++)for(int y=side==0?0:lift;y<(side==0?lift+2:lift+3);y++) {
+            BlockPos p=grid.at(x,y,side*len);level.setBlock(p,GatePanelBlock.facing(level.getBlockState(p),side==0?f.getOpposite():f),2);
+        }
         // Step the wall walkway down to each gate's deck, without touching the wet wall below.
         for(int side=0;side<2;side++)for(int x:new int[]{0,w-1}) {
             int gateZ=side*len,deck=lift+(side==0?2:3),steps=top+1-deck;

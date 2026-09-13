@@ -12,25 +12,21 @@ import net.minecraft.world.level.Level;
 
 public class GatePanelBlock extends Block {
     public static final EnumProperty<net.minecraft.core.Direction.Axis> AXIS = EnumProperty.create("axis", net.minecraft.core.Direction.Axis.class);
+    public static final BooleanProperty REVERSED = BooleanProperty.create("reversed");
     public static final BooleanProperty OPEN = BooleanProperty.create("open");
     public static final BooleanProperty TOP = BooleanProperty.create("top");
     public static final IntegerProperty EDGE = IntegerProperty.create("edge",0,4);
     public static final IntegerProperty DEPTH = IntegerProperty.create("depth", 0, 16);
     public GatePanelBlock() {
         super(Content.metal().noOcclusion().isSuffocating((s, l, p) -> !s.getValue(OPEN)));
-        registerDefaultState(stateDefinition.any().setValue(OPEN, false).setValue(TOP, false).setValue(EDGE,0).setValue(DEPTH, 0).setValue(AXIS,net.minecraft.core.Direction.Axis.Z));
+        registerDefaultState(stateDefinition.any().setValue(REVERSED,false).setValue(OPEN, false).setValue(TOP, false).setValue(EDGE,0).setValue(DEPTH, 0).setValue(AXIS,net.minecraft.core.Direction.Axis.Z));
     }
-    @Override protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) { builder.add(OPEN, DEPTH, AXIS, TOP, EDGE); }
+    @Override protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) { builder.add(OPEN, DEPTH, AXIS, TOP, EDGE, REVERSED); }
     @Override public BlockState getStateForPlacement(net.minecraft.world.item.context.BlockPlaceContext c) {
-        var axis=c.getHorizontalDirection().getAxis();
-        BlockPos support=c.getClickedPos().relative(c.getClickedFace().getOpposite());
-        var adjacent=c.getLevel().getBlockState(support);
-        if(adjacent.getBlock() instanceof GatePanelBlock)axis=adjacent.getValue(AXIS);
-        else for(var d:net.minecraft.core.Direction.values()){
-            adjacent=c.getLevel().getBlockState(c.getClickedPos().relative(d));
-            if(adjacent.getBlock() instanceof GatePanelBlock){axis=adjacent.getValue(AXIS);break;}
-        }
-        return defaultBlockState().setValue(AXIS,axis);
+        return facing(defaultBlockState(),c.getHorizontalDirection().getOpposite());
+    }
+    public static BlockState facing(BlockState state,net.minecraft.core.Direction canal) {
+        return state.setValue(AXIS,canal.getAxis()).setValue(REVERSED,canal==net.minecraft.core.Direction.SOUTH||canal==net.minecraft.core.Direction.WEST);
     }
     @Override public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
         if(state.getValue(OPEN))return Shapes.empty();

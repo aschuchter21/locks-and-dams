@@ -18,11 +18,11 @@ public final class ModelPreviewChecks {
     static int tick;
     static ServerPlayer player;
     static ServerLevel level;
-    static final BlockPos BASE=new BlockPos(4600,200,0);
+    static final BlockPos BASE=new BlockPos(4800,200,0);
     static volatile String shot;
     static void finish(Throwable error) {
         walk=false;done=true;
-        try{Files.writeString(Path.of("model-preview-result.txt"),error==null?"PASS: actual local player walked across the closed gate catwalk; native models baked and screenshots captured.\n":"FAIL: "+error+"\n");}catch(Exception e){e.printStackTrace();}
+        try{Files.writeString(Path.of("model-preview-result.txt"),error==null?"PASS: actual local player walked across the closed gate catwalk; handrails retained player; gate facing survived assembly/disassembly; native models baked and screenshots captured.\n":"FAIL: "+error+"\n");}catch(Exception e){e.printStackTrace();}
         if(error!=null)error.printStackTrace();
     }
     @SubscribeEvent public static void client(TickEvent.ClientTickEvent e) {
@@ -50,7 +50,7 @@ public final class ModelPreviewChecks {
         try {
             if(tick==200)walk=true;
             if(tick>=200&&tick<=300&&Math.abs(player.getY()-206)>.12)throw new IllegalStateException("Player lost catwalk support: "+player.position());
-            if(tick==225)shot="dev11-catwalk-walk.png";
+            if(tick==225)shot="dev13-catwalk-walk.png";
             if(tick==300){
                 walk=false;
                 // Create's moving collision can support the player without setting vanilla onGround.
@@ -59,10 +59,20 @@ public final class ModelPreviewChecks {
                 Minecraft.getInstance().execute(()->Minecraft.getInstance().options.hideGui=true);
             }
             if(tick==340){walk=false;if(player.getZ()<.25||Math.abs(player.getY()-206)>.15)throw new IllegalStateException("Handrail did not retain player: "+player.position());player.setGameMode(GameType.SPECTATOR);player.teleportTo(level,BASE.getX()+11,211,10,140,29);}
-            if(tick==360)shot="dev11-lock-overview.png";
+            if(tick==360)shot="dev13-lock-overview.png";
             if(tick==400)player.teleportTo(level,BASE.getX()-8,207,-7,-75,27);
-            if(tick==460)shot="dev11-plumbing.png";
-            if(tick==480)finish(null);
+            if(tick==460)shot="dev13-plumbing.png";
+            if(tick==465)player.teleportTo(level,BASE.getX()-5,205,-8,-135,24);
+            if(tick==485)shot="dev13-inline-valve-ingame.png";
+            if(tick==500){
+                for(var h:CustomLock.nearby(level,BASE))if(h.geometry()!=null&&h.geometry().base().distManhattan(BASE)<40){
+                    var leaf=h.geometry();boolean expected=leaf.base().getZ()==BASE.getZ();
+                    for(var info:h.getMovedContraption().getContraption().getBlocks().values())if(info.state().is(Content.PANEL.get())&&info.state().getValue(GatePanelBlock.REVERSED)!=expected)throw new IllegalStateException("Gate facing changed during assembly");
+                    h.disassemble();
+                    for(int x=0;x<leaf.width();x++)for(int y=0;y<leaf.height();y++)if(level.getBlockState(leaf.at(x,y)).getValue(GatePanelBlock.REVERSED)!=expected)throw new IllegalStateException("Gate facing changed on disassembly");
+                }
+                finish(null);
+            }
         }catch(Throwable error){finish(error);}
     }
 }
