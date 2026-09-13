@@ -141,3 +141,17 @@ if (project.hasProperty('lockPreview')) {
         programArgument '800'
     }
 }
+
+if (project.hasProperty('nodePreview')) {
+    sourceSets.main.java.srcDir 'tools/nodepreview'
+    legacyForge.runs.client {
+        gameDirectory = project.file('run-preview')
+        systemProperty 'locksanddams.nodePreview', 'true'
+        programArgument '--quickPlaySingleplayer'
+        programArgument 'Create Lock QA 2'
+        programArgument '--width'
+        programArgument '1280'
+        programArgument '--height'
+        programArgument '800'
+    }
+}

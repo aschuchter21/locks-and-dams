@@ -2,7 +2,10 @@
 
 A navigation-lock mod for **Minecraft 1.20.1 / Forge 47.4.10 / Create 6.0.8**.
 
-## Prototype: 0.1.0-dev.13
+## Prototype: 0.1.0-dev.14
+
+Gate Control Node settings now open with Sneak + Use while holding items, including
+the link tool. The hint displays the current key bindings (for example, Left Shift + R).
 
 New plumbing uses a chamber port and canal port with one flanged **Inline Culvert Valve**
 anywhere along each circuit. The controller assigns intake/outlet roles automatically.
