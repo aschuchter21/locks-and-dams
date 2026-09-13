@@ -16,7 +16,7 @@ public record WaterConnection(BlockPos port,BlockPos mouth,int surface) {
             require(level.hasChunkAt(p),"Load the entire culvert.");var s=level.getBlockState(p);
             require(s.is(Content.PIPE.get())||s.is(Content.PORT.get()),"Place Culvert Pipe directly below each valve.");
             if(s.is(Content.PORT.get())) {
-                Direction d=s.getValue(CulvertPortBlock.FACING);require(seen.contains(p.relative(d.getOpposite())),"Connect pipe to the back of the port.");
+                Direction d=s.getValue(CulvertPortBlock.FACING);require(seen.contains(p.relative(d.getOpposite())),"Connect pipe to the back of the port at "+p.toShortString()+". Valves need pipe beneath them, not a port.");
                 require(result==null,"Each valve needs exactly one port.");BlockPos water=p.relative(d);
                 require(level.hasChunkAt(water),"Load the canal beside the port.");var fluid=level.getFluidState(water);
                 require(fluid.is(FluidTags.WATER)&&fluid.isSource()&&!fluid.is(Content.WATER.get())&&level.getFluidState(water.above()).isEmpty(),"Place the port mouth at the canal source-water surface.");

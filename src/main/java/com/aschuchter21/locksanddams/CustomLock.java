@@ -200,7 +200,16 @@ public final class CustomLock {
         boolean d=!controller.deskStop()&&(controller.deskPosition()==null?level.hasNeighborSignal(drain):controller.waterCommand()==DeskControl.DRAIN);
         boolean filling=allClosed&&f&&!d&&units<high,draining=allClosed&&d&&!f&&units>low;
         if(filling)units++;if(draining)units--;
-        message=!allClosed?"Gate open or moving; waiting for both pairs to close.":f&&d?"Paused: both valves powered.":filling?"Filling":draining?"Draining":"Ready";
+        var desk=controller.deskControl();
+        if(controller.deskPosition()!=null&&desk.stopped)message="Emergency stop latched; shift-right-click the red button to reset.";
+        else if(controller.deskPosition()!=null&&desk.warningTicks>0)message=(desk.waterSelection==DeskControl.FILL?"Fill":"Drain")+" warning: "+((desk.warningTicks+19)/20)+" seconds remaining; switching restarts the warning.";
+        else if(!allClosed)message="Gate open or moving; waiting for both pairs to close.";
+        else if(f&&d)message="Paused: both valves powered.";
+        else if(filling)message="Filling";
+        else if(draining)message="Draining";
+        else if(f&&units>=high)message="At upper water level; select DRAIN to lower the chamber.";
+        else if(d&&units<=low)message="At lower water level; select FILL to raise the chamber.";
+        else message=controller.deskPosition()!=null?"Idle; operate the FILL / DRAIN selector to start a new command.":"Ready";
         control(level,fill,filling);control(level,drain,draining);writeWater(level);
         for(int side=0;side<2;side++)writeGate(level,side,hinge(level,side*2).open()&&hinge(level,side*2+1).open());
     }

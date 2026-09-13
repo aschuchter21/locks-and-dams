@@ -2,7 +2,11 @@
 
 A navigation-lock mod for **Minecraft 1.20.1 / Forge 47.4.10 / Create 6.0.8**.
 
-## Prototype: 0.1.0-dev.11
+## Prototype: 0.1.0-dev.12
+
+New desk demos start with DRAIN selected, so the first water-selector click requests FILL.
+Controller status reports the warning countdown, water limits, idle state and gate interlocks.
+See [fill/drain troubleshooting](docs/fill-drain-troubleshooting.md).
 
 Approved Blender gate and pipe designs are integrated: modular steel gates with
 grated catwalks and collidable handrails, and rounded flanged culverts that follow

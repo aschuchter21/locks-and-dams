@@ -43,6 +43,9 @@ public final class DeskDemo {
             level.setBlock(node.above(),Blocks.STONE_BRICKS.defaultBlockState(),3);
             level.updateNeighborsAt(node,Content.NODE.get());level.updateNeighborsAt(clutch,Content.NODE.get());
         }
+        // The chamber starts low: the first water-selector click should request FILL.
+        var lock=(LockEntity)level.getBlockEntity(controller);
+        lock.deskControl().waterSelection=DeskControl.DRAIN;lock.deskChanged();deskEntity.signalChanged();
         return desk;
     }
 }
