@@ -2,7 +2,11 @@
 
 A navigation-lock mod for **Minecraft 1.20.1 / Forge 47.4.10 / Create 6.0.8**.
 
-## Prototype: 0.1.0-dev.14
+## Prototype: 0.1.0-dev.15
+
+The approved industrial control desk is now integrated, with metal bezels, recessed
+panels, rotary selectors and WARN / FLOW / CLOSED water indicators. Desk operation,
+collision, warning/horn timing and outputs are unchanged.
 
 Gate Control Node settings now open with Sneak + Use while holding items, including
 the link tool. The hint displays the current key bindings (for example, Left Shift + R).

@@ -6,7 +6,7 @@
         "part": "0"
       },
       "apply": {
-        "model": "locksanddams:block/desk_0",
+        "model": "locksanddams:block/desk_approved_0",
         "y": 0
       }
     },
@@ -16,7 +16,7 @@
         "part": "0"
       },
       "apply": {
-        "model": "locksanddams:block/desk_0",
+        "model": "locksanddams:block/desk_approved_0",
         "y": 90
       }
     },
@@ -26,7 +26,7 @@
         "part": "0"
       },
       "apply": {
-        "model": "locksanddams:block/desk_0",
+        "model": "locksanddams:block/desk_approved_0",
         "y": 180
       }
     },
@@ -36,7 +36,615 @@
         "part": "0"
       },
       "apply": {
-        "model": "locksanddams:block/desk_0",
+        "model": "locksanddams:block/desk_approved_0",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "AND": [
+          {
+            "facing": "north",
+            "part": "0"
+          },
+          {
+            "switch": "false"
+          }
+        ]
+      },
+      "apply": {
+        "model": "locksanddams:block/desk_approved_switch_0_false",
+        "y": 0
+      }
+    },
+    {
+      "when": {
+        "AND": [
+          {
+            "facing": "east",
+            "part": "0"
+          },
+          {
+            "switch": "false"
+          }
+        ]
+      },
+      "apply": {
+        "model": "locksanddams:block/desk_approved_switch_0_false",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "AND": [
+          {
+            "facing": "south",
+            "part": "0"
+          },
+          {
+            "switch": "false"
+          }
+        ]
+      },
+      "apply": {
+        "model": "locksanddams:block/desk_approved_switch_0_false",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "AND": [
+          {
+            "facing": "west",
+            "part": "0"
+          },
+          {
+            "switch": "false"
+          }
+        ]
+      },
+      "apply": {
+        "model": "locksanddams:block/desk_approved_switch_0_false",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "AND": [
+          {
+            "facing": "north",
+            "part": "0"
+          },
+          {
+            "switch": "true"
+          }
+        ]
+      },
+      "apply": {
+        "model": "locksanddams:block/desk_approved_switch_0_true",
+        "y": 0
+      }
+    },
+    {
+      "when": {
+        "AND": [
+          {
+            "facing": "east",
+            "part": "0"
+          },
+          {
+            "switch": "true"
+          }
+        ]
+      },
+      "apply": {
+        "model": "locksanddams:block/desk_approved_switch_0_true",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "AND": [
+          {
+            "facing": "south",
+            "part": "0"
+          },
+          {
+            "switch": "true"
+          }
+        ]
+      },
+      "apply": {
+        "model": "locksanddams:block/desk_approved_switch_0_true",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "AND": [
+          {
+            "facing": "west",
+            "part": "0"
+          },
+          {
+            "switch": "true"
+          }
+        ]
+      },
+      "apply": {
+        "model": "locksanddams:block/desk_approved_switch_0_true",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "AND": [
+          {
+            "facing": "north",
+            "part": "0"
+          },
+          {
+            "lamp": "0|2|3|4"
+          }
+        ]
+      },
+      "apply": {
+        "model": "locksanddams:block/desk_approved_lens_0_green_false",
+        "y": 0
+      }
+    },
+    {
+      "when": {
+        "AND": [
+          {
+            "facing": "east",
+            "part": "0"
+          },
+          {
+            "lamp": "0|2|3|4"
+          }
+        ]
+      },
+      "apply": {
+        "model": "locksanddams:block/desk_approved_lens_0_green_false",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "AND": [
+          {
+            "facing": "south",
+            "part": "0"
+          },
+          {
+            "lamp": "0|2|3|4"
+          }
+        ]
+      },
+      "apply": {
+        "model": "locksanddams:block/desk_approved_lens_0_green_false",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "AND": [
+          {
+            "facing": "west",
+            "part": "0"
+          },
+          {
+            "lamp": "0|2|3|4"
+          }
+        ]
+      },
+      "apply": {
+        "model": "locksanddams:block/desk_approved_lens_0_green_false",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "AND": [
+          {
+            "facing": "north",
+            "part": "0"
+          },
+          {
+            "lamp": "1"
+          }
+        ]
+      },
+      "apply": {
+        "model": "locksanddams:block/desk_approved_lens_0_green_true",
+        "y": 0
+      }
+    },
+    {
+      "when": {
+        "AND": [
+          {
+            "facing": "east",
+            "part": "0"
+          },
+          {
+            "lamp": "1"
+          }
+        ]
+      },
+      "apply": {
+        "model": "locksanddams:block/desk_approved_lens_0_green_true",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "AND": [
+          {
+            "facing": "south",
+            "part": "0"
+          },
+          {
+            "lamp": "1"
+          }
+        ]
+      },
+      "apply": {
+        "model": "locksanddams:block/desk_approved_lens_0_green_true",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "AND": [
+          {
+            "facing": "west",
+            "part": "0"
+          },
+          {
+            "lamp": "1"
+          }
+        ]
+      },
+      "apply": {
+        "model": "locksanddams:block/desk_approved_lens_0_green_true",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "AND": [
+          {
+            "facing": "north",
+            "part": "0"
+          },
+          {
+            "lamp": "0|1|3|4"
+          }
+        ]
+      },
+      "apply": {
+        "model": "locksanddams:block/desk_approved_lens_0_red_false",
+        "y": 0
+      }
+    },
+    {
+      "when": {
+        "AND": [
+          {
+            "facing": "east",
+            "part": "0"
+          },
+          {
+            "lamp": "0|1|3|4"
+          }
+        ]
+      },
+      "apply": {
+        "model": "locksanddams:block/desk_approved_lens_0_red_false",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "AND": [
+          {
+            "facing": "south",
+            "part": "0"
+          },
+          {
+            "lamp": "0|1|3|4"
+          }
+        ]
+      },
+      "apply": {
+        "model": "locksanddams:block/desk_approved_lens_0_red_false",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "AND": [
+          {
+            "facing": "west",
+            "part": "0"
+          },
+          {
+            "lamp": "0|1|3|4"
+          }
+        ]
+      },
+      "apply": {
+        "model": "locksanddams:block/desk_approved_lens_0_red_false",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "AND": [
+          {
+            "facing": "north",
+            "part": "0"
+          },
+          {
+            "lamp": "2"
+          }
+        ]
+      },
+      "apply": {
+        "model": "locksanddams:block/desk_approved_lens_0_red_true",
+        "y": 0
+      }
+    },
+    {
+      "when": {
+        "AND": [
+          {
+            "facing": "east",
+            "part": "0"
+          },
+          {
+            "lamp": "2"
+          }
+        ]
+      },
+      "apply": {
+        "model": "locksanddams:block/desk_approved_lens_0_red_true",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "AND": [
+          {
+            "facing": "south",
+            "part": "0"
+          },
+          {
+            "lamp": "2"
+          }
+        ]
+      },
+      "apply": {
+        "model": "locksanddams:block/desk_approved_lens_0_red_true",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "AND": [
+          {
+            "facing": "west",
+            "part": "0"
+          },
+          {
+            "lamp": "2"
+          }
+        ]
+      },
+      "apply": {
+        "model": "locksanddams:block/desk_approved_lens_0_red_true",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "AND": [
+          {
+            "facing": "north",
+            "part": "0"
+          },
+          {
+            "OR": [
+              {
+                "lamp": "0|1|2"
+              },
+              {
+                "lamp": "3",
+                "flash": "false"
+              }
+            ]
+          }
+        ]
+      },
+      "apply": {
+        "model": "locksanddams:block/desk_approved_lens_0_amber_false",
+        "y": 0
+      }
+    },
+    {
+      "when": {
+        "AND": [
+          {
+            "facing": "east",
+            "part": "0"
+          },
+          {
+            "OR": [
+              {
+                "lamp": "0|1|2"
+              },
+              {
+                "lamp": "3",
+                "flash": "false"
+              }
+            ]
+          }
+        ]
+      },
+      "apply": {
+        "model": "locksanddams:block/desk_approved_lens_0_amber_false",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "AND": [
+          {
+            "facing": "south",
+            "part": "0"
+          },
+          {
+            "OR": [
+              {
+                "lamp": "0|1|2"
+              },
+              {
+                "lamp": "3",
+                "flash": "false"
+              }
+            ]
+          }
+        ]
+      },
+      "apply": {
+        "model": "locksanddams:block/desk_approved_lens_0_amber_false",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "AND": [
+          {
+            "facing": "west",
+            "part": "0"
+          },
+          {
+            "OR": [
+              {
+                "lamp": "0|1|2"
+              },
+              {
+                "lamp": "3",
+                "flash": "false"
+              }
+            ]
+          }
+        ]
+      },
+      "apply": {
+        "model": "locksanddams:block/desk_approved_lens_0_amber_false",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "AND": [
+          {
+            "facing": "north",
+            "part": "0"
+          },
+          {
+            "OR": [
+              {
+                "lamp": "4"
+              },
+              {
+                "lamp": "3",
+                "flash": "true"
+              }
+            ]
+          }
+        ]
+      },
+      "apply": {
+        "model": "locksanddams:block/desk_approved_lens_0_amber_true",
+        "y": 0
+      }
+    },
+    {
+      "when": {
+        "AND": [
+          {
+            "facing": "east",
+            "part": "0"
+          },
+          {
+            "OR": [
+              {
+                "lamp": "4"
+              },
+              {
+                "lamp": "3",
+                "flash": "true"
+              }
+            ]
+          }
+        ]
+      },
+      "apply": {
+        "model": "locksanddams:block/desk_approved_lens_0_amber_true",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "AND": [
+          {
+            "facing": "south",
+            "part": "0"
+          },
+          {
+            "OR": [
+              {
+                "lamp": "4"
+              },
+              {
+                "lamp": "3",
+                "flash": "true"
+              }
+            ]
+          }
+        ]
+      },
+      "apply": {
+        "model": "locksanddams:block/desk_approved_lens_0_amber_true",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "AND": [
+          {
+            "facing": "west",
+            "part": "0"
+          },
+          {
+            "OR": [
+              {
+                "lamp": "4"
+              },
+              {
+                "lamp": "3",
+                "flash": "true"
+              }
+            ]
+          }
+        ]
+      },
+      "apply": {
+        "model": "locksanddams:block/desk_approved_lens_0_amber_true",
         "y": 270
       }
     },
@@ -46,7 +654,7 @@
         "part": "1"
       },
       "apply": {
-        "model": "locksanddams:block/desk_1",
+        "model": "locksanddams:block/desk_approved_1",
         "y": 0
       }
     },
@@ -56,7 +664,7 @@
         "part": "1"
       },
       "apply": {
-        "model": "locksanddams:block/desk_1",
+        "model": "locksanddams:block/desk_approved_1",
         "y": 90
       }
     },
@@ -66,7 +674,7 @@
         "part": "1"
       },
       "apply": {
-        "model": "locksanddams:block/desk_1",
+        "model": "locksanddams:block/desk_approved_1",
         "y": 180
       }
     },
@@ -76,7 +684,647 @@
         "part": "1"
       },
       "apply": {
-        "model": "locksanddams:block/desk_1",
+        "model": "locksanddams:block/desk_approved_1",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "AND": [
+          {
+            "facing": "north",
+            "part": "1"
+          },
+          {
+            "switch": "false"
+          }
+        ]
+      },
+      "apply": {
+        "model": "locksanddams:block/desk_approved_switch_1_false",
+        "y": 0
+      }
+    },
+    {
+      "when": {
+        "AND": [
+          {
+            "facing": "east",
+            "part": "1"
+          },
+          {
+            "switch": "false"
+          }
+        ]
+      },
+      "apply": {
+        "model": "locksanddams:block/desk_approved_switch_1_false",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "AND": [
+          {
+            "facing": "south",
+            "part": "1"
+          },
+          {
+            "switch": "false"
+          }
+        ]
+      },
+      "apply": {
+        "model": "locksanddams:block/desk_approved_switch_1_false",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "AND": [
+          {
+            "facing": "west",
+            "part": "1"
+          },
+          {
+            "switch": "false"
+          }
+        ]
+      },
+      "apply": {
+        "model": "locksanddams:block/desk_approved_switch_1_false",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "AND": [
+          {
+            "facing": "north",
+            "part": "1"
+          },
+          {
+            "switch": "true"
+          }
+        ]
+      },
+      "apply": {
+        "model": "locksanddams:block/desk_approved_switch_1_true",
+        "y": 0
+      }
+    },
+    {
+      "when": {
+        "AND": [
+          {
+            "facing": "east",
+            "part": "1"
+          },
+          {
+            "switch": "true"
+          }
+        ]
+      },
+      "apply": {
+        "model": "locksanddams:block/desk_approved_switch_1_true",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "AND": [
+          {
+            "facing": "south",
+            "part": "1"
+          },
+          {
+            "switch": "true"
+          }
+        ]
+      },
+      "apply": {
+        "model": "locksanddams:block/desk_approved_switch_1_true",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "AND": [
+          {
+            "facing": "west",
+            "part": "1"
+          },
+          {
+            "switch": "true"
+          }
+        ]
+      },
+      "apply": {
+        "model": "locksanddams:block/desk_approved_switch_1_true",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "AND": [
+          {
+            "facing": "north",
+            "part": "1"
+          },
+          {
+            "lamp": "0|2|3|4"
+          }
+        ]
+      },
+      "apply": {
+        "model": "locksanddams:block/desk_approved_lens_1_green_false",
+        "y": 0
+      }
+    },
+    {
+      "when": {
+        "AND": [
+          {
+            "facing": "east",
+            "part": "1"
+          },
+          {
+            "lamp": "0|2|3|4"
+          }
+        ]
+      },
+      "apply": {
+        "model": "locksanddams:block/desk_approved_lens_1_green_false",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "AND": [
+          {
+            "facing": "south",
+            "part": "1"
+          },
+          {
+            "lamp": "0|2|3|4"
+          }
+        ]
+      },
+      "apply": {
+        "model": "locksanddams:block/desk_approved_lens_1_green_false",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "AND": [
+          {
+            "facing": "west",
+            "part": "1"
+          },
+          {
+            "lamp": "0|2|3|4"
+          }
+        ]
+      },
+      "apply": {
+        "model": "locksanddams:block/desk_approved_lens_1_green_false",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "AND": [
+          {
+            "facing": "north",
+            "part": "1"
+          },
+          {
+            "lamp": "1"
+          }
+        ]
+      },
+      "apply": {
+        "model": "locksanddams:block/desk_approved_lens_1_green_true",
+        "y": 0
+      }
+    },
+    {
+      "when": {
+        "AND": [
+          {
+            "facing": "east",
+            "part": "1"
+          },
+          {
+            "lamp": "1"
+          }
+        ]
+      },
+      "apply": {
+        "model": "locksanddams:block/desk_approved_lens_1_green_true",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "AND": [
+          {
+            "facing": "south",
+            "part": "1"
+          },
+          {
+            "lamp": "1"
+          }
+        ]
+      },
+      "apply": {
+        "model": "locksanddams:block/desk_approved_lens_1_green_true",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "AND": [
+          {
+            "facing": "west",
+            "part": "1"
+          },
+          {
+            "lamp": "1"
+          }
+        ]
+      },
+      "apply": {
+        "model": "locksanddams:block/desk_approved_lens_1_green_true",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "AND": [
+          {
+            "facing": "north",
+            "part": "1"
+          },
+          {
+            "lamp": "0|1|3|4",
+            "active": "false"
+          }
+        ]
+      },
+      "apply": {
+        "model": "locksanddams:block/desk_approved_lens_1_red_false",
+        "y": 0
+      }
+    },
+    {
+      "when": {
+        "AND": [
+          {
+            "facing": "east",
+            "part": "1"
+          },
+          {
+            "lamp": "0|1|3|4",
+            "active": "false"
+          }
+        ]
+      },
+      "apply": {
+        "model": "locksanddams:block/desk_approved_lens_1_red_false",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "AND": [
+          {
+            "facing": "south",
+            "part": "1"
+          },
+          {
+            "lamp": "0|1|3|4",
+            "active": "false"
+          }
+        ]
+      },
+      "apply": {
+        "model": "locksanddams:block/desk_approved_lens_1_red_false",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "AND": [
+          {
+            "facing": "west",
+            "part": "1"
+          },
+          {
+            "lamp": "0|1|3|4",
+            "active": "false"
+          }
+        ]
+      },
+      "apply": {
+        "model": "locksanddams:block/desk_approved_lens_1_red_false",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "AND": [
+          {
+            "facing": "north",
+            "part": "1"
+          },
+          {
+            "OR": [
+              {
+                "lamp": "2"
+              },
+              {
+                "active": "true"
+              }
+            ]
+          }
+        ]
+      },
+      "apply": {
+        "model": "locksanddams:block/desk_approved_lens_1_red_true",
+        "y": 0
+      }
+    },
+    {
+      "when": {
+        "AND": [
+          {
+            "facing": "east",
+            "part": "1"
+          },
+          {
+            "OR": [
+              {
+                "lamp": "2"
+              },
+              {
+                "active": "true"
+              }
+            ]
+          }
+        ]
+      },
+      "apply": {
+        "model": "locksanddams:block/desk_approved_lens_1_red_true",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "AND": [
+          {
+            "facing": "south",
+            "part": "1"
+          },
+          {
+            "OR": [
+              {
+                "lamp": "2"
+              },
+              {
+                "active": "true"
+              }
+            ]
+          }
+        ]
+      },
+      "apply": {
+        "model": "locksanddams:block/desk_approved_lens_1_red_true",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "AND": [
+          {
+            "facing": "west",
+            "part": "1"
+          },
+          {
+            "OR": [
+              {
+                "lamp": "2"
+              },
+              {
+                "active": "true"
+              }
+            ]
+          }
+        ]
+      },
+      "apply": {
+        "model": "locksanddams:block/desk_approved_lens_1_red_true",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "AND": [
+          {
+            "facing": "north",
+            "part": "1"
+          },
+          {
+            "OR": [
+              {
+                "lamp": "0|1|2"
+              },
+              {
+                "lamp": "3",
+                "flash": "false"
+              }
+            ]
+          }
+        ]
+      },
+      "apply": {
+        "model": "locksanddams:block/desk_approved_lens_1_amber_false",
+        "y": 0
+      }
+    },
+    {
+      "when": {
+        "AND": [
+          {
+            "facing": "east",
+            "part": "1"
+          },
+          {
+            "OR": [
+              {
+                "lamp": "0|1|2"
+              },
+              {
+                "lamp": "3",
+                "flash": "false"
+              }
+            ]
+          }
+        ]
+      },
+      "apply": {
+        "model": "locksanddams:block/desk_approved_lens_1_amber_false",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "AND": [
+          {
+            "facing": "south",
+            "part": "1"
+          },
+          {
+            "OR": [
+              {
+                "lamp": "0|1|2"
+              },
+              {
+                "lamp": "3",
+                "flash": "false"
+              }
+            ]
+          }
+        ]
+      },
+      "apply": {
+        "model": "locksanddams:block/desk_approved_lens_1_amber_false",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "AND": [
+          {
+            "facing": "west",
+            "part": "1"
+          },
+          {
+            "OR": [
+              {
+                "lamp": "0|1|2"
+              },
+              {
+                "lamp": "3",
+                "flash": "false"
+              }
+            ]
+          }
+        ]
+      },
+      "apply": {
+        "model": "locksanddams:block/desk_approved_lens_1_amber_false",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "AND": [
+          {
+            "facing": "north",
+            "part": "1"
+          },
+          {
+            "OR": [
+              {
+                "lamp": "4"
+              },
+              {
+                "lamp": "3",
+                "flash": "true"
+              }
+            ]
+          }
+        ]
+      },
+      "apply": {
+        "model": "locksanddams:block/desk_approved_lens_1_amber_true",
+        "y": 0
+      }
+    },
+    {
+      "when": {
+        "AND": [
+          {
+            "facing": "east",
+            "part": "1"
+          },
+          {
+            "OR": [
+              {
+                "lamp": "4"
+              },
+              {
+                "lamp": "3",
+                "flash": "true"
+              }
+            ]
+          }
+        ]
+      },
+      "apply": {
+        "model": "locksanddams:block/desk_approved_lens_1_amber_true",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "AND": [
+          {
+            "facing": "south",
+            "part": "1"
+          },
+          {
+            "OR": [
+              {
+                "lamp": "4"
+              },
+              {
+                "lamp": "3",
+                "flash": "true"
+              }
+            ]
+          }
+        ]
+      },
+      "apply": {
+        "model": "locksanddams:block/desk_approved_lens_1_amber_true",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "AND": [
+          {
+            "facing": "west",
+            "part": "1"
+          },
+          {
+            "OR": [
+              {
+                "lamp": "4"
+              },
+              {
+                "lamp": "3",
+                "flash": "true"
+              }
+            ]
+          }
+        ]
+      },
+      "apply": {
+        "model": "locksanddams:block/desk_approved_lens_1_amber_true",
         "y": 270
       }
     },
@@ -86,7 +1334,7 @@
         "part": "2"
       },
       "apply": {
-        "model": "locksanddams:block/desk_2",
+        "model": "locksanddams:block/desk_approved_2",
         "y": 0
       }
     },
@@ -96,7 +1344,7 @@
         "part": "2"
       },
       "apply": {
-        "model": "locksanddams:block/desk_2",
+        "model": "locksanddams:block/desk_approved_2",
         "y": 90
       }
     },
@@ -106,7 +1354,7 @@
         "part": "2"
       },
       "apply": {
-        "model": "locksanddams:block/desk_2",
+        "model": "locksanddams:block/desk_approved_2",
         "y": 180
       }
     },
@@ -116,419 +1364,783 @@
         "part": "2"
       },
       "apply": {
-        "model": "locksanddams:block/desk_2",
+        "model": "locksanddams:block/desk_approved_2",
         "y": 270
       }
     },
     {
       "when": {
-        "facing": "north"
+        "AND": [
+          {
+            "facing": "north",
+            "part": "2"
+          },
+          {
+            "switch": "false"
+          }
+        ]
       },
       "apply": {
-        "model": "locksanddams:block/desk_lamps_off",
+        "model": "locksanddams:block/desk_approved_switch_2_false",
         "y": 0
       }
     },
     {
       "when": {
-        "facing": "east"
+        "AND": [
+          {
+            "facing": "east",
+            "part": "2"
+          },
+          {
+            "switch": "false"
+          }
+        ]
       },
       "apply": {
-        "model": "locksanddams:block/desk_lamps_off",
+        "model": "locksanddams:block/desk_approved_switch_2_false",
         "y": 90
       }
     },
     {
       "when": {
-        "facing": "south"
+        "AND": [
+          {
+            "facing": "south",
+            "part": "2"
+          },
+          {
+            "switch": "false"
+          }
+        ]
       },
       "apply": {
-        "model": "locksanddams:block/desk_lamps_off",
+        "model": "locksanddams:block/desk_approved_switch_2_false",
         "y": 180
       }
     },
     {
       "when": {
-        "facing": "west"
+        "AND": [
+          {
+            "facing": "west",
+            "part": "2"
+          },
+          {
+            "switch": "false"
+          }
+        ]
       },
       "apply": {
-        "model": "locksanddams:block/desk_lamps_off",
+        "model": "locksanddams:block/desk_approved_switch_2_false",
         "y": 270
       }
     },
     {
       "when": {
-        "facing": "north",
-        "switch": "false"
+        "AND": [
+          {
+            "facing": "north",
+            "part": "2"
+          },
+          {
+            "switch": "true"
+          }
+        ]
       },
       "apply": {
-        "model": "locksanddams:block/desk_switch_false",
+        "model": "locksanddams:block/desk_approved_switch_2_true",
         "y": 0
       }
     },
     {
       "when": {
-        "facing": "east",
-        "switch": "false"
+        "AND": [
+          {
+            "facing": "east",
+            "part": "2"
+          },
+          {
+            "switch": "true"
+          }
+        ]
       },
       "apply": {
-        "model": "locksanddams:block/desk_switch_false",
+        "model": "locksanddams:block/desk_approved_switch_2_true",
         "y": 90
       }
     },
     {
       "when": {
-        "facing": "south",
-        "switch": "false"
+        "AND": [
+          {
+            "facing": "south",
+            "part": "2"
+          },
+          {
+            "switch": "true"
+          }
+        ]
       },
       "apply": {
-        "model": "locksanddams:block/desk_switch_false",
+        "model": "locksanddams:block/desk_approved_switch_2_true",
         "y": 180
       }
     },
     {
       "when": {
-        "facing": "west",
-        "switch": "false"
+        "AND": [
+          {
+            "facing": "west",
+            "part": "2"
+          },
+          {
+            "switch": "true"
+          }
+        ]
       },
       "apply": {
-        "model": "locksanddams:block/desk_switch_false",
+        "model": "locksanddams:block/desk_approved_switch_2_true",
         "y": 270
       }
     },
     {
       "when": {
-        "facing": "north",
-        "switch": "true"
+        "AND": [
+          {
+            "facing": "north",
+            "part": "2"
+          },
+          {
+            "lamp": "0|2|3|4"
+          }
+        ]
       },
       "apply": {
-        "model": "locksanddams:block/desk_switch_true",
+        "model": "locksanddams:block/desk_approved_lens_2_green_false",
         "y": 0
       }
     },
     {
       "when": {
-        "facing": "east",
-        "switch": "true"
+        "AND": [
+          {
+            "facing": "east",
+            "part": "2"
+          },
+          {
+            "lamp": "0|2|3|4"
+          }
+        ]
       },
       "apply": {
-        "model": "locksanddams:block/desk_switch_true",
+        "model": "locksanddams:block/desk_approved_lens_2_green_false",
         "y": 90
       }
     },
     {
       "when": {
-        "facing": "south",
-        "switch": "true"
+        "AND": [
+          {
+            "facing": "south",
+            "part": "2"
+          },
+          {
+            "lamp": "0|2|3|4"
+          }
+        ]
       },
       "apply": {
-        "model": "locksanddams:block/desk_switch_true",
+        "model": "locksanddams:block/desk_approved_lens_2_green_false",
         "y": 180
       }
     },
     {
       "when": {
-        "facing": "west",
-        "switch": "true"
+        "AND": [
+          {
+            "facing": "west",
+            "part": "2"
+          },
+          {
+            "lamp": "0|2|3|4"
+          }
+        ]
       },
       "apply": {
-        "model": "locksanddams:block/desk_switch_true",
+        "model": "locksanddams:block/desk_approved_lens_2_green_false",
         "y": 270
       }
     },
     {
       "when": {
-        "facing": "north",
-        "lamp": "1"
+        "AND": [
+          {
+            "facing": "north",
+            "part": "2"
+          },
+          {
+            "lamp": "1"
+          }
+        ]
       },
       "apply": {
-        "model": "locksanddams:block/desk_lamp_green",
+        "model": "locksanddams:block/desk_approved_lens_2_green_true",
         "y": 0
       }
     },
     {
       "when": {
-        "facing": "east",
-        "lamp": "1"
+        "AND": [
+          {
+            "facing": "east",
+            "part": "2"
+          },
+          {
+            "lamp": "1"
+          }
+        ]
       },
       "apply": {
-        "model": "locksanddams:block/desk_lamp_green",
+        "model": "locksanddams:block/desk_approved_lens_2_green_true",
         "y": 90
       }
     },
     {
       "when": {
-        "facing": "south",
-        "lamp": "1"
+        "AND": [
+          {
+            "facing": "south",
+            "part": "2"
+          },
+          {
+            "lamp": "1"
+          }
+        ]
       },
       "apply": {
-        "model": "locksanddams:block/desk_lamp_green",
+        "model": "locksanddams:block/desk_approved_lens_2_green_true",
         "y": 180
       }
     },
     {
       "when": {
-        "facing": "west",
-        "lamp": "1"
+        "AND": [
+          {
+            "facing": "west",
+            "part": "2"
+          },
+          {
+            "lamp": "1"
+          }
+        ]
       },
       "apply": {
-        "model": "locksanddams:block/desk_lamp_green",
+        "model": "locksanddams:block/desk_approved_lens_2_green_true",
         "y": 270
       }
     },
     {
       "when": {
-        "facing": "north",
-        "lamp": "2"
+        "AND": [
+          {
+            "facing": "north",
+            "part": "2"
+          },
+          {
+            "lamp": "0|1|3|4"
+          }
+        ]
       },
       "apply": {
-        "model": "locksanddams:block/desk_lamp_red",
+        "model": "locksanddams:block/desk_approved_lens_2_red_false",
         "y": 0
       }
     },
     {
       "when": {
-        "facing": "east",
-        "lamp": "2"
+        "AND": [
+          {
+            "facing": "east",
+            "part": "2"
+          },
+          {
+            "lamp": "0|1|3|4"
+          }
+        ]
       },
       "apply": {
-        "model": "locksanddams:block/desk_lamp_red",
+        "model": "locksanddams:block/desk_approved_lens_2_red_false",
         "y": 90
       }
     },
     {
       "when": {
-        "facing": "south",
-        "lamp": "2"
+        "AND": [
+          {
+            "facing": "south",
+            "part": "2"
+          },
+          {
+            "lamp": "0|1|3|4"
+          }
+        ]
       },
       "apply": {
-        "model": "locksanddams:block/desk_lamp_red",
+        "model": "locksanddams:block/desk_approved_lens_2_red_false",
         "y": 180
       }
     },
     {
       "when": {
-        "facing": "west",
-        "lamp": "2"
+        "AND": [
+          {
+            "facing": "west",
+            "part": "2"
+          },
+          {
+            "lamp": "0|1|3|4"
+          }
+        ]
       },
       "apply": {
-        "model": "locksanddams:block/desk_lamp_red",
+        "model": "locksanddams:block/desk_approved_lens_2_red_false",
         "y": 270
       }
     },
     {
       "when": {
-        "facing": "north",
-        "lamp": "3",
-        "flash": "true"
+        "AND": [
+          {
+            "facing": "north",
+            "part": "2"
+          },
+          {
+            "lamp": "2"
+          }
+        ]
       },
       "apply": {
-        "model": "locksanddams:block/desk_lamp_amber",
+        "model": "locksanddams:block/desk_approved_lens_2_red_true",
         "y": 0
       }
     },
     {
       "when": {
-        "facing": "east",
-        "lamp": "3",
-        "flash": "true"
+        "AND": [
+          {
+            "facing": "east",
+            "part": "2"
+          },
+          {
+            "lamp": "2"
+          }
+        ]
       },
       "apply": {
-        "model": "locksanddams:block/desk_lamp_amber",
+        "model": "locksanddams:block/desk_approved_lens_2_red_true",
         "y": 90
       }
     },
     {
       "when": {
-        "facing": "south",
-        "lamp": "3",
-        "flash": "true"
+        "AND": [
+          {
+            "facing": "south",
+            "part": "2"
+          },
+          {
+            "lamp": "2"
+          }
+        ]
       },
       "apply": {
-        "model": "locksanddams:block/desk_lamp_amber",
+        "model": "locksanddams:block/desk_approved_lens_2_red_true",
         "y": 180
       }
     },
     {
       "when": {
-        "facing": "west",
-        "lamp": "3",
-        "flash": "true"
+        "AND": [
+          {
+            "facing": "west",
+            "part": "2"
+          },
+          {
+            "lamp": "2"
+          }
+        ]
       },
       "apply": {
-        "model": "locksanddams:block/desk_lamp_amber",
+        "model": "locksanddams:block/desk_approved_lens_2_red_true",
         "y": 270
       }
     },
     {
       "when": {
-        "facing": "north",
-        "lamp": "4"
+        "AND": [
+          {
+            "facing": "north",
+            "part": "2"
+          },
+          {
+            "OR": [
+              {
+                "lamp": "0|1|2"
+              },
+              {
+                "lamp": "3",
+                "flash": "false"
+              }
+            ]
+          }
+        ]
       },
       "apply": {
-        "model": "locksanddams:block/desk_lamp_amber",
+        "model": "locksanddams:block/desk_approved_lens_2_amber_false",
         "y": 0
       }
     },
     {
       "when": {
-        "facing": "east",
-        "lamp": "4"
+        "AND": [
+          {
+            "facing": "east",
+            "part": "2"
+          },
+          {
+            "OR": [
+              {
+                "lamp": "0|1|2"
+              },
+              {
+                "lamp": "3",
+                "flash": "false"
+              }
+            ]
+          }
+        ]
       },
       "apply": {
-        "model": "locksanddams:block/desk_lamp_amber",
+        "model": "locksanddams:block/desk_approved_lens_2_amber_false",
         "y": 90
       }
     },
     {
       "when": {
-        "facing": "south",
-        "lamp": "4"
+        "AND": [
+          {
+            "facing": "south",
+            "part": "2"
+          },
+          {
+            "OR": [
+              {
+                "lamp": "0|1|2"
+              },
+              {
+                "lamp": "3",
+                "flash": "false"
+              }
+            ]
+          }
+        ]
       },
       "apply": {
-        "model": "locksanddams:block/desk_lamp_amber",
+        "model": "locksanddams:block/desk_approved_lens_2_amber_false",
         "y": 180
       }
     },
     {
       "when": {
-        "facing": "west",
-        "lamp": "4"
+        "AND": [
+          {
+            "facing": "west",
+            "part": "2"
+          },
+          {
+            "OR": [
+              {
+                "lamp": "0|1|2"
+              },
+              {
+                "lamp": "3",
+                "flash": "false"
+              }
+            ]
+          }
+        ]
       },
       "apply": {
-        "model": "locksanddams:block/desk_lamp_amber",
+        "model": "locksanddams:block/desk_approved_lens_2_amber_false",
         "y": 270
       }
     },
     {
       "when": {
-        "facing": "north",
-        "part": "1",
-        "active": "true"
+        "AND": [
+          {
+            "facing": "north",
+            "part": "2"
+          },
+          {
+            "OR": [
+              {
+                "lamp": "4"
+              },
+              {
+                "lamp": "3",
+                "flash": "true"
+              }
+            ]
+          }
+        ]
       },
       "apply": {
-        "model": "locksanddams:block/desk_lamp_red",
+        "model": "locksanddams:block/desk_approved_lens_2_amber_true",
         "y": 0
       }
     },
     {
       "when": {
-        "facing": "east",
-        "part": "1",
-        "active": "true"
+        "AND": [
+          {
+            "facing": "east",
+            "part": "2"
+          },
+          {
+            "OR": [
+              {
+                "lamp": "4"
+              },
+              {
+                "lamp": "3",
+                "flash": "true"
+              }
+            ]
+          }
+        ]
       },
       "apply": {
-        "model": "locksanddams:block/desk_lamp_red",
+        "model": "locksanddams:block/desk_approved_lens_2_amber_true",
         "y": 90
       }
     },
     {
       "when": {
-        "facing": "south",
-        "part": "1",
-        "active": "true"
+        "AND": [
+          {
+            "facing": "south",
+            "part": "2"
+          },
+          {
+            "OR": [
+              {
+                "lamp": "4"
+              },
+              {
+                "lamp": "3",
+                "flash": "true"
+              }
+            ]
+          }
+        ]
       },
       "apply": {
-        "model": "locksanddams:block/desk_lamp_red",
+        "model": "locksanddams:block/desk_approved_lens_2_amber_true",
         "y": 180
       }
     },
     {
       "when": {
-        "facing": "west",
-        "part": "1",
-        "active": "true"
+        "AND": [
+          {
+            "facing": "west",
+            "part": "2"
+          },
+          {
+            "OR": [
+              {
+                "lamp": "4"
+              },
+              {
+                "lamp": "3",
+                "flash": "true"
+              }
+            ]
+          }
+        ]
       },
       "apply": {
-        "model": "locksanddams:block/desk_lamp_red",
+        "model": "locksanddams:block/desk_approved_lens_2_amber_true",
         "y": 270
       }
     },
     {
       "when": {
-        "facing": "north",
-        "part": "1"
+        "AND": [
+          {
+            "facing": "north",
+            "part": "1"
+          },
+          {
+            "OR": [
+              {
+                "alert": "false"
+              },
+              {
+                "flash": "false"
+              }
+            ]
+          }
+        ]
       },
       "apply": {
-        "model": "locksanddams:block/desk_estop",
+        "model": "locksanddams:block/desk_approved_stop_false",
         "y": 0
       }
     },
     {
       "when": {
-        "facing": "east",
-        "part": "1"
+        "AND": [
+          {
+            "facing": "east",
+            "part": "1"
+          },
+          {
+            "OR": [
+              {
+                "alert": "false"
+              },
+              {
+                "flash": "false"
+              }
+            ]
+          }
+        ]
       },
       "apply": {
-        "model": "locksanddams:block/desk_estop",
+        "model": "locksanddams:block/desk_approved_stop_false",
         "y": 90
       }
     },
     {
       "when": {
-        "facing": "south",
-        "part": "1"
+        "AND": [
+          {
+            "facing": "south",
+            "part": "1"
+          },
+          {
+            "OR": [
+              {
+                "alert": "false"
+              },
+              {
+                "flash": "false"
+              }
+            ]
+          }
+        ]
       },
       "apply": {
-        "model": "locksanddams:block/desk_estop",
+        "model": "locksanddams:block/desk_approved_stop_false",
         "y": 180
       }
     },
     {
       "when": {
-        "facing": "west",
-        "part": "1"
+        "AND": [
+          {
+            "facing": "west",
+            "part": "1"
+          },
+          {
+            "OR": [
+              {
+                "alert": "false"
+              },
+              {
+                "flash": "false"
+              }
+            ]
+          }
+        ]
       },
       "apply": {
-        "model": "locksanddams:block/desk_estop",
+        "model": "locksanddams:block/desk_approved_stop_false",
         "y": 270
       }
     },
     {
       "when": {
-        "facing": "north",
-        "part": "1",
-        "alert": "true",
-        "flash": "true"
+        "AND": [
+          {
+            "facing": "north",
+            "part": "1"
+          },
+          {
+            "alert": "true",
+            "flash": "true"
+          }
+        ]
       },
       "apply": {
-        "model": "locksanddams:block/desk_estop_light",
+        "model": "locksanddams:block/desk_approved_stop_true",
         "y": 0
       }
     },
     {
       "when": {
-        "facing": "east",
-        "part": "1",
-        "alert": "true",
-        "flash": "true"
+        "AND": [
+          {
+            "facing": "east",
+            "part": "1"
+          },
+          {
+            "alert": "true",
+            "flash": "true"
+          }
+        ]
       },
       "apply": {
-        "model": "locksanddams:block/desk_estop_light",
+        "model": "locksanddams:block/desk_approved_stop_true",
         "y": 90
       }
     },
     {
       "when": {
-        "facing": "south",
-        "part": "1",
-        "alert": "true",
-        "flash": "true"
+        "AND": [
+          {
+            "facing": "south",
+            "part": "1"
+          },
+          {
+            "alert": "true",
+            "flash": "true"
+          }
+        ]
       },
       "apply": {
-        "model": "locksanddams:block/desk_estop_light",
+        "model": "locksanddams:block/desk_approved_stop_true",
         "y": 180
       }
     },
     {
       "when": {
-        "facing": "west",
-        "part": "1",
-        "alert": "true",
-        "flash": "true"
+        "AND": [
+          {
+            "facing": "west",
+            "part": "1"
+          },
+          {
+            "alert": "true",
+            "flash": "true"
+          }
+        ]
       },
       "apply": {
-        "model": "locksanddams:block/desk_estop_light",
+        "model": "locksanddams:block/desk_approved_stop_true",
         "y": 270
       }
     }

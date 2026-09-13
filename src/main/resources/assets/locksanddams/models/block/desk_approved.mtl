@@ -1,0 +1,179 @@
+newmtl enamel
+Ka 0 0 0
+Kd 1 1 1
+d 1
+map_Kd #enamel
+
+newmtl enamel_off
+Ka 0 0 0
+Kd 1 1 1
+d 1
+map_Kd #enamel_off
+
+newmtl enamel_lit
+Ka 1 1 1
+Kd 1 1 1
+d 1
+map_Kd #enamel
+
+newmtl rubber
+Ka 0 0 0
+Kd 1 1 1
+d 1
+map_Kd #rubber
+
+newmtl rubber_off
+Ka 0 0 0
+Kd 1 1 1
+d 1
+map_Kd #rubber_off
+
+newmtl rubber_lit
+Ka 1 1 1
+Kd 1 1 1
+d 1
+map_Kd #rubber
+
+newmtl panel
+Ka 0 0 0
+Kd 1 1 1
+d 1
+map_Kd #panel
+
+newmtl panel_off
+Ka 0 0 0
+Kd 1 1 1
+d 1
+map_Kd #panel_off
+
+newmtl panel_lit
+Ka 1 1 1
+Kd 1 1 1
+d 1
+map_Kd #panel
+
+newmtl steel
+Ka 0 0 0
+Kd 1 1 1
+d 1
+map_Kd #steel
+
+newmtl steel_off
+Ka 0 0 0
+Kd 1 1 1
+d 1
+map_Kd #steel_off
+
+newmtl steel_lit
+Ka 1 1 1
+Kd 1 1 1
+d 1
+map_Kd #steel
+
+newmtl edge
+Ka 0 0 0
+Kd 1 1 1
+d 1
+map_Kd #edge
+
+newmtl edge_off
+Ka 0 0 0
+Kd 1 1 1
+d 1
+map_Kd #edge_off
+
+newmtl edge_lit
+Ka 1 1 1
+Kd 1 1 1
+d 1
+map_Kd #edge
+
+newmtl letters
+Ka 0 0 0
+Kd 1 1 1
+d 1
+map_Kd #letters
+
+newmtl letters_off
+Ka 0 0 0
+Kd 1 1 1
+d 1
+map_Kd #letters_off
+
+newmtl letters_lit
+Ka 1 1 1
+Kd 1 1 1
+d 1
+map_Kd #letters
+
+newmtl green
+Ka 0 0 0
+Kd 1 1 1
+d 1
+map_Kd #green
+
+newmtl green_off
+Ka 0 0 0
+Kd 1 1 1
+d 1
+map_Kd #green_off
+
+newmtl green_lit
+Ka 1 1 1
+Kd 1 1 1
+d 1
+map_Kd #green
+
+newmtl red
+Ka 0 0 0
+Kd 1 1 1
+d 1
+map_Kd #red
+
+newmtl red_off
+Ka 0 0 0
+Kd 1 1 1
+d 1
+map_Kd #red_off
+
+newmtl red_lit
+Ka 1 1 1
+Kd 1 1 1
+d 1
+map_Kd #red
+
+newmtl amber
+Ka 0 0 0
+Kd 1 1 1
+d 1
+map_Kd #amber
+
+newmtl amber_off
+Ka 0 0 0
+Kd 1 1 1
+d 1
+map_Kd #amber_off
+
+newmtl amber_lit
+Ka 1 1 1
+Kd 1 1 1
+d 1
+map_Kd #amber
+
+newmtl yellow
+Ka 0 0 0
+Kd 1 1 1
+d 1
+map_Kd #yellow
+
+newmtl yellow_off
+Ka 0 0 0
+Kd 1 1 1
+d 1
+map_Kd #yellow_off
+
+newmtl yellow_lit
+Ka 1 1 1
+Kd 1 1 1
+d 1
+map_Kd #yellow

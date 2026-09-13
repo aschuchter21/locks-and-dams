@@ -1,3 +1,1 @@
-{
-  "parent": "locksanddams:block/control_desk_item"
-}
+{"parent": "locksanddams:block/desk_approved_item"}

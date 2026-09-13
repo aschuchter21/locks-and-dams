@@ -1,0 +1,66 @@
+{
+  "loader": "forge:obj",
+  "model": "locksanddams:models/block/desk_approved_lens_2_red_true.obj",
+  "automatic_culling": false,
+  "shade_quads": true,
+  "emissive_ambient": true,
+  "ambientocclusion": false,
+  "textures": {
+    "enamel": "locksanddams:block/desk_approved_enamel",
+    "enamel_off": "locksanddams:block/desk_approved_enamel_off",
+    "rubber": "locksanddams:block/desk_approved_rubber",
+    "rubber_off": "locksanddams:block/desk_approved_rubber_off",
+    "panel": "locksanddams:block/desk_approved_panel",
+    "panel_off": "locksanddams:block/desk_approved_panel_off",
+    "steel": "locksanddams:block/desk_approved_steel",
+    "steel_off": "locksanddams:block/desk_approved_steel_off",
+    "edge": "locksanddams:block/desk_approved_edge",
+    "edge_off": "locksanddams:block/desk_approved_edge_off",
+    "letters": "locksanddams:block/desk_approved_letters",
+    "letters_off": "locksanddams:block/desk_approved_letters_off",
+    "green": "locksanddams:block/desk_approved_green",
+    "green_off": "locksanddams:block/desk_approved_green_off",
+    "red": "locksanddams:block/desk_approved_red",
+    "red_off": "locksanddams:block/desk_approved_red_off",
+    "amber": "locksanddams:block/desk_approved_amber",
+    "amber_off": "locksanddams:block/desk_approved_amber_off",
+    "yellow": "locksanddams:block/desk_approved_yellow",
+    "yellow_off": "locksanddams:block/desk_approved_yellow_off",
+    "particle": "locksanddams:block/desk_approved_enamel"
+  },
+  "display": {
+    "gui": {
+      "rotation": [
+        25,
+        225,
+        0
+      ],
+      "scale": [
+        0.32,
+        0.32,
+        0.32
+      ]
+    },
+    "ground": {
+      "scale": [
+        0.2,
+        0.2,
+        0.2
+      ]
+    },
+    "fixed": {
+      "scale": [
+        0.3,
+        0.3,
+        0.3
+      ]
+    },
+    "thirdperson_righthand": {
+      "scale": [
+        0.25,
+        0.25,
+        0.25
+      ]
+    }
+  }
+}
