@@ -33,6 +33,14 @@ for o in bpy.context.scene.objects:
  if o.type in ['MESH','FONT']:o.select_set(True)
 bpy.context.view_layer.objects.active=next(o for o in bpy.context.scene.objects if o.type=='MESH');bpy.ops.object.convert(target='MESH')
 objects=[o for o in bpy.context.scene.objects if o.type=='MESH'];materials={}
+# The hand-authored cabinet shell had inward winding. Correct closed solids
+# before section clipping; clipping first leaves open meshes with ambiguous inside.
+for o in objects:
+ if o.name.startswith('Three-section welded console'):
+  bm=bmesh.new();bm.from_mesh(o.data)
+  bmesh.ops.recalc_face_normals(bm,faces=list(bm.faces))
+  bm.normal_update();bm.to_mesh(o.data);bm.free()
+
 for o in objects:
  for mat in o.data.materials:
   c=mat.diffuse_color[:3];rgb=[round(255*(v*12.92 if v<=.0031308 else 1.055*v**(1/2.4)-.055)) for v in c];materials[mat.name]=rgb
