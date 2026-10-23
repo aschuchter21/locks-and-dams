@@ -1,0 +1,70 @@
+name: Publish Locks & Dams to CurseForge
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out release
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.release.tag_name }}
+
+      - name: Verify version matches release tag
+        env:
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          expected="${RELEASE_TAG#v}"
+          actual="$(sed -n 's/^mod_version=//p' gradle.properties | tr -d '\r')"
+          if [[ -z "$actual" || "$actual" != "$expected" ]]; then
+            echo "::error::Release tag ($expected) must match gradle.properties mod_version ($actual)."
+            exit 1
+          fi
+
+      - name: Set up Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Build release JAR
+        run: |
+          chmod +x ./gradlew
+          ./gradlew clean build
+
+      - name: Identify distributable JAR
+        id: jar
+        shell: bash
+        run: |
+          set -euo pipefail
+          mapfile -t jars < <(find build/libs -maxdepth 1 -type f -name '*.jar' ! -name '*-sources.jar' ! -name '*-javadoc.jar' | sort)
+          if [[ "${#jars[@]}" -ne 1 ]]; then
+            echo "::error::Expected exactly one distributable JAR, found ${#jars[@]}."
+            exit 1
+          fi
+          echo "path=${jars[0]}" >> "$GITHUB_OUTPUT"
+
+      - name: Publish to CurseForge
+        uses: Kira-NT/mc-publish@v3
+        with:
+          curseforge-id: 1693830
+          curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
+          files: ${{ steps.jar.outputs.path }}
+          name: Locks & Dams ${{ github.event.release.tag_name }}
+          version: ${{ github.event.release.tag_name }}
+          version-type: ${{ github.event.release.prerelease && 'beta' || 'release' }}
+          game-versions: 1.20.1
+          loaders: forge
+          dependencies: |
+            create(required)
