@@ -18,8 +18,8 @@ public record WaterConnection(BlockPos port,BlockPos mouth,int surface) {
             if(s.is(Content.PORT.get())) {
                 Direction d=s.getValue(CulvertPortBlock.FACING);require(seen.contains(p.relative(d.getOpposite())),"Connect pipe to the back of the port at "+p.toShortString()+". Valves need pipe beneath them, not a port.");
                 require(result==null,"Each valve needs exactly one port.");BlockPos water=p.relative(d);
-                require(level.hasChunkAt(water),"Load the canal beside the port.");var fluid=level.getFluidState(water);
-                require(fluid.is(FluidTags.WATER)&&fluid.isSource()&&!fluid.is(Content.WATER.get())&&level.getFluidState(water.above()).isEmpty(),"Place the port mouth at the canal source-water surface.");
+                require(level.hasChunkAt(water),"Load the canal beside the port.");var fluid=GateBoundaryBlock.originalFluid(level,water);
+                require(fluid.is(FluidTags.WATER)&&fluid.isSource()&&!fluid.is(Content.WATER.get())&&GateBoundaryBlock.originalFluid(level,water.above()).isEmpty(),"Place the port mouth at the canal source-water surface.");
                 result=new WaterConnection(p,water,water.getY()*16+Math.round(fluid.getHeight(level,water)*16));continue;
             }
             for(Direction d:Direction.values()) {

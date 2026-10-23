@@ -12,7 +12,7 @@ public final class ControlLinkItem extends Item {
         if(c.getLevel().isClientSide)return InteractionResult.SUCCESS;
         var level=c.getLevel();var player=c.getPlayer();if(player==null)return InteractionResult.PASS;
         var state=level.getBlockState(c.getClickedPos());CompoundTag n=c.getItemInHand().getOrCreateTag();
-        if(state.is(Content.CONTROLLER.get())){n.put("Controller",NbtUtils.writeBlockPos(c.getClickedPos()));n.putString("Dimension",level.dimension().location().toString());player.displayClientMessage(Component.literal("Controller selected. Right-click the control desk to link it."),true);return InteractionResult.SUCCESS;}
+        if(state.is(Content.CONTROLLER.get())){n.put("Controller",NbtUtils.writeBlockPos(c.getClickedPos()));n.putString("Dimension",level.dimension().location().toString());player.displayClientMessage(Component.literal("Controller selected. Use this tool on the desk AND every Gate Control Node to link them."),true);return InteractionResult.SUCCESS;}
         if(state.is(Content.DESK.get())&&level.getBlockEntity(ControlDeskBlock.root(state,c.getClickedPos())) instanceof ControlDeskEntity desk){
             if(player.isShiftKeyDown()){desk.detach();player.displayClientMessage(Component.literal("Desk unlinked; commands stopped."),true);}
             else if(n.contains("Controller")&&n.getString("Dimension").equals(level.dimension().location().toString()))desk.link(NbtUtils.readBlockPos(n.getCompound("Controller")),player);

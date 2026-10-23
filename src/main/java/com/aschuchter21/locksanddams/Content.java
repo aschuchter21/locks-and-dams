@@ -22,8 +22,10 @@ public final class Content {
     public static final RegistryObject<Block> WATER_BLOCK = BLOCKS.register("chamber_water", ChamberWaterBlock::new);
     public static final RegistryObject<Block> CONTROLLER = block("lock_controller", ControllerBlock::new);
     public static final RegistryObject<Block> PANEL = block("gate_panel", GatePanelBlock::new);
+    public static final RegistryObject<Block> ASSEMBLED_GATE = BLOCKS.register("assembled_gate",AssembledGateBlock::new);
+    public static final RegistryObject<Block> BOUNDARY = BLOCKS.register("gate_boundary",GateBoundaryBlock::new);
     public static final RegistryObject<Block> SEAL = BLOCKS.register("gate_seal", GateSealBlock::new);
-    public static final RegistryObject<BlockEntityType<GateWaterEntity>> GATE_WATER_ENTITY=ENTITIES.register("gate_water",()->BlockEntityType.Builder.of(GateWaterEntity::new,SEAL.get()).build(null));
+    public static final RegistryObject<BlockEntityType<GateWaterEntity>> GATE_WATER_ENTITY=ENTITIES.register("gate_water",()->BlockEntityType.Builder.of(GateWaterEntity::new,SEAL.get(),BOUNDARY.get()).build(null));
     public static final RegistryObject<Block> HINGE = block("lock_hinge", LockHingeBlock::new);
     public static final RegistryObject<Block> PIPE = block("culvert_pipe", CulvertPipeBlock::new);
     public static final RegistryObject<Block> INLINE = block("inline_valve", InlineValveBlock::new);
@@ -34,6 +36,7 @@ public final class Content {
     public static final RegistryObject<Block> DESK = block("control_desk", ControlDeskBlock::new);
     public static final RegistryObject<Block> NODE = block("gate_control_node", GateControlNodeBlock::new);
     public static final RegistryObject<BlockEntityType<GateControlNodeEntity>> NODE_ENTITY=ENTITIES.register("gate_control_node",()->BlockEntityType.Builder.of(GateControlNodeEntity::new,NODE.get()).build(null));
+    public static final RegistryObject<Item> MANUAL=ITEMS.register("lock_manual",LockManualItem::new);
     public static final RegistryObject<Item> LINK_TOOL=ITEMS.register("control_link",ControlLinkItem::new);
     public static final RegistryObject<BlockEntityType<ControlDeskEntity>> DESK_ENTITY=ENTITIES.register("control_desk",()->BlockEntityType.Builder.of(ControlDeskEntity::new,DESK.get()).build(null));
     public static final RegistryObject<BlockEntityType<LockEntity>> LOCK = ENTITIES.register("lock_controller",
@@ -45,7 +48,7 @@ public final class Content {
             .title(Component.literal("Locks & Dams"))
             .icon(() -> new ItemStack(CONTROLLER.get()))
             .displayItems((parameters, output) -> {
-                output.accept(CONTROLLER.get()); output.accept(PANEL.get());output.accept(DESK.get());output.accept(NODE.get());output.accept(LINK_TOOL.get());
+                output.accept(MANUAL.get());output.accept(CONTROLLER.get()); output.accept(PANEL.get());output.accept(DESK.get());output.accept(NODE.get());output.accept(LINK_TOOL.get());
                 output.accept(INLINE.get()); output.accept(FILL.get()); output.accept(DRAIN.get());
                 output.accept(HINGE.get()); output.accept(PIPE.get()); output.accept(PORT.get());
             }).build());

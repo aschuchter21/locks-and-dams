@@ -41,8 +41,13 @@ public final class ControlDeskBlock extends BaseEntityBlock {
         return switch(f){case EAST->box(16-z1,y0,x0,16-z0,y1,x1);case SOUTH->box(16-x1,y0,16-z1,16-x0,y1,16-z0);case WEST->box(z0,y0,16-x1,z1,y1,16-x0);default->box(x0,y0,z0,x1,y1,z1);};
     }
     @Override public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level l,BlockState s,BlockEntityType<T> t){return l.isClientSide?null:createTickerHelper(t,Content.DESK_ENTITY.get(),ControlDeskEntity::tick);}
+    public static boolean isEmergencyButton(BlockState s,BlockPos p,BlockHitResult hit){
+        Vec3 relative=hit.getLocation().subtract(Vec3.atCenterOf(p));
+        Direction front=s.getValue(FACING);
+        return s.getValue(PART)==1&&relative.x*front.getStepX()+relative.z*front.getStepZ()>.15;
+    }
     @Override public InteractionResult use(BlockState s,Level l,BlockPos p,Player player,InteractionHand hand,BlockHitResult hit){
-        if(player.getItemInHand(hand).is(Content.LINK_TOOL.get()))return InteractionResult.PASS;
+        if(player.getItemInHand(hand).is(Content.LINK_TOOL.get())&&!(player.isShiftKeyDown()&&isEmergencyButton(s,p,hit)))return InteractionResult.PASS;
         if(!l.isClientSide&&l.getBlockEntity(root(s,p)) instanceof ControlDeskEntity desk) {
             Vec3 relative=hit.getLocation().subtract(Vec3.atCenterOf(p));
             double towardFront=relative.x*s.getValue(FACING).getStepX()+relative.z*s.getValue(FACING).getStepZ();

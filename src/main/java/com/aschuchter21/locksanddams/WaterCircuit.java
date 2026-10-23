@@ -17,7 +17,7 @@ public record WaterCircuit(BlockPos chamber,BlockPos valve,WaterConnection canal
         Set<BlockPos> seen=new HashSet<>();ArrayDeque<BlockPos> queue=new ArrayDeque<>();queue.add(start);
         while(!queue.isEmpty()){
             BlockPos p=queue.removeFirst();if(p.equals(blocked)||!seen.add(p))continue;
-            require(seen.size()<=256&&p.distManhattan(start)<=96,"Culvert exceeds 256 blocks or 96-block reach.");
+            require(seen.size()<=1024&&p.distManhattan(start)<=256,"Culvert exceeds 1,024 blocks or 256-block reach.");
             require(level.hasChunkAt(p),"Load the entire culvert.");var s=level.getBlockState(p);
             for(Direction d:Direction.values())if(accepts(s,d)){
                 BlockPos q=p.relative(d);require(level.hasChunkAt(q),"Load the entire culvert.");
@@ -38,8 +38,8 @@ public record WaterCircuit(BlockPos chamber,BlockPos valve,WaterConnection canal
         for(Direction d:Direction.values())if(d.getAxis()==axis)require(seen.contains(valve.relative(d)),"Connect pipe to both inline valve flanges.");
         require(!walk(level,chamber,valve).contains(canal),"Remove the pipe bypass around the inline valve.");
         BlockPos mouth=canal.relative(level.getBlockState(canal).getValue(CulvertPortBlock.FACING));
-        require(level.hasChunkAt(mouth)&&level.hasChunkAt(mouth.above()),"Load the canal beside the port.");var fluid=level.getFluidState(mouth);
-        require(fluid.is(FluidTags.WATER)&&fluid.isSource()&&!fluid.is(Content.WATER.get())&&level.getFluidState(mouth.above()).isEmpty(),"Place the canal port mouth at the source-water surface.");
+        require(level.hasChunkAt(mouth)&&level.hasChunkAt(mouth.above()),"Load the canal beside the port.");var fluid=GateBoundaryBlock.originalFluid(level,mouth);
+        require(fluid.is(FluidTags.WATER)&&fluid.isSource()&&!fluid.is(Content.WATER.get())&&GateBoundaryBlock.originalFluid(level,mouth.above()).isEmpty(),"Place the canal port mouth at the source-water surface.");
         if(!level.isClientSide)for(BlockPos p:seen){var s=level.getBlockState(p);if(s.is(Content.PIPE.get())){var n=CulvertPipeBlock.connected(s,level,p);if(!n.equals(s))level.setBlock(p,n,2);}}
         return new WaterCircuit(chamber,valve,new WaterConnection(canal,mouth,mouth.getY()*16+Math.round(fluid.getHeight(level,mouth)*16)));
     }

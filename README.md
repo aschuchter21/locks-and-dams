@@ -2,69 +2,22 @@
 
 A navigation-lock mod for **Minecraft 1.20.1 / Forge 47.4.10 / Create 6.0.8**.
 
-## Prototype: 0.1.0-dev.15
+## Timber miter gates: 1.1.0-beta.1
 
-The approved industrial control desk is now integrated, with metal bezels, recessed
-panels, rotary selectors and WARN / FLOW / CLOSED water indicators. Desk operation,
-collision, warning/horn timing and outputs are unchanged.
+The new custom-lock gate design assembles individual panels into continuous timber-and-steel leaves with an upstream V closure. See [building, clearance, and upgrade instructions](docs/timber-miter-gates.md). The lower gates now open into chamber-side pockets. Existing assembled gates stay unchanged until rebuilt.
 
-Gate Control Node settings now open with Sneak + Use while holding items, including
-the link tool. The hint displays the current key bindings (for example, Left Shift + R).
+## Release 1.0.0
 
-New plumbing uses a chamber port and canal port with one flanged **Inline Culvert Valve**
-anywhere along each circuit. The controller assigns intake/outlet roles automatically.
-[Build and upgrade guide](docs/inline-plumbing.md). Gate panels place their smooth canal face toward the player.
+Build rectangular canal locks with smooth water levels, Create-powered swing gates,
+grated catwalks and handrails, rounded flanged piping, and inline culvert valves.
+A linked industrial control desk provides gate selectors, FILL/DRAIN control,
+status indicators, a latched emergency stop, and redstone alarm/horn outputs.
 
-New desk demos start with DRAIN selected, so the first water-selector click requests FILL.
-Controller status reports the warning countdown, water limits, idle state and gate interlocks.
-See [fill/drain troubleshooting](docs/fill-drain-troubleshooting.md).
-
-Approved Blender gate and pipe designs are integrated: modular steel gates with
-grated catwalks and collidable handrails, and rounded flanged culverts that follow
-their connections. See [installation and clearance](docs/approved-gates-and-pipes.md).
-
-Gate Control Nodes now have a shift-right-click settings window. Closed gates
-show water against both faces at their respective levels, and the desk alarm
-and horn also power the solid blocks underneath their end sections.
-
-New: [gate repairs and recessed-wall layout](docs/gate-repairs-and-recesses.md).
-Gate sections align on placement and join edge-to-edge; the desk uses a sloped
-click shape. New demos put hinges and open leaves inside the wall footprint.
-
-The three-block industrial desk links to a lock controller and supplies labeled
-gate selectors, a FILL/DRAIN selector, status lamps and a latched emergency stop.
-Separate contacts drive a pre-start alarm and departure horn. Linked gate nodes
-operate real Create clutches and reversing gearshifts. Start with
-`/locks demo_desk` and [the desk wiring guide](docs/control-desk.md).
-
-Industrial gate, hinge, valve and culvert models now replace the placeholder
-art. Gate top rows automatically carry grated catwalks, including existing
-saved gate contraptions. A closed pair forms a crossing when both leaves have
-matching top heights. Both leaves pause while a player or mob occupies the
-catwalk. See [the model and catwalk guide](docs/infrastructure-models.md).
-
-Custom controllers can now move to another valid side-wall position. Remove the
-old controller and repair its wall opening before assembling the new one. Existing
-gate contraptions and uniform water are reclaimed; live controllers retain ownership.
-
-Controller replacement now detects the lock direction automatically, including
-the older demo. Replacing it while facing the side wall no longer loses the chamber.
-
-New: [player-built rectangular chambers](docs/custom-chambers.md). Four hinges
-define the opening width and chamber length; the raised upper pair has its own
-height. Two canal surface ports establish the water limits automatically.
-Try `/locks demo_custom` or `/locks demo_custom 7 15 5`.
-
-- Automatically detected rectangular chambers, plus the legacy 5 by 9 example.
-- Linked industrial control desk, gate terminals, and physical fill/drain valves.
-- Non-flowing managed water and boat support across changing water levels.
-- Level and obstruction interlocks, fault pauses, and saved chamber state.
-- Creative tab, survival recipes, and a non-destructive `/locks demo` builder.
-- Create-powered lock hinges that swing real panel contraptions through 90 degrees.
-- Physical culvert routes from the upper canal to the fill valve and from the drain valve to the lower canal.
+See [release notes](CHANGELOG.md), [plumbing](docs/inline-plumbing.md),
+and [construction and desk wiring](docs/control-desk.md).
 
 Create 6.0.8 is required on client and server. Commercial Systems is not required.
-Canals remain fixed water supplies; finite reservoir simulation and dams are later milestones.
+Canals are fixed water supplies; finite reservoirs and dam simulation are not included.
 
 ## Try it
 

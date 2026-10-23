@@ -22,7 +22,8 @@ public final class BoatSupport {
             BlockPos p=base.above(i);
             if(!level.hasChunkAt(p)) return;
             var fluid=level.getFluidState(p);
-            if(fluid.getType()==Content.WATER.get()) surface=p.getY()+fluid.getOwnHeight();
+            if(level.getBlockEntity(p) instanceof GateWaterEntity w&&w.miter){double h=w.surfaceAt(boat.getX()-p.getX(),boat.getZ()-p.getZ());if(!Double.isNaN(h))surface=p.getY()+h;else if(!Double.isNaN(surface))break;}
+            else if(fluid.getType()==Content.WATER.get()) surface=p.getY()+fluid.getOwnHeight();
             else if(!Double.isNaN(surface)) break;
         }
         if(Double.isNaN(surface)||boat.getY()>surface+.3) return;

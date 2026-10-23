@@ -16,7 +16,7 @@ public final class CustomDemo {
     @SubscribeEvent public static void commands(RegisterCommandsEvent e) {
         e.getDispatcher().register(Commands.literal("locks").requires(s->s.hasPermission(2)).then(Commands.literal("demo_custom")
             .executes(c->run(c.getSource(),6,11,4))
-            .then(Commands.argument("width",IntegerArgumentType.integer(4,16)).then(Commands.argument("length",IntegerArgumentType.integer(3,47)).then(Commands.argument("lift",IntegerArgumentType.integer(1,16)).executes(c->run(c.getSource(),IntegerArgumentType.getInteger(c,"width"),IntegerArgumentType.getInteger(c,"length"),IntegerArgumentType.getInteger(c,"lift"))))))));
+            .then(Commands.argument("width",IntegerArgumentType.integer(4,32)).then(Commands.argument("length",IntegerArgumentType.integer(3,127)).then(Commands.argument("lift",IntegerArgumentType.integer(1,48)).executes(c->run(c.getSource(),IntegerArgumentType.getInteger(c,"width"),IntegerArgumentType.getInteger(c,"length"),IntegerArgumentType.getInteger(c,"lift"))))))));
     }
     static int run(CommandSourceStack source,int w,int length,int lift) throws com.mojang.brigadier.exceptions.CommandSyntaxException {
         var player=source.getPlayerOrException();Direction f=player.getDirection();BlockPos base=player.blockPosition().above(4).relative(f,10);
@@ -25,8 +25,9 @@ public final class CustomDemo {
     }
     public static BlockPos build(ServerLevel level,BlockPos base,Direction f,int w,int interior,int lift) {
         w+=2; // Include the two wall-mounted hinge columns around the navigable width.
-        int len=interior+1,pool=(w+1)/2+3,top=lift+3;LockLayout grid=new LockLayout(base,f);
-        WaterConnection.require((long)(w-2)*interior*(lift+1)<=16384,"Demo exceeds the chamber volume limit.");
+        int len=interior+1,pool=(w+1)/2+3,top=lift+3,drainZ=(w+1)/2+1;
+        WaterConnection.require(interior>=drainZ+1,"The miter gate demo needs an interior length of at least "+(drainZ+1)+" for gate pockets and controls.");LockLayout grid=new LockLayout(base,f);
+        WaterConnection.require((long)(w-2)*interior*(lift+1)<=131072,"Demo exceeds the chamber volume limit.");
         AABBCheck.check(level,grid,-5,-2,-pool,w,top+2,len+pool);
         var wall=Blocks.STONE_BRICKS.defaultBlockState();
         for(int x=-1;x<=w;x++)for(int z=-pool;z<=len+pool;z++) {
@@ -42,19 +43,19 @@ public final class CustomDemo {
             for(int y=0;y<lift+2;y++)level.setBlock(grid.at(x,y,0),Content.PANEL.get().defaultBlockState(),2);
             for(int y=lift;y<lift+3;y++)level.setBlock(grid.at(x,y,len),Content.PANEL.get().defaultBlockState(),2);
         }
-        // Recesses sit in the approach walls, outside the managed chamber.
+        // Both gate pairs open toward high water: lower into the chamber, upper into the upper canal.
         for(int side=0;side<2;side++)for(int x:new int[]{0,w-1}){
             int bottom=side==0?0:lift,gateZ=side*len,reach=(x==0?w/2:w-w/2);
             for(int y=bottom;y<(side==0?lift+2:lift+3);y++){
                 level.setBlock(grid.at(x,y,gateZ),Content.PANEL.get().defaultBlockState(),2);
                 level.setBlock(grid.at(x==0?-1:w,y,gateZ),wall,2);
                 for(int step=1;step<=reach;step++){
-                    int z=gateZ+(side==0?-step:step);
+                    int z=gateZ+step;
                     level.setBlock(grid.at(x,y,z),y==bottom?Blocks.WATER.defaultBlockState():Blocks.AIR.defaultBlockState(),2);
                     level.setBlock(grid.at(x==0?-1:w,y,z),wall,2);
                 }
             }
-            for(int step=1;step<=reach;step++)level.setBlock(grid.at(x,bottom-1,gateZ+(side==0?-step:step)),wall,2);
+            for(int step=1;step<=reach;step++)level.setBlock(grid.at(x,bottom-1,gateZ+step),wall,2);
         }
         for(int side=0;side<2;side++)for(int x:new int[]{0,w-1}) {
             int y=(side==0?0:lift)-1,z=side*len;
@@ -63,15 +64,15 @@ public final class CustomDemo {
             level.setBlock(grid.at(x,-2,z),com.simibubi.create.AllBlocks.CREATIVE_MOTOR.getDefaultState().setValue(com.simibubi.create.content.kinetics.base.DirectionalKineticBlock.FACING,Direction.UP),3);
             ((com.simibubi.create.content.kinetics.motor.CreativeMotorBlockEntity)level.getBlockEntity(grid.at(x,-2,z))).generatedSpeed.setValue(-8);
         }
-        BlockPos controller=grid.at(0,0,2),fill=grid.at(-3,lift-1,interior),drain=grid.at(-2,0,1);
+        BlockPos controller=grid.at(0,0,drainZ+1),fill=grid.at(-3,lift-1,interior),drain=grid.at(-2,0,drainZ);
         level.setBlock(controller,Content.CONTROLLER.get().defaultBlockState().setValue(ControllerBlock.FACING,f),2);
         // The chamber ports connect through separate external circuits to canal surface ports.
         for(int x=-5;x<=-1;x++)pipe(level,grid.at(x,lift-1,interior));pipe(level,grid.at(-1,lift,interior));
         for(int z=interior;z<=len+pool-1;z++)pipe(level,grid.at(-5,lift-1,z));
         pipe(level,grid.at(-5,lift,len+pool-1));for(int x=-5;x<0;x++)pipe(level,grid.at(x,lift,len+pool-1));
-        for(int x=-3;x<0;x++)pipe(level,grid.at(x,0,1));
-        for(int z=-pool+1;z<=1;z++)pipe(level,grid.at(-3,0,z));for(int x=-2;x<0;x++)pipe(level,grid.at(x,0,-pool+1));
-        for(int[] p:new int[][]{{0,lift,interior},{0,0,1},{0,lift,len+pool-1},{0,0,-pool+1}})
+        for(int x=-3;x<0;x++)pipe(level,grid.at(x,0,drainZ));
+        for(int z=-pool+1;z<=drainZ;z++)pipe(level,grid.at(-3,0,z));for(int x=-2;x<0;x++)pipe(level,grid.at(x,0,-pool+1));
+        for(int[] p:new int[][]{{0,lift,interior},{0,0,drainZ},{0,lift,len+pool-1},{0,0,-pool+1}})
             level.setBlock(grid.at(p[0],p[1],p[2]),Content.PORT.get().defaultBlockState().setValue(CulvertPortBlock.FACING,f.getClockWise()),2);
         for(BlockPos valve:new BlockPos[]{fill,drain}) {
             level.setBlock(valve,Content.INLINE.get().defaultBlockState().setValue(InlineValveBlock.AXIS,f.getClockWise().getAxis()),2);
@@ -95,7 +96,7 @@ public final class CustomDemo {
         for(int side=0;side<2;side++)for(int x:new int[]{0,w-1}) {
             int deck=lift+(side==0?2:3),reach=x==0?w/2:w-w/2;
             for(int step=0;step<=reach;step++)for(int y=deck;y<=deck+1;y++)
-                level.setBlock(grid.at(x,y,side*len+(side==0?-step:step)),Blocks.AIR.defaultBlockState(),2);
+                level.setBlock(grid.at(x,y,side*len+step),Blocks.AIR.defaultBlockState(),2);
         }
         LockEntity lock=(LockEntity)level.getBlockEntity(controller);WaterConnection.require(lock.assemble(),"Demo assembly: "+lock.status());return controller;
     }

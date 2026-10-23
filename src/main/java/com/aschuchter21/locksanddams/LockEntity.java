@@ -53,7 +53,8 @@ public final class LockEntity extends BlockEntity {
         int command=deskControl.gate[side];boolean stopped=deskStop()||!assembled||command==DeskControl.HOLD||gateLamp(side)==0;
         if(command==DeskControl.OPEN)stopped|=gateLamp(side)==2||waterUnits()!=(custom==null?(side==0?LockLayout.LOW:LockLayout.HIGH):(side==0?custom.low:custom.high));
         if(command==DeskControl.CLOSE)stopped|=gateLamp(side)==1;
-        for(var h:gateHinges(side))stopped|=h==null||h.blockedFor(command)||h.catwalkOccupied();
+        if(stopped)return 15;
+        for(var h:gateHinges(side))if(h==null||h.blockedFor(command)||h.catwalkOccupied())return 15;
         return stopped?15:0;
     }
     public AABB ownedBounds() {return custom==null?layout().bounds():custom.bounds();}
@@ -63,7 +64,7 @@ public final class LockEntity extends BlockEntity {
     public LockEntity(BlockPos pos, BlockState state) { super(Content.LOCK.get(), pos, state); }
     public LockLayout layout() { return new LockLayout(worldPosition, getBlockState().getValue(ControllerBlock.FACING)); }
     public boolean assembled() { return assembled; }
-    public void beginGateEdit(){deskChangedStop();assembled=false;message="Gate editing: replace missing panels, then right-click the controller to assemble.";if(custom!=null)custom.message=message;setChanged();}
+    public void beginGateEdit(){deskChangedStop();assembled=false;if(custom!=null)for(int i=0;i<4;i++){var h=custom.hinge(level,i);if(h!=null)h.disassemble();}message="Gate editing: replace missing panels, then right-click the controller to assemble.";if(custom!=null)custom.message=message;setChanged();}
     public int waterUnits() { return custom==null?units:custom.units; }
     public String status() { if(!assembled)return message;return custom!=null?custom.message+" | "+custom.navigationWidth()+" x "+(custom.length-1)+" | Level "+(custom.units-custom.low)/16.0+" / "+(custom.high-custom.low)/16.0:message + " | Level " + String.format(java.util.Locale.ROOT, "%.2f / 3.00", (units-LockLayout.LOW)/16.0) + " blocks"; }
 
@@ -164,9 +165,6 @@ public final class LockEntity extends BlockEntity {
         if(obstructed(0)||obstructed(10)) { message="Clear both gate openings before assembly."; sync(); return false; }
         int recovered=recoverWater();
         if(recovered==-2) { message="Managed water is inconsistent; restore missing water cells before reclaiming this chamber."; sync(); return false; }
-        if(recovered<0&&!level.getEntities((Entity)null,layout().box(1,0,1,5,5,9),e -> e.isAlive()).isEmpty()) {
-            message="Clear the chamber of boats and entities before initial assembly."; sync(); return false;
-        }
         assembled=true; units=recovered<0?LockLayout.LOW:recovered; lowerOpen=mechanical&&low.open(); upperOpen=mechanical&&high.open();
         writeWater(); writeGate(0,lowerOpen); writeGate(10,upperOpen);
         message=recovered<0?"Ready. Power the lower gate drive to enter.":"Recovered the existing chamber water level."; sync(); return true;
@@ -189,7 +187,7 @@ public final class LockEntity extends BlockEntity {
         BlockState state=getBlockState().setValue(ControllerBlock.FACING,direction);
         level.setBlock(worldPosition,state,Block.UPDATE_CLIENTS);setBlockState(state);
     }
-    private boolean obstructed(int z) { return !level.getEntities((Entity)null, layout().gateBox(z).inflate(.25), e -> e.isAlive()&&!e.isSpectator()&&!(e instanceof com.simibubi.create.content.contraptions.AbstractContraptionEntity)).isEmpty(); }
+    private boolean obstructed(int z) { return !level.getEntities((Entity)null, layout().gateBox(z).inflate(.25), LockObstructions::blocks).isEmpty(); }
     private LockHingeEntity hinge(int z) {
         return level.getBlockEntity(layout().at(1,-2,z)) instanceof LockHingeEntity h?h:null;
     }

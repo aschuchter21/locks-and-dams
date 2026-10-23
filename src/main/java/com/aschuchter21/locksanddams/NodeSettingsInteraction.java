@@ -9,7 +9,11 @@ public final class NodeSettingsInteraction {
     @SubscribeEvent(priority=EventPriority.LOW)
     public static void use(PlayerInteractEvent.RightClickBlock event){
         if(event.getEntity().isSpectator()||!event.getEntity().isShiftKeyDown()
-            ||event.getUseBlock()==Event.Result.DENY||!event.getLevel().getBlockState(event.getPos()).is(Content.NODE.get()))return;
+            ||event.getUseBlock()==Event.Result.DENY)return;
+        var state=event.getLevel().getBlockState(event.getPos());
+        boolean node=state.is(Content.NODE.get());
+        boolean emergency=state.is(Content.DESK.get())&&ControlDeskBlock.isEmergencyButton(state,event.getPos(),event.getHitVec());
+        if(!node&&!emergency)return;
         event.setUseBlock(Event.Result.ALLOW);
         event.setUseItem(Event.Result.DENY);
     }

@@ -29,7 +29,7 @@ public final class ControlDeskEntity extends BlockEntity {
         DeskControl controls=lock.deskControl();
         if(part==1&&front) {
             if(controls.stopped&&sneaking){controls.reset();say(player,"Emergency stop RESET. Operate a switch to start a new command.");}
-            else {controls.stop();say(player,"EMERGENCY STOP. Shift-right-click this button to reset.");}
+            else {controls.stop();player.displayClientMessage(Component.literal("EMERGENCY STOP. ").append(Component.keybind("key.sneak")).append(" + ").append(Component.keybind("key.use")).append(" on this button to reset."),true);}
         } else if(controls.stopped){say(player,"Emergency stop is latched. Reset the red button first.");return;}
         else if(part==1){controls.selectWater(controls.waterSelection==DeskControl.FILL?DeskControl.DRAIN:DeskControl.FILL,level.getGameTime());say(player,(controls.waterSelection==DeskControl.FILL?"FILL":"DRAIN")+": 10-second warning before water movement.");}
         else {int side=part==0?1:0;controls.selectGate(side,controls.gateSelection[side]?DeskControl.CLOSE:DeskControl.OPEN);say(player,(side==1?"UPPER":"LOWER")+" gate: "+(controls.gate[side]==DeskControl.OPEN?"OPEN":"CLOSE"));}

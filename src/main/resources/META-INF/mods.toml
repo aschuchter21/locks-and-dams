@@ -9,9 +9,9 @@ displayName="Locks & Dams"
 authors="aschuchter21"
 description='''
 Redstone-controlled navigation locks with smooth chamber water, Create-powered
-paired gates, and physical culverts. Four hinges define player-built rectangular
-chambers; canal surface ports set their water limits. Try /locks demo_custom.
-Dams and finite reservoirs are planned.
+timber miter gates, and physical culverts. Four hinges define player-built rectangular
+chambers; canal surface ports set their water limits. Try /locks demo_desk.
+Navigation locks use fixed canal water supplies; finite reservoir simulation is not included.
 '''
 
 [[dependencies.locksanddams]]

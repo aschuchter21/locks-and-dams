@@ -1,10 +1,10 @@
-# Industrial lock control desk — dev.10
+# Industrial lock control desk â€” dev.10
 
 For Minecraft 1.20.1, Forge 47.4.10 and Create 6.0.8.
 
 ## Try the complete wired example
 
-Install the dev.10 JAR in place of the older Locks & Dams JAR, then run
+Install the 1.0.0 JAR in place of the older Locks & Dams JAR, then run
 `/locks demo_desk` in clear air in a creative test world. The builder refuses
 occupied space. It creates a custom lock, linked three-block desk, and real
 Create motors, clutches and gearshifts. The supplied motors run at +8 RPM.
@@ -17,8 +17,8 @@ Create motors, clutches and gearshifts. The supplied motors run at +8 RPM.
 3. Use a Control Link Tool on the controller, then on any desk section.
    Both must be loaded, in the same dimension, within 128 blocks by Manhattan
    distance. Each controller supports one desk.
-4. Place Gate Control Nodes where the wiring is accessible. Shift-right-click
-   a node with an empty hand to open its settings, then select UPPER or LOWER. Use the same link tool on each node.
+4. Place Gate Control Nodes where the wiring is accessible. Use your configured Sneak + Use keys on
+   a node to open its settings, then select UPPER or LOWER. Use the same link tool on each node.
 5. Supply Create rotation to every hinge, through a clutch and gearshift.
    Wire the node's **front CLUTCH** contact to the clutch; wire its **top
    REVERSE** contact independently to the gearshift. A node can control both
@@ -64,7 +64,7 @@ water level. A gate opens only when the chamber matches its canal level.
 | Gate flashing yellow | Moving |
 | Gate steady yellow | Stopped between endpoints |
 | Water green | Valves closed |
-| Water red + flashing yellow | Water moving |
+| Water red (FLOW) | Water moving |
 | Water flashing yellow | Pre-start warning |
 | E-stop flashing red | Emergency stop latched |
 

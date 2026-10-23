@@ -27,7 +27,21 @@ public final class LockHingeEntity extends MechanicalBearingBlockEntity {
     private AbstractContraptionEntity modeledContraption;
     public LockHingeEntity(BlockPos p,BlockState s) { super(Content.HINGE_ENTITY.get(),p,s); }
     @Override public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
-        super.addBehaviours(behaviours);movementMode.setValue(RotationMode.ROTATE_NEVER_PLACE.ordinal());
+        super.addBehaviours(behaviours);
+        movementMode.setValue(RotationMode.ROTATE_NEVER_PLACE.ordinal());
+        // Keep the bearing's internal mode object, but do not expose a scroll control.
+        behaviours.remove(movementMode);
+    }
+    @Override public void onSpeedChanged(float previousSpeed) {
+        float exactAngle=angle;
+        super.onSpeedChanged(previousSpeed);
+        // Create rounds stopped bearings to integer degrees. Miter endpoints are fractional;
+        // retaining that rounding makes the closed interlock repeatedly restart the clutch.
+        if(leaf!=null&&leaf.mitered()&&running&&angle!=exactAngle){
+            angle=exactAngle;
+            if(movedContraption!=null)applyRotation();
+            if(level!=null&&!level.isClientSide){setChanged();sendData();}
+        }
     }
     public boolean belongsTo(BlockPos p) { return owner!=null&&owner.equals(p); }
     /** An unloaded or still-present controller retains its gates. */
@@ -35,8 +49,10 @@ public final class LockHingeEntity extends MechanicalBearingBlockEntity {
         return owner==null||owner.equals(controller)||level!=null&&level.hasChunkAt(owner)
             &&!level.getBlockState(owner).is(Content.CONTROLLER.get())&&!(level.getBlockEntity(owner) instanceof LockEntity);
     }
-    public boolean closed() { return running&&movedContraption!=null&&Math.abs(angle)<.01&&Math.abs(target)<.01; }
+    public boolean closed() { return running&&movedContraption!=null&&Math.abs(angle-closedAngle())<.01&&Math.abs(target-closedAngle())<.01; }
     public boolean open() { return running&&movedContraption!=null&&Math.abs(angle-openAngle())<.01; }
+    private float closedAngle(){return leaf==null?0:leaf.closedAngle();}
+    @Override public AABB getRenderBoundingBox(){return leaf!=null&&leaf.mitered()?new AABB(worldPosition).inflate(leaf.length()+2).expandTowards(0,leaf.height()+2,0):super.getRenderBoundingBox();}
     public float gateAngle() { return angle; }
     private float openAngle() { return leaf==null?(side==0?-90:90):leaf.openAngle(); }
     public boolean blocked() { return obstructed; }
@@ -51,24 +67,24 @@ public final class LockHingeEntity extends MechanicalBearingBlockEntity {
     public boolean catwalkOccupied() {
         if(level==null||leaf==null)return false;
         Vec3 u=VecHelper.rotate(Vec3.atLowerCornerOf(new BlockPos(leaf.inward().getNormal())),angle,Direction.Axis.Y);
-        Vec3 v=new Vec3(-u.z,0,u.x),center=Vec3.atCenterOf(leaf.base()).add(u.scale((leaf.width()-1)/2.0));
+        Vec3 v=new Vec3(-u.z,0,u.x),center=Vec3.atCenterOf(leaf.base()).add(u.scale(leaf.mitered()?leaf.length()/2:(leaf.width()-1)/2.0));
         double y=leaf.base().getY()+leaf.height(),r=leaf.width()/2.0+1;
         AABB search=new AABB(center.x-r,y-.1,center.z-r,center.x+r,y+2,center.z+r);
-        for(Entity e:level.getEntities((Entity)null,search,e->!e.isSpectator()&&e instanceof LivingEntity))
+        for(Entity e:level.getEntities((Entity)null,search,LockObstructions::player))
             if(e.getBoundingBox().minY<=y+.2&&intersects(e.getBoundingBox().inflate(.05),center,u,v,.4375))return true;
         return false;
     }
     public void hold() {if(target!=angle){target=angle;sendData();}permitUntil=level.getGameTime()+6;}
     public void request(boolean open) {
         if(catwalkOccupied()){hold();return;}
-        float requested=open?openAngle():0;
+        float requested=open?openAngle():closedAngle();
         if(target!=requested) { target=requested;sendData(); }
         permitUntil=level.getGameTime()+6;
     }
     public boolean travelling(){return running&&Math.abs(getSpeed())>.001&&Math.abs(target-angle)>.01&&!obstructed&&level!=null&&level.getGameTime()<=permitUntil;}
     public boolean blockedFor(int command){
         if(leaf==null||level==null||command==DeskControl.HOLD)return false;
-        float destination=command==DeskControl.OPEN?openAngle():0;
+        float destination=command==DeskControl.OPEN?openAngle():closedAngle();
         if(Math.abs(destination-angle)<.01)return false;
         return blockedAt(angle)||blockedAt(angle+Math.copySign(Math.min(.5f,Math.abs(destination-angle)),destination-angle));
     }
@@ -94,11 +110,11 @@ public final class LockHingeEntity extends MechanicalBearingBlockEntity {
     private boolean blockedAt(float a) {
         Vec3 pivot=Vec3.atCenterOf(leaf.base());
         Vec3 u=VecHelper.rotate(Vec3.atLowerCornerOf(new BlockPos(leaf.inward().getNormal())),a,Direction.Axis.Y);
-        Vec3 v=new Vec3(-u.z,0,u.x);Vec3 center=pivot.add(u.scale((leaf.width()-1)/2.0));
+        Vec3 v=new Vec3(-u.z,0,u.x);Vec3 center=pivot.add(u.scale(leaf.mitered()?leaf.length()/2:(leaf.width()-1)/2.0));
         double radius=leaf.width()/2.0+1;
         double deckY=leaf.base().getY()+leaf.height();
         AABB search=new AABB(center.x-radius,leaf.base().getY(),center.z-radius,center.x+radius,deckY+2,center.z+radius);
-        for(Entity e:level.getEntities((Entity)null,search,e -> !e.isSpectator()&&(e instanceof Boat||e instanceof LivingEntity))) {
+        for(Entity e:level.getEntities((Entity)null,search,LockObstructions::blocks)) {
             AABB body=e.getBoundingBox().inflate(.18);
             if(body.minY<=deckY+1.1&&intersects(body,center,u,v,body.minY>=deckY-.2?.4375:.1875))return true;
         }
@@ -112,8 +128,9 @@ public final class LockHingeEntity extends MechanicalBearingBlockEntity {
         return false;
     }
     private boolean intersects(AABB box,Vec3 center,Vec3 u,Vec3 v,double halfDepth) {
-        if(halfDepth>.2)center=center.add(u.scale(.125));
-        double halfWidth=leaf.width()/2.0-(halfDepth>.2?.1875:.0625);
+        if(halfDepth>.2&&!leaf.mitered())center=center.add(u.scale(.125));
+        if(leaf.mitered()&&halfDepth>.2)center=center.add(u.scale(leaf.deckStart()/2));
+        double halfWidth=leaf.mitered()?(leaf.length()-(halfDepth>.2?leaf.deckStart():0))/2-.025:leaf.width()/2.0-(halfDepth>.2?.1875:.0625);
         double dx=box.getCenter().x-center.x,dz=box.getCenter().z-center.z;
         double ex=box.getXsize()/2,ez=box.getZsize()/2;
         return Math.abs(dx)<ex+halfWidth*Math.abs(u.x)+halfDepth*Math.abs(v.x)-.0001
@@ -133,7 +150,7 @@ public final class LockHingeEntity extends MechanicalBearingBlockEntity {
         movedContraption=ControlledContraptionEntity.create(level,this,gate);
         BlockPos anchor=worldPosition.above();movedContraption.setPos(anchor.getX(),anchor.getY(),anchor.getZ());
         movedContraption.setRotationAxis(Direction.Axis.Y);level.addFreshEntity(movedContraption);
-        running=true;angle=0;target=0;assembleNextTick=false;sendData();
+        running=true;angle=closedAngle();target=angle;applyRotation();assembleNextTick=false;sendData();
     }
     /** Return only reserved cells; never place a rotated gate over somebody's construction. */
     @Override public void disassemble() {
@@ -144,6 +161,17 @@ public final class LockHingeEntity extends MechanicalBearingBlockEntity {
                     .setValue(GatePanelBlock.REVERSED,s.getValue(GatePanelBlock.REVERSED)).setValue(GatePanelBlock.OPEN,false).setValue(GatePanelBlock.DEPTH,0)
                     .setValue(GatePanelBlock.AXIS,leaf.normal()),Block.UPDATE_CLIENTS);
                 else Block.popResource(level,worldPosition,new net.minecraft.world.item.ItemStack(Content.PANEL.get()));
+            }
+            if(leaf.mitered())for(int x=0;x<leaf.width();x++)for(int y=0;y<leaf.height();y++){
+                BlockPos p=leaf.at(x,y).relative(leaf.upstream());
+                if(level.getBlockState(p).is(Content.BOUNDARY.get())&&level.getBlockEntity(p) instanceof GateWaterEntity w&&worldPosition.equals(w.hinge)){
+                    BlockState restore=w.original==null?Blocks.AIR.defaultBlockState():w.original;
+                    // Chamber-side cells follow the current chamber surface, not the assembly-time surface.
+                    if(w.chamberCell){
+                        int depth=w.highDepth;restore=depth==0?Blocks.AIR.defaultBlockState():Content.WATER_BLOCK.get().defaultBlockState().setValue(ChamberFluid.HEIGHT,depth);
+                    }
+                    level.setBlock(p,restore,Block.UPDATE_CLIENTS);
+                }
             }
             movedContraption.discard();
         }
@@ -160,7 +188,7 @@ public final class LockHingeEntity extends MechanicalBearingBlockEntity {
             var contraption=movedContraption.getContraption();
             for(var entry:List.copyOf(contraption.getBlocks().entrySet())) {
                 var info=entry.getValue();
-                if(info.state().is(Content.PANEL.get())) {
+                if(info.state().is(Content.PANEL.get())&&!leaf.mitered()) {
                     int column=Math.abs(entry.getKey().getX())+Math.abs(entry.getKey().getZ());
                     int topY=leaf.base().getY()-worldPosition.getY()-1+leaf.height()-1;
                     var state=info.state().setValue(GatePanelBlock.TOP,entry.getKey().getY()==topY).setValue(GatePanelBlock.EDGE,edge(leaf,column));
@@ -189,6 +217,10 @@ public final class LockHingeEntity extends MechanicalBearingBlockEntity {
     private static final class GateContraption extends BearingContraption {
         private final GateSpec leaf;
         GateContraption(GateSpec geometry) { super(false,Direction.UP);leaf=geometry; }
+        @Override protected boolean customBlockRemoval(net.minecraft.world.level.LevelAccessor level,BlockPos pos,BlockState state){
+            if(leaf.mitered()&&level.getBlockState(pos).is(Content.PANEL.get())){level.setBlock(pos,Blocks.AIR.defaultBlockState(),Block.UPDATE_CLIENTS);return true;}
+            return false;
+        }
         @Override public boolean assemble(Level level,BlockPos pos) {
             anchor=pos.above();bounds=new AABB(BlockPos.ZERO);
             for(int x=0;x<leaf.width();x++)for(int y=0;y<leaf.height();y++)if(!level.getBlockState(leaf.at(x,y)).is(Content.PANEL.get()))return false;
@@ -196,8 +228,12 @@ public final class LockHingeEntity extends MechanicalBearingBlockEntity {
                 BlockPos p=leaf.at(x,y);
                 level.setBlock(p,level.getBlockState(p).setValue(GatePanelBlock.OPEN,false).setValue(GatePanelBlock.TOP,y==leaf.height()-1).setValue(GatePanelBlock.EDGE,edge(leaf,x)).setValue(GatePanelBlock.DEPTH,0).setValue(GatePanelBlock.AXIS,leaf.normal()),Block.UPDATE_CLIENTS);
                 addBlock(level,p,capture(level,p));
+                if(leaf.mitered()) {
+                    BlockPos local=p.subtract(anchor);var old=blocks.get(local);
+                    blocks.put(local,new net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate.StructureBlockInfo(local,AssembledGateBlock.tile(leaf,x,y),old.nbt()));
+                }
             }
-            startMoving(level);bounds=bounds.expandTowards(0,1.1,0);expandBoundsAroundAxis(Direction.Axis.Y);return true;
+            startMoving(level);bounds=bounds.inflate(.25,0,.25).expandTowards(0,1.1,0);expandBoundsAroundAxis(Direction.Axis.Y);return true;
         }
     }
 }

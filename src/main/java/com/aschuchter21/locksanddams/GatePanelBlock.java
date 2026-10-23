@@ -17,8 +17,9 @@ public class GatePanelBlock extends Block {
     public static final BooleanProperty TOP = BooleanProperty.create("top");
     public static final IntegerProperty EDGE = IntegerProperty.create("edge",0,4);
     public static final IntegerProperty DEPTH = IntegerProperty.create("depth", 0, 16);
-    public GatePanelBlock() {
-        super(Content.metal().noOcclusion().isSuffocating((s, l, p) -> !s.getValue(OPEN)));
+    public GatePanelBlock() { this(Content.metal().noOcclusion().isSuffocating((s, l, p) -> !s.getValue(OPEN))); }
+    protected GatePanelBlock(Properties properties) {
+        super(properties);
         registerDefaultState(stateDefinition.any().setValue(REVERSED,false).setValue(OPEN, false).setValue(TOP, false).setValue(EDGE,0).setValue(DEPTH, 0).setValue(AXIS,net.minecraft.core.Direction.Axis.Z));
     }
     @Override protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) { builder.add(OPEN, DEPTH, AXIS, TOP, EDGE, REVERSED); }
